@@ -12,13 +12,16 @@
 #include <fstream>
 #include <iostream>
 
-struct Camera {
+struct Camera
+{
     glm::vec3 lookAt;
     glm::vec3 upVector;
     glm::vec3 position;
     glm::vec3 direction;
     glm::vec3 angles;
 };
+
+Camera camera;
 
 // Error Handling
 
@@ -47,7 +50,7 @@ static bool GLCheckErrorStatus(const char *function, int line)
 
 float g_uOffset = -2.0f;
 float g_uRotate = 0.0f;
-float g_uScale = 0.5f;
+float g_uScale = 1.5f;
 
 // Globals
 int gScreenHeight = 640;
@@ -79,6 +82,10 @@ void recomputeOrientation()
     camDir = glm::normalize(
         glm::vec3(sin(cameraPhi) * sin(cameraTheta), cos(cameraPhi), -sin(cameraPhi) * cos(cameraTheta)));
     camDir *= radius;
+
+    camera.direction = glm::normalize(
+        glm::vec3(sin(camera.angles.y) * sin(camera.angles.x), cos(camera.angles.y), -sin(camera.angles.y) * cos(camera.angles.x)));
+    camera.direction *= camera.angles.z;   
 }
 
 std::string LoadShaderAsString(const std::string &filename)
@@ -257,7 +264,12 @@ void Initialize()
     camPos.z = 0;
     cameraTheta = -M_PI / 3.0f;
     cameraPhi = M_PI / 2.8f;
+
+    camera.position = glm::vec3(0.f, 0.f, -1.f);
+    camera.angles = glm::vec3(-M_PI / 3.0f, M_PI / 2.8f, 20.0f);
+
     recomputeOrientation();
+
 
     SDL_SetRelativeMouseMode(SDL_TRUE);
 }
@@ -283,17 +295,19 @@ void Input()
             //     cameraPhi = cameraPhi + e.motion.yrel * 0.005;
             // }
             cameraTheta = cameraTheta + e.motion.xrel * 0.005;
+
+            camera.angles.y = std::max(std::min(static_cast<float>(cameraPhi + e.motion.yrel * 0.005), 180.0f), 0.0f); 
+            camera.angles.x = camera.angles.x + e.motion.xrel * 0.005;
+
             recomputeOrientation();
-        } 
+        }
 
         // update camera with mouse state
         // switch (e.button.button)
         // {
         // case SDL_BUTTON_LEFT:
         //     int x = e.motion.xrel + gScreenWidth / 2;
-        //     int y = e.motion.yrel + gScreenHeight / 2;
-        //     std::cout << "mouse event triggered" << std::endl;
-        //     if (mouseX == -99999)
+        //     int y = e.motion.yrel + gScreenHeight / 2; //     std::cout << "mouse event triggered" << std::endl; //     if (mouseX == -99999)
         //     {
         //         mouseX = x;
         //         mouseY = y;
@@ -334,6 +348,16 @@ void Input()
         g_uRotate += 1.0f;
         std::cout << "g_uRotate: " << g_uRotate << std::endl;
     }
+
+    // camera controls  
+    if (state[SDL_SCANCODE_W])
+    {
+        camera.position += camera.direction * 0.01f;
+    }
+    if (state[SDL_SCANCODE_S])
+    {
+        camera.position -= camera.direction * 0.01f;
+    }
 }
 
 void PreDraw()
@@ -352,17 +376,17 @@ void PreDraw()
     model = glm::rotate(model, glm::radians(g_uRotate), glm::vec3(0.0f, 1.0f, 0.0f));
     model = glm::scale(model, glm::vec3(g_uScale, g_uScale, g_uScale));
 
-    // GLint u_ModelMatrixLocation = glGetUniformLocation(gGraphicsPipelineShaderProgram, "u_ModelMatrix");
+    GLint u_ModelMatrixLocation = glGetUniformLocation(gGraphicsPipelineShaderProgram, "u_ModelMatrix");
 
-    // if (u_ModelMatrixLocation >= 0)
-    // {
-    //     glUniformMatrix4fv(u_ModelMatrixLocation, 1, GL_FALSE, &model[0][0]);
-    // }
-    // else
-    // {
-    //     std::cout << "Could not find u_ModelMatrix, maybe a mispelling?\n";
-    //     exit(EXIT_FAILURE);
-    // }
+    if (u_ModelMatrixLocation >= 0)
+    {
+        glUniformMatrix4fv(u_ModelMatrixLocation, 1, GL_FALSE, &model[0][0]);
+    }
+    else
+    {
+        std::cout << "Could not find u_ModelMatrix, maybe a mispelling?\n";
+        exit(EXIT_FAILURE);
+    }
 
     glm::mat4 perspective = glm::perspective(glm::radians(45.0f),
                                              (float)gScreenWidth / (float)gScreenHeight,
@@ -386,8 +410,11 @@ void PreDraw()
     //     glm::sin(glm::radians(cameraPhi)) * glm::sin(glm::radians(cameraTheta)),
     //     glm::cos(glm::radians(cameraPhi))};
 
-    glm::mat4 viewMtx = glm::lookAt(glm::vec3(0.0f, 0.0f, -1.0f),
-                                    camDir,
+    // glm::mat4 viewMtx = glm::lookAt(glm::vec3(0.0f, 0.0f, -1.0f),
+    //                                 camDir,
+    //                                 glm::vec3(0.0f, 1.0f, 0.0f));
+    glm::mat4 viewMtx = glm::lookAt(camera.position,
+                                    camera.direction + camera.position,
                                     glm::vec3(0.0f, 1.0f, 0.0f));
     // glm::mat4 viewMtx = glm::lookAt((camDir + glm::vec3(0, 0, 0)),
     //                                 glm::vec3(0, 0, 0),
