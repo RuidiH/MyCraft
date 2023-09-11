@@ -85,7 +85,7 @@ void recomputeOrientation()
 
     camera.direction = glm::normalize(
         glm::vec3(sin(camera.angles.y) * sin(camera.angles.x), cos(camera.angles.y), -sin(camera.angles.y) * cos(camera.angles.x)));
-    camera.direction *= camera.angles.z;   
+    camera.direction *= camera.angles.z;
 }
 
 std::string LoadShaderAsString(const std::string &filename)
@@ -270,7 +270,6 @@ void Initialize()
 
     recomputeOrientation();
 
-
     SDL_SetRelativeMouseMode(SDL_TRUE);
 }
 
@@ -296,7 +295,7 @@ void Input()
             // }
             cameraTheta = cameraTheta + e.motion.xrel * 0.005;
 
-            camera.angles.y = std::max(std::min(static_cast<float>(cameraPhi + e.motion.yrel * 0.005), 180.0f), 0.0f); 
+            camera.angles.y = std::max(std::min(static_cast<float>(cameraPhi + e.motion.yrel * 0.005), 180.0f), 0.0f);
             camera.angles.x = camera.angles.x + e.motion.xrel * 0.005;
 
             recomputeOrientation();
@@ -349,7 +348,7 @@ void Input()
         std::cout << "g_uRotate: " << g_uRotate << std::endl;
     }
 
-    // camera controls  
+    // camera controls
     if (state[SDL_SCANCODE_W])
     {
         camera.position += camera.direction * 0.01f;
@@ -438,13 +437,90 @@ void PreDraw()
     // glUniformMatrix3fv(normalMtxLocation, 1, GL_FALSE, &normalMatrix[0][0]);
 }
 
+// draw a cube
+void DrawCube(glm::vec3 position, glm::vec3 color, float size)
+{
+    // initialize cube vertices
+    const std::vector<float> vertexData{
+        position.x, position.y, position.z, // 0
+        color.x, color.y, color.z, // color
+
+        position.x + size, position.y, position.z, // 1
+        color.x, color.y, color.z, // color
+
+        position.x + size, position.y + size, position.z, // 2
+        color.x, color.y, color.z, // color
+
+        position.x + size, position.y + size, position.z + size, // 3
+        color.x, color.y, color.z, // color
+
+        position.x, position.y + size, position.z, // 4
+        color.x, color.y, color.z, // color
+
+        position.x, position.y, position.z + size, // 5
+        color.x, color.y, color.z, // color
+
+        position.x, position.y + size, position.z + size, // 6
+        color.x, color.y, color.z, // color
+
+        position.x + size, position.y, position.z + size, // 7
+        color.x, color.y, color.z, // color
+    };
+
+    glGenVertexArrays(1, &gVertexArrayObject);
+    glBindVertexArray(gVertexArrayObject);
+
+    glGenBuffers(1, &gVertexBufferObject);
+    glBindBuffer(GL_ARRAY_BUFFER, gVertexBufferObject);
+    glBufferData(GL_ARRAY_BUFFER,
+                 vertexData.size() * sizeof(GL_FLOAT),
+                 vertexData.data(),
+                 GL_STATIC_DRAW);
+
+    // const std::vector<GLuint> indexBufferData{2, 0, 1, 3, 2, 1};
+    const std::vector<GLuint> indexBufferData{0, 4, 2, 1, 0, 2,
+                                              7, 3, 2, 1, 7, 2,
+                                              0, 5, 7, 1, 0, 7,
+                                              5, 6, 3, 7, 5, 3,
+                                              4, 6, 3, 2, 4, 3,
+                                              5, 6, 4, 0, 5, 4};
+
+    // Set up Index Buffer Object
+    glGenBuffers(1, &gIndexBufferObject);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, gIndexBufferObject);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER,   
+                 indexBufferData.size() * sizeof(GLuint),
+                 indexBufferData.data(),
+                 GL_STATIC_DRAW);
+
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0,
+                          3, // x, y, z
+                          GL_FLOAT,
+                          GL_FALSE,
+                          sizeof(GL_FLOAT) * 6,
+                          (void *)0);
+
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1,
+                          3, // r, g, b
+                          GL_FLOAT,
+                          GL_FALSE,
+                          sizeof(GL_FLOAT) * 6,
+                          (GLvoid *)(sizeof(GL_FLOAT) * 3));
+
+    glBindVertexArray(0);
+    glDisableVertexAttribArray(0);
+    glDisableVertexAttribArray(1);
+}
+
 void Draw()
 {
     glBindVertexArray(gVertexArrayObject);
     GLCheck(glBindBuffer(GL_ARRAY_BUFFER, gVertexBufferObject);)
         // glDrawArrays(GL_TRIANGLES, 0, 6);
         GLCheck(glDrawElements(GL_TRIANGLES,
-                               6,
+                               8,
                                GL_UNSIGNED_INT,
                                //    GL_INT,
                                0);)
@@ -475,12 +551,12 @@ void CleanUp()
 
 int main(int argc, char *argv[])
 {
-
     // Set up graphics program
     Initialize();
 
     // Setup geometry
-    VertexSpecification();
+    // VertexSpecification();
+    DrawCube(glm::vec3(0, 0, 0), glm::vec3(1, 1, 1), 20.0f);
 
     // Create graphics pipeline with at least vertex and fragment shader
     CreateGraphicsPipeline();
