@@ -520,7 +520,7 @@ void Draw()
     GLCheck(glBindBuffer(GL_ARRAY_BUFFER, gVertexBufferObject);)
         // glDrawArrays(GL_TRIANGLES, 0, 6);
         GLCheck(glDrawElements(GL_TRIANGLES,
-                               8,
+                               36,
                                GL_UNSIGNED_INT,
                                //    GL_INT,
                                0);)
@@ -556,7 +556,7 @@ int main(int argc, char *argv[])
 
     // Setup geometry
     // VertexSpecification();
-    DrawCube(glm::vec3(0, 0, 0), glm::vec3(1, 1, 1), 20.0f);
+    DrawCube(glm::vec3(0.f, 0.f, 0.f), glm::vec3(0.f, 1.f, 1.f), 1.0f);
 
     // Create graphics pipeline with at least vertex and fragment shader
     CreateGraphicsPipeline();
