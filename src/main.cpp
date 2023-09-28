@@ -12,6 +12,10 @@
 #include <fstream>
 #include <iostream>
 
+#include "Cube.hpp"
+
+Cube cube;
+
 struct Camera
 {
     glm::vec3 lookAt;
@@ -22,6 +26,8 @@ struct Camera
 };
 
 Camera camera;
+
+
 
 // Error Handling
 
@@ -516,17 +522,20 @@ void DrawCube(glm::vec3 position, glm::vec3 color, float size)
 
 void Draw()
 {
-    glBindVertexArray(gVertexArrayObject);
-    GLCheck(glBindBuffer(GL_ARRAY_BUFFER, gVertexBufferObject);)
-        // glDrawArrays(GL_TRIANGLES, 0, 6);
-        GLCheck(glDrawElements(GL_TRIANGLES,
-                               36,
-                               GL_UNSIGNED_INT,
-                               //    GL_INT,
-                               0);)
+
+    cube.Render();
+    // glBindVertexArray(gVertexArrayObject);
+    // GLCheck(glBindBuffer(GL_ARRAY_BUFFER, gVertexBufferObject);)
+    //     // glDrawArrays(GL_TRIANGLES, 0, 6);
+    //     GLCheck(glDrawElements(GL_TRIANGLES,
+    //                            36,
+    //                            GL_UNSIGNED_INT,
+    //                            //    GL_INT,
+    //                            0);)
 
         // not required if there's only a single graphics pipeline
         glUseProgram(0);
+    
 }
 
 void MainLoop()
@@ -556,7 +565,7 @@ int main(int argc, char *argv[])
 
     // Setup geometry
     // VertexSpecification();
-    DrawCube(glm::vec3(0.f, 0.f, 0.f), glm::vec3(0.f, 1.f, 1.f), 1.0f);
+    // DrawCube(glm::vec3(0.f, 0.f, 0.f), glm::vec3(0.f, 1.f, 1.f), 1.0f);
 
     // Create graphics pipeline with at least vertex and fragment shader
     CreateGraphicsPipeline();

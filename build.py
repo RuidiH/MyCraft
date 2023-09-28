@@ -4,7 +4,7 @@ import platform
 # (1)==================== COMMON CONFIGURATION OPTIONS ======================= #
 COMPILER="clang++ -g -std=c++17"   # The compiler we want to use 
                                 #(You may try g++ if you have trouble)
-SOURCE="./src/*.cpp ./src/*.c"    # Where the source code lives
+SOURCE="./src/*.cpp ./include/glad/glad.c"    # Where the source code lives
 EXECUTABLE="lab"        # Name of the final executable
 # ======================= COMMON CONFIGURATION OPTIONS ======================= #
 
@@ -27,7 +27,7 @@ elif platform.system()=="Windows":
     ARGUMENTS="-D MINGW -std=c++17 -static-libgcc -static-libstdc++" 
     INCLUDE_DIR="-I./include/"
     EXECUTABLE="lab.exe"
-    LIBRARIES="-lmingw32 -lSDL2main -lSDL2 -lSDL2_ttf"
+    LIBRARIES="-lmingw32 -lSDL2main -lSDL2 -lSDL2_ttf -lopengl32"
 # (2)=================== Platform specific configuration ===================== #
 
 # (3)====================== Building the Executable ========================== #
