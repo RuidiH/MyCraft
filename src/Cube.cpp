@@ -103,6 +103,14 @@ void Cube::Render() {
     glDisableVertexAttribArray(1);
 }
 
+void Cube::setPosition(glm::vec3 position) {
+    mPosition = position;
+}
+
+void Cube::setColor(glm::vec3 color) {
+    mColor = color;
+}
+
 // bool Cube::operator==(const Cube &other) const {
 //     return (mPosition == other.mPosition &&
 //             mColor == other.mColor &&

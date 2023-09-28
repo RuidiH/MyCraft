@@ -14,7 +14,8 @@
 
 #include "Cube.hpp"
 
-Cube cube;
+Cube cube1;
+Cube cube2;
 
 struct Camera
 {
@@ -522,8 +523,10 @@ void DrawCube(glm::vec3 position, glm::vec3 color, float size)
 
 void Draw()
 {
-
-    cube.Render();
+    cube2.setPosition(glm::vec3(-1.f, 0.f, -1.f));
+    cube2.setColor(glm::vec3(0.f, 0.f, 1.f));
+    cube1.Render();
+    cube2.Render();
     // glBindVertexArray(gVertexArrayObject);
     // GLCheck(glBindBuffer(GL_ARRAY_BUFFER, gVertexBufferObject);)
     //     // glDrawArrays(GL_TRIANGLES, 0, 6);
