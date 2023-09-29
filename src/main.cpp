@@ -1,5 +1,6 @@
 // Third Party
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
 #include <glad/glad.h>
 #include <glm/glm.hpp>
 #include <glm/mat4x4.hpp>
@@ -27,8 +28,6 @@ struct Camera
 };
 
 Camera camera;
-
-
 
 // Error Handling
 
@@ -450,28 +449,28 @@ void DrawCube(glm::vec3 position, glm::vec3 color, float size)
     // initialize cube vertices
     const std::vector<float> vertexData{
         position.x, position.y, position.z, // 0
-        color.x, color.y, color.z, // color
+        color.x, color.y, color.z,          // color
 
         position.x + size, position.y, position.z, // 1
-        color.x, color.y, color.z, // color
+        color.x, color.y, color.z,                 // color
 
         position.x + size, position.y + size, position.z, // 2
-        color.x, color.y, color.z, // color
+        color.x, color.y, color.z,                        // color
 
         position.x + size, position.y + size, position.z + size, // 3
-        color.x, color.y, color.z, // color
+        color.x, color.y, color.z,                               // color
 
         position.x, position.y + size, position.z, // 4
-        color.x, color.y, color.z, // color
+        color.x, color.y, color.z,                 // color
 
         position.x, position.y, position.z + size, // 5
-        color.x, color.y, color.z, // color
+        color.x, color.y, color.z,                 // color
 
         position.x, position.y + size, position.z + size, // 6
-        color.x, color.y, color.z, // color
+        color.x, color.y, color.z,                        // color
 
         position.x + size, position.y, position.z + size, // 7
-        color.x, color.y, color.z, // color
+        color.x, color.y, color.z,                        // color
     };
 
     glGenVertexArrays(1, &gVertexArrayObject);
@@ -495,7 +494,7 @@ void DrawCube(glm::vec3 position, glm::vec3 color, float size)
     // Set up Index Buffer Object
     glGenBuffers(1, &gIndexBufferObject);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, gIndexBufferObject);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER,   
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER,
                  indexBufferData.size() * sizeof(GLuint),
                  indexBufferData.data(),
                  GL_STATIC_DRAW);
@@ -536,9 +535,8 @@ void Draw()
     //                            //    GL_INT,
     //                            0);)
 
-        // not required if there's only a single graphics pipeline
-        glUseProgram(0);
-    
+    // not required if there's only a single graphics pipeline
+    glUseProgram(0);
 }
 
 void MainLoop()

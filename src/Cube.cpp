@@ -1,6 +1,8 @@
 #include "Cube.hpp"
 
 #include <vector>
+#include <iostream>
+#include <SDL2/SDL_image.h>
 
 Cube::Cube() {
     mPosition = glm::vec3(0.0f, 0.0f, 0.0f);
@@ -21,6 +23,14 @@ void Cube::Update() {
 }
 
 void Cube::Render() {
+
+    SDL_Surface *surface = IMG_Load("./assets/texture/dirt.png");
+
+    if (!surface)
+    {
+        std::cout << "ERROR LOADING IMAGE" << std::endl;
+        // handle error
+    }
 
     GLuint vao;
 

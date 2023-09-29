@@ -27,7 +27,7 @@ elif platform.system()=="Windows":
     ARGUMENTS="-D MINGW -std=c++17 -static-libgcc -static-libstdc++" 
     INCLUDE_DIR="-I./include/"
     EXECUTABLE="lab.exe"
-    LIBRARIES="-lmingw32 -lSDL2main -lSDL2 -lSDL2_ttf -lopengl32"
+    LIBRARIES="-lmingw32 -lSDL2main -lSDL2 -lSDL2_ttf -lSDL2_image -lopengl32"
 # (2)=================== Platform specific configuration ===================== #
 
 # (3)====================== Building the Executable ========================== #
