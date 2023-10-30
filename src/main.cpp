@@ -12,8 +12,11 @@
 #include <string>
 #include <fstream>
 #include <iostream>
+#include <map>
 
+#include "GameObject.hpp"
 #include "Cube.hpp"
+#include "TextureManager.hpp"
 
 Cube cube1;
 Cube cube2;
@@ -224,7 +227,7 @@ void VertexSpecification()
     glDisableVertexAttribArray(1);
 }
 
-void Initialize()
+void InitializeGraphicsProgram()
 {
     if (SDL_Init(SDL_INIT_VIDEO) < 0)
     {
@@ -371,15 +374,10 @@ void PreDraw()
 {
     // glDisable(GL_DEPTH_TEST);
     // glDisable(GL_CULL_FACE);
-
-    glEnable(GL_DEPTH_TEST);
-    glEnable(GL_CULL_FACE); 
-    glCullFace(GL_BACK);
-
-    glViewport(0, 0, gScreenWidth, gScreenHeight);
+ 
+    glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
     glClearColor(1.f, 1.f, 0.1f, 1.f);
 
-    glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
     glUseProgram(gGraphicsPipelineShaderProgram);
 
@@ -528,10 +526,8 @@ void DrawCube(glm::vec3 position, glm::vec3 color, float size)
 
 void Draw()
 {
-    cube2.setPosition(glm::vec3(-1.f, 0.f, -1.f));
-    cube2.setColor(glm::vec3(0.f, 0.f, 1.f));
     cube1.Render();
-    // cube2.Render();
+    cube2.Render();
     // glBindVertexArray(gVertexArrayObject);
     // GLCheck(glBindBuffer(GL_ARRAY_BUFFER, gVertexBufferObject);)
     //     // glDrawArrays(GL_TRIANGLES, 0, 6);
@@ -567,8 +563,11 @@ void CleanUp()
 
 int main(int argc, char *argv[])
 {
+
+    TextureManager textureManager;
+
     // Set up graphics program
-    Initialize();
+    InitializeGraphicsProgram();
 
     // Setup geometry
     // VertexSpecification();
@@ -577,29 +576,19 @@ int main(int argc, char *argv[])
     // Create graphics pipeline with at least vertex and fragment shader
     CreateGraphicsPipeline();
 
-    
-    // temp code of loading texture
-    SDL_Surface *surface = IMG_Load("./assets/texture/dirt.png");
+    // Enable depth test
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_CULL_FACE); 
+    glCullFace(GL_BACK);
+    glViewport(0, 0, gScreenWidth, gScreenHeight);
+  
+    textureManager.LoadTexture("Dirt", "./assets/texture/dirt.png");
 
-    if (!surface)
-    {
-        std::cout << "ERROR LOADING IMAGE" << std::endl;
-        // handle error
-    }
+    cube1.setTexture(textureManager.GetTexture("Dirt"));
+    cube2.setTexture(textureManager.GetTexture("Dirt"));
 
-    glGenTextures(1, &textureId);
-    glBindTexture(GL_TEXTURE_2D, textureId);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, surface->w, surface->h, 0, GL_RGBA, GL_UNSIGNED_BYTE, surface->pixels);
-
-    SDL_FreeSurface(surface);
-
-    cube1.setTexture(&textureId);
-    // cube2.setTexture(&textureId);
+    cube1.setPosition(glm::vec3(0.f, 0.f, 0.f));
+    cube2.setPosition(glm::vec3(-1.f, 0.f, -1.f));
 
     MainLoop();
 
