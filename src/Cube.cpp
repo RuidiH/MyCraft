@@ -7,7 +7,9 @@
 Cube::Cube() {
     mPosition = glm::vec3(0.0f, 0.0f, 0.0f);
     mColor = glm::vec3(1.0f, 0.5f, 0.2f);
-    mSize = 1.0f; 
+    mSize = 1.0f;
+
+    
 }
 
 // Cube::~Cube() {
@@ -24,13 +26,16 @@ void Cube::Update() {
 
 void Cube::Render() {
 
-    SDL_Surface *surface = IMG_Load("./assets/texture/dirt.png");
+    // SDL_Surface *surface = IMG_Load("./assets/texture/dirt.png");
 
-    if (!surface)
-    {
-        std::cout << "ERROR LOADING IMAGE" << std::endl;
-        // handle error
-    }
+    // if (!surface)
+    // {
+    //     std::cout << "ERROR LOADING IMAGE" << std::endl;
+    //     // handle error
+    // }
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, 0);
 
     GLuint vao;
 
@@ -38,53 +43,67 @@ void Cube::Render() {
 
     GLuint ibo;
 
-    // initialize cube vertices
-    // const std::vector<float> vertexData{
-    //     mPosition.x, mPosition.y, mPosition.z, // 0
-    //     mColor.x, mColor.y, mColor.z, // mColor
-
-    //     mPosition.x + mSize, mPosition.y, mPosition.z, // 1
-    //     mColor.x, mColor.y, mColor.z, // mColor
-
-    //     mPosition.x + mSize, mPosition.y + mSize, mPosition.z, // 2
-    //     mColor.x, mColor.y, mColor.z, // mColor
-
-    //     mPosition.x + mSize, mPosition.y + mSize, mPosition.z + mSize, // 3
-    //     mColor.x, mColor.y, mColor.z, // mColor
-
-    //     mPosition.x, mPosition.y + mSize, mPosition.z, // 4
-    //     mColor.x, mColor.y, mColor.z, // mColor
-
-    //     mPosition.x, mPosition.y, mPosition.z + mSize, // 5
-    //     mColor.x, mColor.y, mColor.z, // mColor
-
-    //     mPosition.x, mPosition.y + mSize, mPosition.z + mSize, // 6
-    //     mColor.x, mColor.y, mColor.z, // mColor
-
-    //     mPosition.x + mSize, mPosition.y, mPosition.z + mSize, // 7
-    //     mColor.x, mColor.y, mColor.z, // mColor
-    // };
-
     float radius = mSize/2.0;
 
+    // const std::vector<float> vertexData{
+    //     /*                      coordinates                            */   /*          colors         */               
+    //     mPosition.x - radius, mPosition.y + radius, mPosition.z - radius,   mColor.x, mColor.y, mColor.z,     // - + -; 0
+
+    //     mPosition.x + radius, mPosition.y + radius, mPosition.z - radius,   mColor.x, mColor.y, mColor.z,    // + + -; 1
+
+    //     mPosition.x - radius, mPosition.y + radius, mPosition.z + radius,   mColor.x, mColor.y, mColor.z, // - + +; 2
+
+    //     mPosition.x + radius, mPosition.y + radius, mPosition.z + radius,   mColor.x, mColor.y, mColor.z, // + + +; 3
+
+    //     mPosition.x - radius, mPosition.y - radius, mPosition.z - radius,   mColor.x, mColor.y, mColor.z,  // - - -; 4
+
+    //     mPosition.x + radius, mPosition.y - radius, mPosition.z - radius,   mColor.x, mColor.y, mColor.z,    // + - -; 5
+
+    //     mPosition.x - radius, mPosition.y - radius, mPosition.z + radius,   mColor.x, mColor.y, mColor.z, // - - +; 6
+
+    //     mPosition.x + radius, mPosition.y - radius, mPosition.z + radius,   mColor.x, mColor.y, mColor.z // + - +; 7
+    // };
+
     const std::vector<float> vertexData{
-        /*                      coordinates                            */   /*          colors         */               
-        mPosition.x - radius, mPosition.y + radius, mPosition.z - radius,   mColor.x, mColor.y, mColor.z,     // - + -; 0
+        // Top
+        mPosition.x - radius, mPosition.y + radius, mPosition.z - radius,   0.0f, 0.0f, // - + -
+        mPosition.x - radius, mPosition.y + radius, mPosition.z + radius,   0.0f, 1.0f, // - + +
+        mPosition.x + radius, mPosition.y + radius, mPosition.z + radius,   1.0f, 1.0f, // + + +
+        mPosition.x + radius, mPosition.y + radius, mPosition.z - radius,   1.0f, 0.0f, // + + -
 
-        mPosition.x + radius, mPosition.y + radius, mPosition.z - radius,   mColor.x, mColor.y, mColor.z,    // + + -; 1
+        // Left
+        mPosition.x - radius, mPosition.y + radius, mPosition.z + radius,   0.0f, 0.0f, // - + +
+        mPosition.x - radius, mPosition.y - radius, mPosition.z + radius,   1.0f, 0.0f, // - - +
+        mPosition.x - radius, mPosition.y - radius, mPosition.z - radius,   1.0f, 1.0f, // - - -
+        mPosition.x - radius, mPosition.y + radius, mPosition.z - radius,   0.0f, 1.0f, // - + -
 
-        mPosition.x - radius, mPosition.y + radius, mPosition.z + radius,   mColor.x, mColor.y, mColor.z, // - + +; 2
+        // Right
+        mPosition.x + radius, mPosition.y + radius, mPosition.z + radius,   1.0f, 1.0f, // + + +
+        mPosition.x + radius, mPosition.y - radius, mPosition.z + radius,   0.0f, 1.0f, // + - +
+        mPosition.x + radius, mPosition.y - radius, mPosition.z - radius,   0.0f, 0.0f, // + - -
+        mPosition.x + radius, mPosition.y + radius, mPosition.z - radius,   1.0f, 0.0f, // + + -
 
-        mPosition.x + radius, mPosition.y + radius, mPosition.z + radius,   mColor.x, mColor.y, mColor.z, // + + +; 3
+        // Front
+        mPosition.x + radius, mPosition.y + radius, mPosition.z + radius,   1.0f, 1.0f, // + + +
+        mPosition.x + radius, mPosition.y - radius, mPosition.z + radius,   1.0f, 0.0f, // + - +
+        mPosition.x - radius, mPosition.y - radius, mPosition.z + radius,   0.0f, 0.0f, // - - +
+        mPosition.x - radius, mPosition.y + radius, mPosition.z + radius,   0.0f, 1.0f, // - + +
 
-        mPosition.x - radius, mPosition.y - radius, mPosition.z - radius,   mColor.x, mColor.y, mColor.z,  // - - -; 4
+        // Back
+        mPosition.x + radius, mPosition.y + radius, mPosition.z - radius,   0.0f, 0.0f, // + + -
+        mPosition.x + radius, mPosition.y - radius, mPosition.z - radius,   0.0f, 1.0f, // + - -
+        mPosition.x - radius, mPosition.y - radius, mPosition.z - radius,   1.0f, 1.0f, // - - -
+        mPosition.x - radius, mPosition.y + radius, mPosition.z - radius,   1.0f, 0.0f, // - + -
 
-        mPosition.x + radius, mPosition.y - radius, mPosition.z - radius,   mColor.x, mColor.y, mColor.z,    // + - -; 5
-
-        mPosition.x - radius, mPosition.y - radius, mPosition.z + radius,   mColor.x, mColor.y, mColor.z, // - - +; 6
-
-        mPosition.x + radius, mPosition.y - radius, mPosition.z + radius,   mColor.x, mColor.y, mColor.z // + - +; 7
+        // Bottom
+        mPosition.x - radius, mPosition.y - radius, mPosition.z - radius,   1.0f, 1.0f, // - - -
+        mPosition.x - radius, mPosition.y - radius, mPosition.z + radius,   1.0f, 0.0f, // - - +
+        mPosition.x + radius, mPosition.y - radius, mPosition.z + radius,   0.0f, 0.0f, // + - +
+        mPosition.x + radius, mPosition.y - radius, mPosition.z - radius,   0.0f, 1.0f, // + - -
     };
+
+    glBindTexture(GL_TEXTURE_2D, *mTexId);    
+    glActiveTexture(GL_TEXTURE0);
 
     glGenVertexArrays(1, &vao);
     glBindVertexArray(vao);
@@ -96,21 +115,41 @@ void Cube::Render() {
                  vertexData.data(),
                  GL_STATIC_DRAW);
 
-    // const std::vector<GLuint> indexBufferData{0, 4, 2, 1, 0, 2,
-    //                                           7, 3, 2, 1, 7, 2,
-    //                                           0, 5, 7, 1, 0, 7,
-    //                                           5, 6, 3, 7, 5, 3,
-    //                                           4, 6, 3, 2, 4, 3,
-    //                                           5, 6, 4, 0, 5, 4};
+    // const std::vector<GLuint> indexBufferData {
+    //     0, 1, 2,    1, 3, 2,    // top
+    //     2, 0, 6,    0, 4, 6,    // left
+    //     3, 1, 7,    1, 5, 7,    // right
+    //     4, 5, 6,    5, 7, 6,    // bottom
+    //     0, 1, 4,    1, 5, 4,    // front
+    //     2, 3, 6,    3, 7, 6     // back
+    // };
 
     const std::vector<GLuint> indexBufferData{
-        0, 1, 2,    1, 3, 2,    // top
-        2, 0, 6,    0, 4, 6,    // left
-        3, 1, 7,    1, 5, 7,    // right
-        4, 5, 6,    5, 7, 6,    // bottom
-        0, 1, 4,    1, 5, 4,    // front
-        2, 3, 6,    3, 7, 6     // back
+        // Top
+        0, 1, 2,
+        0, 2, 3, 
+
+        // Left
+        5, 4, 6, 
+        6, 4, 7, 
+
+        // Right
+        8, 9, 10, 
+        8, 10, 11,    
+
+        // Front
+        13, 12, 14, 
+        15, 14, 12,
+
+        // Back
+        16, 17, 18,
+        16, 18, 19,  
+
+        // Bottom
+        21, 20, 22, 
+        22, 20, 23
     };
+
 
     // Set up Index Buffer Object
     glGenBuffers(1, &ibo);
@@ -125,15 +164,15 @@ void Cube::Render() {
                           3, // x, y, z
                           GL_FLOAT,
                           GL_FALSE,
-                          sizeof(GL_FLOAT) * 6,
+                          sizeof(GL_FLOAT) * 5,
                           (void *)0);
 
     glEnableVertexAttribArray(1);
     glVertexAttribPointer(1,
-                          3, // r, g, b
+                          2, // u, v
                           GL_FLOAT,
                           GL_FALSE,
-                          sizeof(GL_FLOAT) * 6,
+                          sizeof(GL_FLOAT) * 5,
                           (GLvoid *)(sizeof(GL_FLOAT) * 3));
 
     glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);

@@ -18,6 +18,8 @@
 Cube cube1;
 Cube cube2;
 
+GLuint textureId;
+
 struct Camera
 {
     glm::vec3 lookAt;
@@ -367,8 +369,12 @@ void Input()
 
 void PreDraw()
 {
-    glDisable(GL_DEPTH_TEST);
-    glDisable(GL_CULL_FACE);
+    // glDisable(GL_DEPTH_TEST);
+    // glDisable(GL_CULL_FACE);
+
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_CULL_FACE); 
+    glCullFace(GL_BACK);
 
     glViewport(0, 0, gScreenWidth, gScreenHeight);
     glClearColor(1.f, 1.f, 0.1f, 1.f);
@@ -393,20 +399,20 @@ void PreDraw()
         exit(EXIT_FAILURE);
     }
 
-    glm::mat4 perspective = glm::perspective(glm::radians(45.0f),
+    glm::mat4 projection = glm::perspective(glm::radians(45.0f),
                                              (float)gScreenWidth / (float)gScreenHeight,
-                                             0.1f,
-                                             10.0f);
+                                             1.0f,
+                                             100.0f);
 
     GLint u_ProjectionLocation = glGetUniformLocation(gGraphicsPipelineShaderProgram, "u_Projection");
 
     if (u_ProjectionLocation >= 0)
     {
-        glUniformMatrix4fv(u_ProjectionLocation, 1, GL_FALSE, &perspective[0][0]);
+        glUniformMatrix4fv(u_ProjectionLocation, 1, GL_FALSE, &projection[0][0]);
     }
     else
     {
-        std::cout << "Could not find u_Perspective, maybe a mispelling?\n";
+        std::cout << "Could not find u_Projection, maybe a mispelling?\n";
         exit(EXIT_FAILURE);
     }
 
@@ -525,7 +531,7 @@ void Draw()
     cube2.setPosition(glm::vec3(-1.f, 0.f, -1.f));
     cube2.setColor(glm::vec3(0.f, 0.f, 1.f));
     cube1.Render();
-    cube2.Render();
+    // cube2.Render();
     // glBindVertexArray(gVertexArrayObject);
     // GLCheck(glBindBuffer(GL_ARRAY_BUFFER, gVertexBufferObject);)
     //     // glDrawArrays(GL_TRIANGLES, 0, 6);
@@ -570,6 +576,30 @@ int main(int argc, char *argv[])
 
     // Create graphics pipeline with at least vertex and fragment shader
     CreateGraphicsPipeline();
+
+    
+    // temp code of loading texture
+    SDL_Surface *surface = IMG_Load("./assets/texture/dirt.png");
+
+    if (!surface)
+    {
+        std::cout << "ERROR LOADING IMAGE" << std::endl;
+        // handle error
+    }
+
+    glGenTextures(1, &textureId);
+    glBindTexture(GL_TEXTURE_2D, textureId);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, surface->w, surface->h, 0, GL_RGBA, GL_UNSIGNED_BYTE, surface->pixels);
+
+    SDL_FreeSurface(surface);
+
+    cube1.setTexture(&textureId);
+    // cube2.setTexture(&textureId);
 
     MainLoop();
 
