@@ -40,6 +40,8 @@ void TextureManager::LoadTexture(const std::string &textureName, const std::stri
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, surface->w, surface->h, 0, GL_RGBA, GL_UNSIGNED_BYTE, surface->pixels);
 
     SDL_FreeSurface(surface);
+
+    std::cout << "Successfully loaded " << textureName << std::endl;
 }
 
 GLuint* TextureManager::GetTexture(const std::string &textureName)

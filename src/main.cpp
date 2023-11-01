@@ -17,20 +17,21 @@
 #include "GameObject.hpp"
 #include "Cube.hpp"
 #include "TextureManager.hpp"
+#include "Engine.hpp"
 
 Cube cube1;
 Cube cube2;
 
 GLuint textureId;
 
-struct Camera
-{
-    glm::vec3 lookAt;
-    glm::vec3 upVector;
-    glm::vec3 position;
-    glm::vec3 direction;
-    glm::vec3 angles;
-};
+// struct Camera
+// {
+//     glm::vec3 lookAt;
+//     glm::vec3 upVector;
+//     glm::vec3 position;
+//     glm::vec3 direction;
+//     glm::vec3 angles;
+// };
 
 Camera camera;
 
@@ -90,9 +91,9 @@ double mouseX = gScreenWidth / 2, mouseY = gScreenHeight / 2;
 
 void recomputeOrientation()
 {
-    camDir = glm::normalize(
-        glm::vec3(sin(cameraPhi) * sin(cameraTheta), cos(cameraPhi), -sin(cameraPhi) * cos(cameraTheta)));
-    camDir *= radius;
+    // camDir = glm::normalize(
+    //     glm::vec3(sin(cameraPhi) * sin(cameraTheta), cos(cameraPhi), -sin(cameraPhi) * cos(cameraTheta)));
+    // camDir *= radius;
 
     camera.direction = glm::normalize(
         glm::vec3(sin(camera.angles.y) * sin(camera.angles.x), cos(camera.angles.y), -sin(camera.angles.y) * cos(camera.angles.x)));
@@ -279,7 +280,7 @@ void InitializeGraphicsProgram()
     camera.position = glm::vec3(0.f, 0.f, -1.f);
     camera.angles = glm::vec3(-M_PI / 3.0f, M_PI / 2.8f, 20.0f);
 
-    recomputeOrientation();
+    // recomputeOrientation();
 
     SDL_SetRelativeMouseMode(SDL_TRUE);
 }
@@ -298,15 +299,15 @@ void Input()
 
         if (e.type == SDL_MOUSEMOTION)
         {
-            cameraPhi = std::max(std::min(static_cast<float>(cameraPhi + e.motion.yrel * 0.005), 180.0f), 0.0f);
+            // cameraPhi = std::max(std::min(static_cast<float>(cameraPhi + e.motion.yrel * 0.005), 180.0f), 0.0f);
             // std::cout << "x: " << e.motion.xrel << " y: " << e.motion.yrel << std::endl;
             // if (cameraPhi + e.motion.xrel * 0.005 > 0 && cameraPhi + e.motion.yrel * 0.005 < M_PI)
             // {
             //     cameraPhi = cameraPhi + e.motion.yrel * 0.005;
             // }
-            cameraTheta = cameraTheta + e.motion.xrel * 0.005;
+            // cameraTheta = cameraTheta + e.motion.xrel * 0.005;
 
-            camera.angles.y = std::max(std::min(static_cast<float>(cameraPhi + e.motion.yrel * 0.005), 180.0f), 0.0f);
+            camera.angles.y = std::max(std::min(static_cast<float>(camera.angles.y + e.motion.yrel * 0.005), 180.0f), 0.0f);
             camera.angles.x = camera.angles.x + e.motion.xrel * 0.005;
 
             recomputeOrientation();
@@ -564,35 +565,39 @@ void CleanUp()
 int main(int argc, char *argv[])
 {
 
-    TextureManager textureManager;
+    // TextureManager textureManager;
 
-    // Set up graphics program
-    InitializeGraphicsProgram();
+    // // Set up graphics program
+    // InitializeGraphicsProgram();
 
-    // Setup geometry
-    // VertexSpecification();
-    // DrawCube(glm::vec3(0.f, 0.f, 0.f), glm::vec3(0.f, 1.f, 1.f), 1.0f);
+    // // Create graphics pipeline with at least vertex and fragment shader
+    // CreateGraphicsPipeline();
 
-    // Create graphics pipeline with at least vertex and fragment shader
-    CreateGraphicsPipeline();
-
-    // Enable depth test
-    glEnable(GL_DEPTH_TEST);
-    glEnable(GL_CULL_FACE); 
-    glCullFace(GL_BACK);
-    glViewport(0, 0, gScreenWidth, gScreenHeight);
+    // // Enable depth test
+    // glEnable(GL_DEPTH_TEST);
+    // glEnable(GL_CULL_FACE); 
+    // glCullFace(GL_BACK);
+    // glViewport(0, 0, gScreenWidth, gScreenHeight);
   
-    textureManager.LoadTexture("Dirt", "./assets/texture/dirt.png");
+    // textureManager.LoadTexture("Dirt", "./assets/texture/dirt.png");
 
-    cube1.setTexture(textureManager.GetTexture("Dirt"));
-    cube2.setTexture(textureManager.GetTexture("Dirt"));
+    // cube1.setTexture(textureManager.GetTexture("Dirt"));
+    // cube2.setTexture(textureManager.GetTexture("Dirt"));
 
-    cube1.setPosition(glm::vec3(0.f, 0.f, 0.f));
-    cube2.setPosition(glm::vec3(-1.f, 0.f, -1.f));
+    // cube1.setPosition(glm::vec3(0.f, 0.f, 0.f));
+    // cube2.setPosition(glm::vec3(-1.f, 0.f, -1.f));
 
-    MainLoop();
+    // MainLoop();
 
-    CleanUp();
+    // CleanUp();
+
+    Engine engine(480, 640);
+
+    engine.SetupObject();
+
+    engine.MainLoop();
+
+    engine.Shutdown();
 
     return 0;
 }

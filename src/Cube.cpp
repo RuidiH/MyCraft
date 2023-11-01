@@ -8,8 +8,7 @@ Cube::Cube() {
     mPosition = glm::vec3(0.0f, 0.0f, 0.0f);
     mColor = glm::vec3(1.0f, 0.5f, 0.2f);
     mSize = 1.0f;
-
-    
+ 
 }
 
 // Cube::~Cube() {
@@ -26,13 +25,8 @@ void Cube::Update() {
 
 void Cube::Render() {
 
-    // SDL_Surface *surface = IMG_Load("./assets/texture/dirt.png");
-
-    // if (!surface)
-    // {
-    //     std::cout << "ERROR LOADING IMAGE" << std::endl;
-    //     // handle error
-    // }
+    // std::cout << "Rendering Cube" << std::endl;
+    // std::cout << mPosition.x << ", " << mPosition.y << ", " << mPosition.z << std::endl;
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, 0);
@@ -180,6 +174,8 @@ void Cube::Render() {
     glBindVertexArray(0);
     glDisableVertexAttribArray(0);
     glDisableVertexAttribArray(1);
+
+    // std::cout << "End of rendering cube" << std::endl;
 }
 
 void Cube::setPosition(glm::vec3 position) {

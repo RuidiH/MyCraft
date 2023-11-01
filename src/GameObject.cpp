@@ -1,18 +1,43 @@
 #include "GameObject.hpp"
 
-GameObject::GameObject(){
+GameObject::GameObject()
+{
 }
 
-GameObject::~GameObject(){
+GameObject::~GameObject()
+{
+    for (auto component : mComponents)
+    {
+        delete component;
+    }
+    mComponents.clear();
 }
-
 
 // TODO: complete game loop functions
-void GameObject::Input(){
+void GameObject::Input()
+{
 }
 
-void GameObject::Update(){
+void GameObject::Update()
+{
+    for (auto component : mComponents)
+    {
+        component->Update();
+    }
 }
 
-void GameObject::Render(){
+void GameObject::Render()
+{
+    for (auto component : mComponents)
+    {
+        component->Render();
+    }
+}
+
+void GameObject::AddComponent(Component *component)
+{
+    if (component != nullptr)
+    {
+        mComponents.push_back(component);
+    }
 }
