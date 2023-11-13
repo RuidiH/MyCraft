@@ -108,7 +108,7 @@ void Engine::PreDraw()
 {
 
     glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
-    glClearColor(1.f, 1.f, 0.1f, 1.f);
+    glClearColor(0.1f, 0.1f, 0.1f, 1.f);
 
     glUseProgram(gGraphicsPipelineShaderProgram);
 
@@ -160,6 +160,57 @@ void Engine::PreDraw()
         std::cout << "Could not find u_ViewLocation, maybe a mispelling?\n";
         exit(EXIT_FAILURE);
     }
+
+    // set lightings
+    GLuint u_LightPosition = glGetUniformLocation(gGraphicsPipelineShaderProgram, "lightPos");
+    if (u_LightPosition >= 0)
+    {
+        glUniform3f(u_LightPosition, 0.0f, 0.0f, 0.0f);
+    }
+    else
+    {
+        std::cout << "Could not find u_LightPosition, maybe a mispelling?\n";
+        exit(EXIT_FAILURE);
+    }
+
+    GLuint u_LightColor = glGetUniformLocation(gGraphicsPipelineShaderProgram, "lightColor");
+    if (u_LightColor >= 0)
+    {
+        glUniform3f(u_LightColor, 1.0f, 1.0f, 1.0f);
+    }
+    else
+    {
+        std::cout << "Could not find u_LightColor, maybe a mispelling?\n";
+        exit(EXIT_FAILURE);
+    }
+
+    GLuint u_ViewPosition = glGetUniformLocation(gGraphicsPipelineShaderProgram, "viewPos");
+    if (u_ViewPosition >= 0)
+    {
+        glUniform3f(u_ViewPosition, mCamera.position.x, mCamera.position.y, mCamera.position.z);
+    }
+    else
+    {
+        std::cout << "Could not find u_ViewPosition, maybe a mispelling?\n";
+        exit(EXIT_FAILURE);
+    }
+
+    // GLuint u_ObjectColorLocation = glGetUniformLocation(gGraphicsPipelineShaderProgram, "objectColor");
+    // if (u_ObjectColorLocation >= 0)
+    // {
+    //     glUniform3f(u_ObjectColorLocation, 1.0f, 1.0f, 1.0f);
+    // }
+    // else
+    // {
+    //     std::cout << "Could not find u_ObjectColor, maybe a mispelling?\n";
+    //     exit(EXIT_FAILURE);
+    // }
+
+    // glUniform3f(u_ObjectColorLocation, 1.0f, 1.0f, 1.0f);
+
+    glUniform3f(u_LightColor, 1.0f, 1.0f, 1.0f);
+    glUniform3f(u_LightPosition, 0.f, 2.f, 0.f);
+    glUniform3f(u_ViewPosition, mCamera.position.x, mCamera.position.y, mCamera.position.z);
 }
 
 void Engine::Shutdown()
