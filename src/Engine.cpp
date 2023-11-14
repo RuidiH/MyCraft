@@ -16,17 +16,52 @@ Engine::~Engine()
 
 void Engine::SetupObject()
 {
-    mTextureManager.LoadTexture("Dirt", "./assets/texture/dirt.png");
+    mTextureManager.LoadTexture("dirt", "./assets/texture/dirt.png");
+    mTextureManager.LoadTexture("grass_carried", "./assets/texture/grass_carried.png");
+    mTextureManager.LoadTexture("grass_side_carried", "./assets/texture/grass_side_carried.png");
+    mTextureManager.LoadTexture("grass_side_snowed", "./assets/texture/grass_side_snowed.png");
+    mTextureManager.LoadTexture("snow", "./assets/texture/snow.png");
 
-    for (int i = -3; i < 4; i++)
+    GameObject *grass = new GameObject();
+    ShapeComponent *shape1 = new ShapeComponent();
+    Cube *cube1 = new Cube(glm::vec3(-1.f, 1.0f, 0.f), 1.0f);
+    cube1->setFaceTexture("top", mTextureManager.GetTexture("grass_carried"));
+    cube1->setFaceTexture("bottom", mTextureManager.GetTexture("dirt"));
+    cube1->setFaceTexture("left", mTextureManager.GetTexture("grass_side_carried"));
+    cube1->setFaceTexture("right", mTextureManager.GetTexture("grass_side_carried"));
+    cube1->setFaceTexture("front", mTextureManager.GetTexture("grass_side_carried"));
+    cube1->setFaceTexture("back", mTextureManager.GetTexture("grass_side_carried"));
+    shape1->setCube(cube1);
+    grass->AddComponent(shape1);
+    mGameObjects.push_back(grass);
+
+    GameObject *snow = new GameObject();
+    ShapeComponent *shape2 = new ShapeComponent();
+    Cube *cube2 = new Cube(glm::vec3(1.f, 1.0f, 0.f), 1.0f);
+    cube2->setFaceTexture("top", mTextureManager.GetTexture("snow"));
+    cube2->setFaceTexture("bottom", mTextureManager.GetTexture("dirt"));
+    cube2->setFaceTexture("left", mTextureManager.GetTexture("grass_side_snowed"));
+    cube2->setFaceTexture("right", mTextureManager.GetTexture("grass_side_snowed"));
+    cube2->setFaceTexture("front", mTextureManager.GetTexture("grass_side_snowed"));
+    cube2->setFaceTexture("back", mTextureManager.GetTexture("grass_side_snowed"));
+    shape2->setCube(cube2);
+    snow->AddComponent(shape2);
+    mGameObjects.push_back(snow);
+
+    for (int i = -1; i < 2; i++)
     {
-        for (int j = -3; j < 4; j++)
+        for (int j = -1; j < 2; j++)
         {
             GameObject *object = new GameObject();
             ShapeComponent *shape = new ShapeComponent();
-            Cube *cube = new Cube();
-            cube->setTexture(mTextureManager.GetTexture("Dirt"));
-            cube->setPosition(glm::vec3(i, 0.0f, j));
+            Cube *cube = new Cube(glm::vec3(i, 0.0f, j), 1.0f);
+            // cube->setPosition(glm::vec3(i, 0.0f, j));
+            cube->setFaceTexture("top", mTextureManager.GetTexture("dirt"));
+            cube->setFaceTexture("bottom", mTextureManager.GetTexture("dirt"));
+            cube->setFaceTexture("left", mTextureManager.GetTexture("dirt"));
+            cube->setFaceTexture("right", mTextureManager.GetTexture("dirt"));
+            cube->setFaceTexture("front", mTextureManager.GetTexture("dirt"));
+            cube->setFaceTexture("back", mTextureManager.GetTexture("dirt")); 
             shape->setCube(cube);
             object->AddComponent(shape);
             mGameObjects.push_back(object);
@@ -209,7 +244,7 @@ void Engine::PreDraw()
     // glUniform3f(u_ObjectColorLocation, 1.0f, 1.0f, 1.0f);
 
     glUniform3f(u_LightColor, 1.0f, 1.0f, 1.0f);
-    glUniform3f(u_LightPosition, 0.f, 2.f, 0.f);
+    glUniform3f(u_LightPosition, mCamera.position.x, mCamera.position.y, mCamera.position.z);
     glUniform3f(u_ViewPosition, mCamera.position.x, mCamera.position.y, mCamera.position.z);
 }
 
@@ -283,8 +318,9 @@ void Engine::InitializeGraphicsProgram()
 
     GetOpenGLVersionInfo();
 
-    mCamera.position = glm::vec3(3.f, 1.f, 3.f);
+    mCamera.position = glm::vec3(3.f, 3.f, 3.f);
     mCamera.angles = glm::vec3(-M_PI / 3.0f, M_PI / 2.8f, 20.0f);
+    // mCamera.direction = glm::vec3(-1.f, -1.f, -1.f);
 
     // recomputeOrientation();
 

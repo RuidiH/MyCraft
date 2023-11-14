@@ -6,8 +6,15 @@
 
 Cube::Cube() {
     mPosition = glm::vec3(0.0f, 0.0f, 0.0f);
-    mColor = glm::vec3(1.0f, 0.5f, 0.2f);
     mSize = 1.0f;
+
+}
+
+Cube::Cube(glm::vec3 position, float size) {
+    mPosition = position;
+    mSize = size;
+
+    setVertexData();
 }
 
 // Cube::~Cube() {
@@ -24,178 +31,136 @@ void Cube::Update() {
 
 void Cube::Render() {
 
-    // std::cout << "Rendering Cube" << std::endl;
-    // std::cout << mPosition.x << ", " << mPosition.y << ", " << mPosition.z << std::endl;
+    for (const auto &face : mVertexDataMap) {
+        GLuint vao;
 
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, 0);
+        GLuint vbo;
 
-    GLuint vao;
+        GLuint ibo;
 
-    GLuint vbo;
+        GLuint * currentTexID = mTextureIdMap[face.first];
 
-    GLuint ibo;
+        glBindTexture(GL_TEXTURE_2D, *currentTexID);
+        glActiveTexture(GL_TEXTURE0);
 
-    float radius = mSize/2.0;
+        glGenVertexArrays(1, &vao);
+        glBindVertexArray(vao);
 
-    // const std::vector<float> vertexData{
-    //     /*                      coordinates                            */   /*          colors         */               
-    //     mPosition.x - radius, mPosition.y + radius, mPosition.z - radius,   mColor.x, mColor.y, mColor.z,     // - + -; 0
+        glGenBuffers(1, &vbo);
+        glBindBuffer(GL_ARRAY_BUFFER, vbo);
+        glBufferData(GL_ARRAY_BUFFER,
+                     face.second.size() * sizeof(GL_FLOAT),
+                     face.second.data(),
+                     GL_STATIC_DRAW);
 
-    //     mPosition.x + radius, mPosition.y + radius, mPosition.z - radius,   mColor.x, mColor.y, mColor.z,    // + + -; 1
+        // Set up Index Buffer Object
+        std::vector<GLuint> indexBuffer{
+            0, 1, 2,
+            0, 2, 3
+        };
 
-    //     mPosition.x - radius, mPosition.y + radius, mPosition.z + radius,   mColor.x, mColor.y, mColor.z, // - + +; 2
+        glGenBuffers(1, &ibo);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER,   
+                     indexBuffer.size() * sizeof(GLuint),
+                     indexBuffer.data(),
+                     GL_STATIC_DRAW);
 
-    //     mPosition.x + radius, mPosition.y + radius, mPosition.z + radius,   mColor.x, mColor.y, mColor.z, // + + +; 3
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(0,
+                              3, // x, y, z
+                              GL_FLOAT,
+                              GL_FALSE,
+                              sizeof(GL_FLOAT) * 8,
+                              (void *)0);
 
-    //     mPosition.x - radius, mPosition.y - radius, mPosition.z - radius,   mColor.x, mColor.y, mColor.z,  // - - -; 4
+        glEnableVertexAttribArray(1);
+        glVertexAttribPointer(1,
+                              2, // u, v
+                              GL_FLOAT,
+                              GL_FALSE,
+                              sizeof(GL_FLOAT) * 8,
+                              (GLvoid *)(sizeof(GL_FLOAT) * 3));
 
-    //     mPosition.x + radius, mPosition.y - radius, mPosition.z - radius,   mColor.x, mColor.y, mColor.z,    // + - -; 5
+        glEnableVertexAttribArray(2);
+        glVertexAttribPointer(2,
+                              3, // normal
+                              GL_FLOAT,
+                              GL_FALSE,
+                              sizeof(GL_FLOAT) * 8,
+                              (GLvoid *)(sizeof(GL_FLOAT) * 5));
 
-    //     mPosition.x - radius, mPosition.y - radius, mPosition.z + radius,   mColor.x, mColor.y, mColor.z, // - - +; 6
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
-    //     mPosition.x + radius, mPosition.y - radius, mPosition.z + radius,   mColor.x, mColor.y, mColor.z // + - +; 7
-    // };
-
-    const std::vector<float> vertexData{
-        // Top
-        mPosition.x - radius, mPosition.y + radius, mPosition.z - radius,   0.0f, 0.0f,     0.f, 1.f, 0.f,// - + -
-        mPosition.x - radius, mPosition.y + radius, mPosition.z + radius,   0.0f, 1.0f,     0.f, 1.f, 0.f,// - + +
-        mPosition.x + radius, mPosition.y + radius, mPosition.z + radius,   1.0f, 1.0f,     0.f, 1.f, 0.f,// + + +
-        mPosition.x + radius, mPosition.y + radius, mPosition.z - radius,   1.0f, 0.0f,     0.f, 1.f, 0.f,// + + -
-
-        // Left
-        mPosition.x - radius, mPosition.y + radius, mPosition.z + radius,   0.0f, 0.0f,     -1.f, 0.f, 0.f,// - + +
-        mPosition.x - radius, mPosition.y - radius, mPosition.z + radius,   1.0f, 0.0f,     -1.f, 0.f, 0.f,// - - +
-        mPosition.x - radius, mPosition.y - radius, mPosition.z - radius,   1.0f, 1.0f,     -1.f, 0.f, 0.f,// - - -
-        mPosition.x - radius, mPosition.y + radius, mPosition.z - radius,   0.0f, 1.0f,     -1.f, 0.f, 0.f,// - + -
-
-        // Right
-        mPosition.x + radius, mPosition.y + radius, mPosition.z + radius,   1.0f, 1.0f,     1.f, 0.f, 0.f,// + + +
-        mPosition.x + radius, mPosition.y - radius, mPosition.z + radius,   0.0f, 1.0f,     1.f, 0.f, 0.f,// + - +
-        mPosition.x + radius, mPosition.y - radius, mPosition.z - radius,   0.0f, 0.0f,     1.f, 0.f, 0.f,// + - -
-        mPosition.x + radius, mPosition.y + radius, mPosition.z - radius,   1.0f, 0.0f,     1.f, 0.f, 0.f,// + + -
-
-        // Front
-        mPosition.x + radius, mPosition.y + radius, mPosition.z + radius,   1.0f, 1.0f,     0.f, 0.f, 1.f,// + + +
-        mPosition.x + radius, mPosition.y - radius, mPosition.z + radius,   1.0f, 0.0f,     0.f, 0.f, 1.f,// + - +
-        mPosition.x - radius, mPosition.y - radius, mPosition.z + radius,   0.0f, 0.0f,     0.f, 0.f, 1.f,// - - +
-        mPosition.x - radius, mPosition.y + radius, mPosition.z + radius,   0.0f, 1.0f,     0.f, 0.f, 1.f,// - + +
-
-        // Back
-        mPosition.x + radius, mPosition.y + radius, mPosition.z - radius,   0.0f, 0.0f,     0.f, 0.f, -1.f,// + + -
-        mPosition.x + radius, mPosition.y - radius, mPosition.z - radius,   0.0f, 1.0f,     0.f, 0.f, -1.f,// + - -
-        mPosition.x - radius, mPosition.y - radius, mPosition.z - radius,   1.0f, 1.0f,     0.f, 0.f, -1.f,// - - -
-        mPosition.x - radius, mPosition.y + radius, mPosition.z - radius,   1.0f, 0.0f,     0.f, 0.f, -1.f,// - + -
-
-        // Bottom
-        mPosition.x - radius, mPosition.y - radius, mPosition.z - radius,   1.0f, 1.0f,     0.f, -1.f, 0.f,// - - -
-        mPosition.x - radius, mPosition.y - radius, mPosition.z + radius,   1.0f, 0.0f,     0.f, -1.f, 0.f,// - - +
-        mPosition.x + radius, mPosition.y - radius, mPosition.z + radius,   0.0f, 0.0f,     0.f, -1.f, 0.f,// + - +
-        mPosition.x + radius, mPosition.y - radius, mPosition.z - radius,   0.0f, 1.0f,     0.f, -1.f, 0.f// + - -
-    };
-
-    glBindTexture(GL_TEXTURE_2D, *mTexId);    
-    glActiveTexture(GL_TEXTURE0);
-
-    glGenVertexArrays(1, &vao);
-    glBindVertexArray(vao);
-
-    glGenBuffers(1, &vbo);
-    glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    glBufferData(GL_ARRAY_BUFFER,
-                 vertexData.size() * sizeof(GL_FLOAT),
-                 vertexData.data(),
-                 GL_STATIC_DRAW);
-
-    // const std::vector<GLuint> indexBufferData {
-    //     0, 1, 2,    1, 3, 2,    // top
-    //     2, 0, 6,    0, 4, 6,    // left
-    //     3, 1, 7,    1, 5, 7,    // right
-    //     4, 5, 6,    5, 7, 6,    // bottom
-    //     0, 1, 4,    1, 5, 4,    // front
-    //     2, 3, 6,    3, 7, 6     // back
-    // };
-
-    const std::vector<GLuint> indexBufferData{
-        // Top
-        0, 1, 2,
-        0, 2, 3, 
-
-        // Left
-        5, 4, 6, 
-        6, 4, 7, 
-
-        // Right
-        8, 9, 10, 
-        8, 10, 11,    
-
-        // Front
-        13, 12, 14, 
-        15, 14, 12,
-
-        // Back
-        16, 17, 18,
-        16, 18, 19,  
-
-        // Bottom
-        21, 20, 22, 
-        22, 20, 23
-    };
-
-
-    // Set up Index Buffer Object
-    glGenBuffers(1, &ibo);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER,   
-                 indexBufferData.size() * sizeof(GLuint),
-                 indexBufferData.data(),
-                 GL_STATIC_DRAW);
-
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0,
-                          3, // x, y, z
-                          GL_FLOAT,
-                          GL_FALSE,
-                          sizeof(GL_FLOAT) * 8,
-                          (void *)0);
-
-    glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1,
-                          2, // u, v
-                          GL_FLOAT,
-                          GL_FALSE,
-                          sizeof(GL_FLOAT) * 8,
-                          (GLvoid *)(sizeof(GL_FLOAT) * 3));
-
-    glEnableVertexAttribArray(2);
-    glVertexAttribPointer(2,
-                          3, // normal
-                          GL_FLOAT,
-                          GL_FALSE,
-                          sizeof(GL_FLOAT) * 8,
-                          (GLvoid *)(sizeof(GL_FLOAT) * 5));
-
-    glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
-
-    glBindVertexArray(0);
-    glDisableVertexAttribArray(0);
-    glDisableVertexAttribArray(1);
-    glDisableVertexAttribArray(2);
-
-    // std::cout << "End of rendering cube" << std::endl;
+        glBindVertexArray(0);
+        glDisableVertexAttribArray(0);
+        glDisableVertexAttribArray(1);
+        glDisableVertexAttribArray(2);
+    }
 }
 
 void Cube::setPosition(glm::vec3 position) {
     mPosition = position;
 }
 
-void Cube::setColor(glm::vec3 color) {
-    mColor = color;
-}
+void Cube::setVertexData()
+{
+    float radius = mSize/2.0;
+    
+    // initialize vertex data map
+    const std::vector<float> vTop{
+        // Top
+        mPosition.x - radius, mPosition.y + radius, mPosition.z - radius,   0.0f, 0.0f,     0.f, 1.f, 0.f,// - + -
+        mPosition.x - radius, mPosition.y + radius, mPosition.z + radius,   0.0f, 1.0f,     0.f, 1.f, 0.f,// - + +
+        mPosition.x + radius, mPosition.y + radius, mPosition.z + radius,   1.0f, 1.0f,     0.f, 1.f, 0.f,// + + +
+        mPosition.x + radius, mPosition.y + radius, mPosition.z - radius,   1.0f, 0.0f,     0.f, 1.f, 0.f// + + -
+    };
 
-// bool Cube::operator==(const Cube &other) const {
-//     return (mPosition == other.mPosition &&
-//             mColor == other.mColor &&
-//             mSize == other.mSize);
-// }
+    std::vector<float> vBottom{ 
+        // Bottom
+        mPosition.x - radius, mPosition.y - radius, mPosition.z + radius,   0.0f, 1.0f,     0.f, -1.f, 0.f,// - - +
+        mPosition.x - radius, mPosition.y - radius, mPosition.z - radius,   0.0f, 0.0f,     0.f, -1.f, 0.f,// - - -
+        mPosition.x + radius, mPosition.y - radius, mPosition.z - radius,   1.0f, 0.0f,     0.f, -1.f, 0.f,// + - -
+        mPosition.x + radius, mPosition.y - radius, mPosition.z + radius,   1.0f, 1.0f,     0.f, -1.f, 0.f// + - +
+    };
+
+
+    std::vector<float> vLeft{ 
+        // Left
+        mPosition.x - radius, mPosition.y + radius, mPosition.z - radius,   0.0f, 0.0f,     -1.f, 0.f, 0.f,// - + -
+        mPosition.x - radius, mPosition.y - radius, mPosition.z - radius,   0.0f, 1.0f,     -1.f, 0.f, 0.f,// - - -
+        mPosition.x - radius, mPosition.y - radius, mPosition.z + radius,   1.0f, 1.0f,     -1.f, 0.f, 0.f,// - - +
+        mPosition.x - radius, mPosition.y + radius, mPosition.z + radius,   1.0f, 0.0f,     -1.f, 0.f, 0.f// - + +
+    };
+
+    std::vector<float> vRight{ 
+        // Right
+        mPosition.x + radius, mPosition.y + radius, mPosition.z + radius,   0.0f, 0.0f,     1.f, 0.f, 0.f,// + + +
+        mPosition.x + radius, mPosition.y - radius, mPosition.z + radius,   0.0f, 1.0f,     1.f, 0.f, 0.f,// + - +
+        mPosition.x + radius, mPosition.y - radius, mPosition.z - radius,   1.0f, 1.0f,     1.f, 0.f, 0.f,// + - -
+        mPosition.x + radius, mPosition.y + radius, mPosition.z - radius,   1.0f, 0.0f,     1.f, 0.f, 0.f// + + -
+    };
+
+    std::vector<float> vFront{ 
+        // Front
+        mPosition.x - radius, mPosition.y + radius, mPosition.z + radius,   0.0f, 0.0f,     0.f, 0.f, 1.f,// - + +
+        mPosition.x - radius, mPosition.y - radius, mPosition.z + radius,   0.0f, 1.0f,     0.f, 0.f, 1.f,// - - +
+        mPosition.x + radius, mPosition.y - radius, mPosition.z + radius,   1.0f, 1.0f,     0.f, 0.f, 1.f,// + - +
+        mPosition.x + radius, mPosition.y + radius, mPosition.z + radius,   1.0f, 0.0f,     0.f, 0.f, 1.f// + + +
+    };
+
+    std::vector<float> vBack{
+        // Back
+        mPosition.x - radius, mPosition.y - radius, mPosition.z - radius,   1.0f, 1.0f,     0.f, 0.f, -1.f,// - - -
+        mPosition.x - radius, mPosition.y + radius, mPosition.z - radius,   1.0f, 0.0f,     0.f, 0.f, -1.f,// - + -
+        mPosition.x + radius, mPosition.y + radius, mPosition.z - radius,   0.0f, 0.0f,     0.f, 0.f, -1.f,// + + -
+        mPosition.x + radius, mPosition.y - radius, mPosition.z - radius,   0.0f, 1.0f,     0.f, 0.f, -1.f// + - -
+    };
+
+    mVertexDataMap["top"] = vTop;
+    mVertexDataMap["bottom"] = vBottom;
+    mVertexDataMap["left"] = vLeft;
+    mVertexDataMap["right"] = vRight;
+    mVertexDataMap["front"] = vFront;
+    mVertexDataMap["back"] = vBack;
+}
