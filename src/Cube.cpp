@@ -4,13 +4,14 @@
 #include <iostream>
 #include <SDL2/SDL_image.h>
 
-Cube::Cube() {
+Cube::Cube()
+{
     mPosition = glm::vec3(0.0f, 0.0f, 0.0f);
     mSize = 1.0f;
-
 }
 
-Cube::Cube(glm::vec3 position, float size) {
+Cube::Cube(glm::vec3 position, float size)
+{
     mPosition = position;
     mSize = size;
 
@@ -21,27 +22,29 @@ Cube::Cube(glm::vec3 position, float size) {
 
 // }
 
-void Cube::Input() {
-
+void Cube::Input()
+{
 }
 
-void Cube::Update() {
-
+void Cube::Update()
+{
 }
 
-void Cube::Render() {
+void Cube::Render()
+{
 
-    for (const auto &face : mVertexDataMap) {
+    for (const auto &face : mVertexDataMap)
+    {
         GLuint vao;
 
         GLuint vbo;
 
         GLuint ibo;
 
-        GLuint * currentTexID = mTextureIdMap[face.first];
+        GLuint *currentTexID = mTextureIdMap[face.first];
 
-        glBindTexture(GL_TEXTURE_2D, *currentTexID);
         glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, *currentTexID);
 
         glGenVertexArrays(1, &vao);
         glBindVertexArray(vao);
@@ -56,12 +59,11 @@ void Cube::Render() {
         // Set up Index Buffer Object
         std::vector<GLuint> indexBuffer{
             0, 1, 2,
-            0, 2, 3
-        };
+            0, 2, 3};
 
         glGenBuffers(1, &ibo);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER,   
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER,
                      indexBuffer.size() * sizeof(GLuint),
                      indexBuffer.data(),
                      GL_STATIC_DRAW);
@@ -99,62 +101,62 @@ void Cube::Render() {
     }
 }
 
-void Cube::setPosition(glm::vec3 position) {
+void Cube::setPosition(glm::vec3 position)
+{
     mPosition = position;
 }
 
 void Cube::setVertexData()
 {
-    float radius = mSize/2.0;
-    
+    float radius = mSize / 2.0;
+
     // initialize vertex data map
     const std::vector<float> vTop{
         // Top
-        mPosition.x - radius, mPosition.y + radius, mPosition.z - radius,   0.0f, 0.0f,     0.f, 1.f, 0.f,// - + -
-        mPosition.x - radius, mPosition.y + radius, mPosition.z + radius,   0.0f, 1.0f,     0.f, 1.f, 0.f,// - + +
-        mPosition.x + radius, mPosition.y + radius, mPosition.z + radius,   1.0f, 1.0f,     0.f, 1.f, 0.f,// + + +
-        mPosition.x + radius, mPosition.y + radius, mPosition.z - radius,   1.0f, 0.0f,     0.f, 1.f, 0.f// + + -
+        mPosition.x - radius, mPosition.y + radius, mPosition.z - radius, 0.0f, 0.0f, 0.f, 1.f, 0.f, // - + -
+        mPosition.x - radius, mPosition.y + radius, mPosition.z + radius, 0.0f, 1.0f, 0.f, 1.f, 0.f, // - + +
+        mPosition.x + radius, mPosition.y + radius, mPosition.z + radius, 1.0f, 1.0f, 0.f, 1.f, 0.f, // + + +
+        mPosition.x + radius, mPosition.y + radius, mPosition.z - radius, 1.0f, 0.0f, 0.f, 1.f, 0.f  // + + -
     };
 
-    std::vector<float> vBottom{ 
+    std::vector<float> vBottom{
         // Bottom
-        mPosition.x - radius, mPosition.y - radius, mPosition.z + radius,   0.0f, 1.0f,     0.f, -1.f, 0.f,// - - +
-        mPosition.x - radius, mPosition.y - radius, mPosition.z - radius,   0.0f, 0.0f,     0.f, -1.f, 0.f,// - - -
-        mPosition.x + radius, mPosition.y - radius, mPosition.z - radius,   1.0f, 0.0f,     0.f, -1.f, 0.f,// + - -
-        mPosition.x + radius, mPosition.y - radius, mPosition.z + radius,   1.0f, 1.0f,     0.f, -1.f, 0.f// + - +
+        mPosition.x - radius, mPosition.y - radius, mPosition.z + radius, 0.0f, 1.0f, 0.f, -1.f, 0.f, // - - +
+        mPosition.x - radius, mPosition.y - radius, mPosition.z - radius, 0.0f, 0.0f, 0.f, -1.f, 0.f, // - - -
+        mPosition.x + radius, mPosition.y - radius, mPosition.z - radius, 1.0f, 0.0f, 0.f, -1.f, 0.f, // + - -
+        mPosition.x + radius, mPosition.y - radius, mPosition.z + radius, 1.0f, 1.0f, 0.f, -1.f, 0.f  // + - +
     };
 
-
-    std::vector<float> vLeft{ 
+    std::vector<float> vLeft{
         // Left
-        mPosition.x - radius, mPosition.y + radius, mPosition.z - radius,   0.0f, 0.0f,     -1.f, 0.f, 0.f,// - + -
-        mPosition.x - radius, mPosition.y - radius, mPosition.z - radius,   0.0f, 1.0f,     -1.f, 0.f, 0.f,// - - -
-        mPosition.x - radius, mPosition.y - radius, mPosition.z + radius,   1.0f, 1.0f,     -1.f, 0.f, 0.f,// - - +
-        mPosition.x - radius, mPosition.y + radius, mPosition.z + radius,   1.0f, 0.0f,     -1.f, 0.f, 0.f// - + +
+        mPosition.x - radius, mPosition.y + radius, mPosition.z - radius, 0.0f, 0.0f, -1.f, 0.f, 0.f, // - + -
+        mPosition.x - radius, mPosition.y - radius, mPosition.z - radius, 0.0f, 1.0f, -1.f, 0.f, 0.f, // - - -
+        mPosition.x - radius, mPosition.y - radius, mPosition.z + radius, 1.0f, 1.0f, -1.f, 0.f, 0.f, // - - +
+        mPosition.x - radius, mPosition.y + radius, mPosition.z + radius, 1.0f, 0.0f, -1.f, 0.f, 0.f  // - + +
     };
 
-    std::vector<float> vRight{ 
+    std::vector<float> vRight{
         // Right
-        mPosition.x + radius, mPosition.y + radius, mPosition.z + radius,   0.0f, 0.0f,     1.f, 0.f, 0.f,// + + +
-        mPosition.x + radius, mPosition.y - radius, mPosition.z + radius,   0.0f, 1.0f,     1.f, 0.f, 0.f,// + - +
-        mPosition.x + radius, mPosition.y - radius, mPosition.z - radius,   1.0f, 1.0f,     1.f, 0.f, 0.f,// + - -
-        mPosition.x + radius, mPosition.y + radius, mPosition.z - radius,   1.0f, 0.0f,     1.f, 0.f, 0.f// + + -
+        mPosition.x + radius, mPosition.y + radius, mPosition.z + radius, 0.0f, 0.0f, 1.f, 0.f, 0.f, // + + +
+        mPosition.x + radius, mPosition.y - radius, mPosition.z + radius, 0.0f, 1.0f, 1.f, 0.f, 0.f, // + - +
+        mPosition.x + radius, mPosition.y - radius, mPosition.z - radius, 1.0f, 1.0f, 1.f, 0.f, 0.f, // + - -
+        mPosition.x + radius, mPosition.y + radius, mPosition.z - radius, 1.0f, 0.0f, 1.f, 0.f, 0.f  // + + -
     };
 
-    std::vector<float> vFront{ 
+    std::vector<float> vFront{
         // Front
-        mPosition.x - radius, mPosition.y + radius, mPosition.z + radius,   0.0f, 0.0f,     0.f, 0.f, 1.f,// - + +
-        mPosition.x - radius, mPosition.y - radius, mPosition.z + radius,   0.0f, 1.0f,     0.f, 0.f, 1.f,// - - +
-        mPosition.x + radius, mPosition.y - radius, mPosition.z + radius,   1.0f, 1.0f,     0.f, 0.f, 1.f,// + - +
-        mPosition.x + radius, mPosition.y + radius, mPosition.z + radius,   1.0f, 0.0f,     0.f, 0.f, 1.f// + + +
+        mPosition.x - radius, mPosition.y + radius, mPosition.z + radius, 0.0f, 0.0f, 0.f, 0.f, 1.f, // - + +
+        mPosition.x - radius, mPosition.y - radius, mPosition.z + radius, 0.0f, 1.0f, 0.f, 0.f, 1.f, // - - +
+        mPosition.x + radius, mPosition.y - radius, mPosition.z + radius, 1.0f, 1.0f, 0.f, 0.f, 1.f, // + - +
+        mPosition.x + radius, mPosition.y + radius, mPosition.z + radius, 1.0f, 0.0f, 0.f, 0.f, 1.f  // + + +
     };
 
     std::vector<float> vBack{
         // Back
-        mPosition.x - radius, mPosition.y - radius, mPosition.z - radius,   1.0f, 1.0f,     0.f, 0.f, -1.f,// - - -
-        mPosition.x - radius, mPosition.y + radius, mPosition.z - radius,   1.0f, 0.0f,     0.f, 0.f, -1.f,// - + -
-        mPosition.x + radius, mPosition.y + radius, mPosition.z - radius,   0.0f, 0.0f,     0.f, 0.f, -1.f,// + + -
-        mPosition.x + radius, mPosition.y - radius, mPosition.z - radius,   0.0f, 1.0f,     0.f, 0.f, -1.f// + - -
+        mPosition.x - radius, mPosition.y - radius, mPosition.z - radius, 1.0f, 1.0f, 0.f, 0.f, -1.f, // - - -
+        mPosition.x - radius, mPosition.y + radius, mPosition.z - radius, 1.0f, 0.0f, 0.f, 0.f, -1.f, // - + -
+        mPosition.x + radius, mPosition.y + radius, mPosition.z - radius, 0.0f, 0.0f, 0.f, 0.f, -1.f, // + + -
+        mPosition.x + radius, mPosition.y - radius, mPosition.z - radius, 0.0f, 1.0f, 0.f, 0.f, -1.f  // + - -
     };
 
     mVertexDataMap["top"] = vTop;

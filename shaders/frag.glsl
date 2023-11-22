@@ -1,10 +1,9 @@
 #version 410 core
 
-// in vec3 v_vertexColors;
-
 in vec3 fPos;
 in vec2 fTexCoord;
 in vec3 fNormal;
+in vec4 fPosLight;
 
 out vec4 color;
 
@@ -13,6 +12,7 @@ uniform vec3 viewPos;
 uniform vec3 lightColor;
 
 uniform sampler2D texture1;
+uniform sampler2D shadowMap;
 
 void main()
 {   
@@ -33,13 +33,23 @@ void main()
     float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
     vec3 specular = specularStrength * spec * lightColor;  
     
-    //vec3 result = (ambient + diffuse + specular) * objectColor;
-
     // texture
     vec3 textureColor = texture(texture1, fTexCoord).rgb;
 
-    //color = vec4(result * textureColor, 1.0);
+    // calculate shadow
+    float shadow = 0.0f;
+    float bias = 0.001f;
+    vec3 lightCoords = fPosLight.xyz / fPosLight.w;
+    if (lightCoords.z <= 1.0f) {
+        lightCoords = (lightCoords + 1.0f) / 2.0f;
+        float closestDepth = texture(shadowMap, lightCoords.xy).r;
+        float currentDepth = lightCoords.z;
 
-    vec3 result = (ambient + diffuse + specular) * textureColor;
+        if(currentDepth - bias > closestDepth) {
+            shadow = 1.0f;
+        }
+    }
+
+    vec3 result = (ambient + (1.0 - shadow) * diffuse + specular) * textureColor;
     color = vec4(result, 1.0); 
 }

@@ -7,6 +7,8 @@ Engine::Engine(int width, int height) : mScreenWidth(width), mScreenHeight(heigh
     InitializeGraphicsProgram();
 
     CreateGraphicsPipeline();
+
+    InitializeShadowMap();
 }
 
 Engine::~Engine()
@@ -22,22 +24,22 @@ void Engine::SetupObject()
     mTextureManager.LoadTexture("grass_side_snowed", "./assets/texture/grass_side_snowed.png");
     mTextureManager.LoadTexture("snow", "./assets/texture/snow.png");
 
-    GameObject *grass = new GameObject();
-    ShapeComponent *shape1 = new ShapeComponent();
-    Cube *cube1 = new Cube(glm::vec3(-1.f, 1.0f, 0.f), 1.0f);
-    cube1->setFaceTexture("top", mTextureManager.GetTexture("grass_carried"));
-    cube1->setFaceTexture("bottom", mTextureManager.GetTexture("dirt"));
-    cube1->setFaceTexture("left", mTextureManager.GetTexture("grass_side_carried"));
-    cube1->setFaceTexture("right", mTextureManager.GetTexture("grass_side_carried"));
-    cube1->setFaceTexture("front", mTextureManager.GetTexture("grass_side_carried"));
-    cube1->setFaceTexture("back", mTextureManager.GetTexture("grass_side_carried"));
-    shape1->setCube(cube1);
-    grass->AddComponent(shape1);
-    mGameObjects.push_back(grass);
+    // GameObject *grass = new GameObject();
+    // ShapeComponent *shape1 = new ShapeComponent();
+    // Cube *cube1 = new Cube(glm::vec3(-1.f, 1.0f, 0.f), 1.0f);
+    // cube1->setFaceTexture("top", mTextureManager.GetTexture("grass_carried"));
+    // cube1->setFaceTexture("bottom", mTextureManager.GetTexture("dirt"));
+    // cube1->setFaceTexture("left", mTextureManager.GetTexture("grass_side_carried"));
+    // cube1->setFaceTexture("right", mTextureManager.GetTexture("grass_side_carried"));
+    // cube1->setFaceTexture("front", mTextureManager.GetTexture("grass_side_carried"));
+    // cube1->setFaceTexture("back", mTextureManager.GetTexture("grass_side_carried"));
+    // shape1->setCube(cube1);
+    // grass->AddComponent(shape1);
+    // mGameObjects.push_back(grass);
 
     GameObject *snow = new GameObject();
     ShapeComponent *shape2 = new ShapeComponent();
-    Cube *cube2 = new Cube(glm::vec3(1.f, 1.0f, 0.f), 1.0f);
+    Cube *cube2 = new Cube(glm::vec3(0.f, 1.f, 0.f), 1.0f);
     cube2->setFaceTexture("top", mTextureManager.GetTexture("snow"));
     cube2->setFaceTexture("bottom", mTextureManager.GetTexture("dirt"));
     cube2->setFaceTexture("left", mTextureManager.GetTexture("grass_side_snowed"));
@@ -48,9 +50,9 @@ void Engine::SetupObject()
     snow->AddComponent(shape2);
     mGameObjects.push_back(snow);
 
-    for (int i = -1; i < 2; i++)
+    for (int i = -2; i < 3; i++)
     {
-        for (int j = -1; j < 2; j++)
+        for (int j = -2; j < 3; j++)
         {
             GameObject *object = new GameObject();
             ShapeComponent *shape = new ShapeComponent();
@@ -61,7 +63,7 @@ void Engine::SetupObject()
             cube->setFaceTexture("left", mTextureManager.GetTexture("dirt"));
             cube->setFaceTexture("right", mTextureManager.GetTexture("dirt"));
             cube->setFaceTexture("front", mTextureManager.GetTexture("dirt"));
-            cube->setFaceTexture("back", mTextureManager.GetTexture("dirt")); 
+            cube->setFaceTexture("back", mTextureManager.GetTexture("dirt"));
             shape->setCube(cube);
             object->AddComponent(shape);
             mGameObjects.push_back(object);
@@ -75,6 +77,9 @@ void Engine::MainLoop()
     {
         FrameCapping();
         Input();
+
+        // Update game here
+        // TODO: add update function
 
         Render();
 
@@ -100,7 +105,10 @@ void Engine::Input()
             mCamera.angles.x = mCamera.angles.x + e.motion.xrel * 0.005;
 
             mCamera.direction = glm::normalize(
-                glm::vec3(sin(mCamera.angles.y) * sin(mCamera.angles.x), cos(mCamera.angles.y), -sin(mCamera.angles.y) * cos(mCamera.angles.x)));
+                glm::vec3(
+                    cos(mCamera.angles.y) * cos(mCamera.angles.x),
+                    sin(mCamera.angles.y),
+                    cos(mCamera.angles.y) * sin(mCamera.angles.x)));
             mCamera.direction *= mCamera.angles.z;
         }
     }
@@ -129,46 +137,82 @@ void Engine::Update()
 
 void Engine::Render()
 {
-    PreDraw();
-
-    for (auto gameObject : mGameObjects)
-    {
-        gameObject->Render();
-    }
+    ShadowPass();
+    LightPass();
 
     glUseProgram(0);
 }
 
-void Engine::PreDraw()
+void Engine::ShadowPass()
 {
+    glBindFramebuffer(GL_FRAMEBUFFER, mShadowMapFBO);
+    glViewport(0, 0, 1024, 1024);
 
-    glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
-    glClearColor(0.1f, 0.1f, 0.1f, 1.f);
+    glClear(GL_DEPTH_BUFFER_BIT);
 
-    glUseProgram(gGraphicsPipelineShaderProgram);
+    glUseProgram(mFrameBufferProgram);
 
-    glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f));
-    model = glm::rotate(model, glm::radians(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-    // model = glm::scale(model, glm::vec3(g_uScale, g_uScale, g_uScale));
+    // Shadow pass
+    glm::mat4 orthoProjection = glm::ortho(-35.f, 35.f, -35.f, 35.f, 0.1f, 75.f);
+    glm::mat4 lightView = glm::lookAt(glm::vec3(30.f, 30.f, 30.f), glm::vec3(0.0f), glm::vec3(0, 1, 0));
+    glm::mat4 lightProjection = orthoProjection * lightView;
 
-    GLint u_ModelMatrixLocation = glGetUniformLocation(gGraphicsPipelineShaderProgram, "u_ModelMatrix");
+    GLint g_lightProjection = glGetUniformLocation(mFrameBufferProgram, "lightProjection");
 
-    if (u_ModelMatrixLocation >= 0)
+    if (g_lightProjection >= 0)
     {
-        glUniformMatrix4fv(u_ModelMatrixLocation, 1, GL_FALSE, &model[0][0]);
+        glUniformMatrix4fv(g_lightProjection, 1, GL_FALSE, &lightProjection[0][0]);
     }
     else
     {
-        std::cout << "Could not find u_ModelMatrix, maybe a mispelling?\n";
+        std::cout << "Could not find g_LightProjection, maybe a mispelling?\n";
         exit(EXIT_FAILURE);
     }
+
+    // render
+    for (auto gameObject : mGameObjects)
+    {
+        glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f));
+        model = glm::rotate(model, glm::radians(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+
+        GLint u_model = glGetUniformLocation(mFrameBufferProgram, "model");
+
+        if (u_model >= 0)
+        {
+            glUniformMatrix4fv(u_model, 1, GL_FALSE, &model[0][0]);
+        }
+        else
+        {
+            std::cout << "Could not find model, maybe a mispelling?\n";
+            exit(EXIT_FAILURE);
+        }
+
+        gameObject->Render();
+    }
+}
+
+void Engine::LightPass()
+{
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+    glViewport(0, 0, mScreenWidth, mScreenHeight);
+
+    glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+
+    glUseProgram(mGraphicsPipelineShaderProgram);
+
+    glClearColor(0.1f, 0.1f, 0.1f, 1.f);
+
+    glActiveTexture(GL_TEXTURE0 + 1);
+    glBindTexture(GL_TEXTURE_2D, mShadowMapTexture);
+    glUniform1i(glGetUniformLocation(mGraphicsPipelineShaderProgram, "shadowMap"), 1);
 
     glm::mat4 projection = glm::perspective(glm::radians(45.0f),
                                             (float)mScreenWidth / (float)mScreenHeight,
                                             1.0f,
                                             100.0f);
 
-    GLint u_ProjectionLocation = glGetUniformLocation(gGraphicsPipelineShaderProgram, "u_Projection");
+    GLint u_ProjectionLocation = glGetUniformLocation(mGraphicsPipelineShaderProgram, "u_Projection");
 
     if (u_ProjectionLocation >= 0)
     {
@@ -185,7 +229,7 @@ void Engine::PreDraw()
                                     glm::vec3(0.0f, 1.0f, 0.0f));
 
     // set view matrix
-    GLint u_ViewLocation = glGetUniformLocation(gGraphicsPipelineShaderProgram, "u_View");
+    GLint u_ViewLocation = glGetUniformLocation(mGraphicsPipelineShaderProgram, "u_View");
     if (u_ViewLocation >= 0)
     {
         glUniformMatrix4fv(u_ViewLocation, 1, GL_FALSE, &viewMtx[0][0]);
@@ -197,10 +241,10 @@ void Engine::PreDraw()
     }
 
     // set lightings
-    GLuint u_LightPosition = glGetUniformLocation(gGraphicsPipelineShaderProgram, "lightPos");
+    GLuint u_LightPosition = glGetUniformLocation(mGraphicsPipelineShaderProgram, "lightPos");
     if (u_LightPosition >= 0)
     {
-        glUniform3f(u_LightPosition, 0.0f, 0.0f, 0.0f);
+        glUniform3f(u_LightPosition, 3.0f, 3.0f, 3.0f);
     }
     else
     {
@@ -208,7 +252,7 @@ void Engine::PreDraw()
         exit(EXIT_FAILURE);
     }
 
-    GLuint u_LightColor = glGetUniformLocation(gGraphicsPipelineShaderProgram, "lightColor");
+    GLuint u_LightColor = glGetUniformLocation(mGraphicsPipelineShaderProgram, "lightColor");
     if (u_LightColor >= 0)
     {
         glUniform3f(u_LightColor, 1.0f, 1.0f, 1.0f);
@@ -219,7 +263,7 @@ void Engine::PreDraw()
         exit(EXIT_FAILURE);
     }
 
-    GLuint u_ViewPosition = glGetUniformLocation(gGraphicsPipelineShaderProgram, "viewPos");
+    GLuint u_ViewPosition = glGetUniformLocation(mGraphicsPipelineShaderProgram, "viewPos");
     if (u_ViewPosition >= 0)
     {
         glUniform3f(u_ViewPosition, mCamera.position.x, mCamera.position.y, mCamera.position.z);
@@ -230,22 +274,47 @@ void Engine::PreDraw()
         exit(EXIT_FAILURE);
     }
 
-    // GLuint u_ObjectColorLocation = glGetUniformLocation(gGraphicsPipelineShaderProgram, "objectColor");
-    // if (u_ObjectColorLocation >= 0)
-    // {
-    //     glUniform3f(u_ObjectColorLocation, 1.0f, 1.0f, 1.0f);
-    // }
-    // else
-    // {
-    //     std::cout << "Could not find u_ObjectColor, maybe a mispelling?\n";
-    //     exit(EXIT_FAILURE);
-    // }
+    // glUniform3f(u_LightColor, 1.0f, 1.0f, 1.0f);
+    // glUniform3f(u_LightPosition, 2.f, 2.f, 2.f);
+    // glUniform3f(u_ViewPosition, mCamera.position.x, mCamera.position.y, mCamera.position.z);
 
-    // glUniform3f(u_ObjectColorLocation, 1.0f, 1.0f, 1.0f);
+    glm::mat4 orthoProjection = glm::ortho(-35.f, 35.f, -35.f, 35.f, 0.1f, 75.f);
+    glm::mat4 lightView = glm::lookAt(glm::vec3(30.f, 30.f, 30.f), glm::vec3(0.0f), glm::vec3(0, 1, 0));
+    glm::mat4 lightProjection = orthoProjection * lightView;
 
-    glUniform3f(u_LightColor, 1.0f, 1.0f, 1.0f);
-    glUniform3f(u_LightPosition, mCamera.position.x, mCamera.position.y, mCamera.position.z);
-    glUniform3f(u_ViewPosition, mCamera.position.x, mCamera.position.y, mCamera.position.z);
+    GLint u_lightProjection = glGetUniformLocation(mGraphicsPipelineShaderProgram, "u_LightProjection");
+
+    if (u_lightProjection >= 0)
+    {
+        glUniformMatrix4fv(u_lightProjection, 1, GL_FALSE, &lightProjection[0][0]);
+    }
+    else
+    {
+        std::cout << "Could not find u_LightProjection, maybe a mispelling?\n";
+        exit(EXIT_FAILURE);
+    }
+
+
+    for (auto &gameObject : mGameObjects)
+    {
+        glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f));
+        model = glm::rotate(model, glm::radians(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+        // model = glm::scale(model, glm::vec3(g_uScale, g_uScale, g_uScale));
+
+        GLint u_ModelMatrixLocation = glGetUniformLocation(mGraphicsPipelineShaderProgram, "u_ModelMatrix");
+
+        if (u_ModelMatrixLocation >= 0)
+        {
+            glUniformMatrix4fv(u_ModelMatrixLocation, 1, GL_FALSE, &model[0][0]);
+        }
+        else
+        {
+            std::cout << "Could not find u_ModelMatrix, maybe a mispelling?\n";
+            exit(EXIT_FAILURE);
+        }
+
+        gameObject->Render();
+    }
 }
 
 void Engine::Shutdown()
@@ -333,12 +402,46 @@ void Engine::InitializeGraphicsProgram()
     glViewport(0, 0, mScreenWidth, mScreenHeight);
 }
 
+void Engine::InitializeShadowMap()
+{
+
+    const int shadowMapWidth = 1024;
+    const int shadowMapHeight = 1024;
+
+    glGenFramebuffers(1, &mShadowMapFBO);
+
+    // Create a depth texture for the shadow map
+    glGenTextures(1, &mShadowMapTexture);
+    glBindTexture(GL_TEXTURE_2D, mShadowMapTexture);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, shadowMapWidth, shadowMapHeight, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_REF_TO_TEXTURE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+    GLfloat borderColor[] = {1.0, 1.0, 1.0, 1.0};
+    glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
+
+    // Attach the depth texture to the framebuffer
+    glBindFramebuffer(GL_FRAMEBUFFER, mShadowMapFBO);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, mShadowMapTexture, 0);
+    glDrawBuffer(GL_NONE);
+    glReadBuffer(GL_NONE);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
 void Engine::CreateGraphicsPipeline()
 {
     std::string vertexShaderSource = LoadShaderAsString("./shaders/vert.glsl");
     std::string fragmentShaderSource = LoadShaderAsString("./shaders/frag.glsl");
 
-    gGraphicsPipelineShaderProgram = CreateShaderProgram(vertexShaderSource, fragmentShaderSource);
+    mGraphicsPipelineShaderProgram = CreateShaderProgram(vertexShaderSource, fragmentShaderSource);
+
+    std::string vertFrameBuffer = LoadShaderAsString("./shaders/shadow_v.glsl");
+    std::string fragFrameBuffer = LoadShaderAsString("./shaders/shadow_f.glsl");
+
+    mFrameBufferProgram = CreateShaderProgram(vertFrameBuffer, fragFrameBuffer);
 }
 
 GLuint Engine::CreateShaderProgram(const std::string &vertexShaderSource, const std::string &fragmentShaderSource)
