@@ -24,18 +24,18 @@ void Engine::SetupObject()
     mTextureManager.LoadTexture("grass_side_snowed", "./assets/texture/grass_side_snowed.png");
     mTextureManager.LoadTexture("snow", "./assets/texture/snow.png");
 
-    // GameObject *grass = new GameObject();
-    // ShapeComponent *shape1 = new ShapeComponent();
-    // Cube *cube1 = new Cube(glm::vec3(-1.f, 1.0f, 0.f), 1.0f);
-    // cube1->setFaceTexture("top", mTextureManager.GetTexture("grass_carried"));
-    // cube1->setFaceTexture("bottom", mTextureManager.GetTexture("dirt"));
-    // cube1->setFaceTexture("left", mTextureManager.GetTexture("grass_side_carried"));
-    // cube1->setFaceTexture("right", mTextureManager.GetTexture("grass_side_carried"));
-    // cube1->setFaceTexture("front", mTextureManager.GetTexture("grass_side_carried"));
-    // cube1->setFaceTexture("back", mTextureManager.GetTexture("grass_side_carried"));
-    // shape1->setCube(cube1);
-    // grass->AddComponent(shape1);
-    // mGameObjects.push_back(grass);
+    GameObject *grass = new GameObject();
+    ShapeComponent *shape1 = new ShapeComponent();
+    Cube *cube1 = new Cube(glm::vec3(-1.f, 1.0f, 0.f), 1.0f);
+    cube1->setFaceTexture("top", mTextureManager.GetTexture("grass_carried"));
+    cube1->setFaceTexture("bottom", mTextureManager.GetTexture("dirt"));
+    cube1->setFaceTexture("left", mTextureManager.GetTexture("grass_side_carried"));
+    cube1->setFaceTexture("right", mTextureManager.GetTexture("grass_side_carried"));
+    cube1->setFaceTexture("front", mTextureManager.GetTexture("grass_side_carried"));
+    cube1->setFaceTexture("back", mTextureManager.GetTexture("grass_side_carried"));
+    shape1->setCube(cube1);
+    grass->AddComponent(shape1);
+    mGameObjects.push_back(grass);
 
     GameObject *snow = new GameObject();
     ShapeComponent *shape2 = new ShapeComponent();
@@ -146,28 +146,18 @@ void Engine::Render()
 void Engine::ShadowPass()
 {
     glBindFramebuffer(GL_FRAMEBUFFER, mShadowMapFBO);
-    glViewport(0, 0, 1024, 1024);
+    glViewport(0, 0, 2048, 2048);
 
     glClear(GL_DEPTH_BUFFER_BIT);
 
-    glUseProgram(mFrameBufferProgram);
+    mShadowShader.Use();
 
     // Shadow pass
     glm::mat4 orthoProjection = glm::ortho(-35.f, 35.f, -35.f, 35.f, 0.1f, 75.f);
     glm::mat4 lightView = glm::lookAt(glm::vec3(30.f, 30.f, 30.f), glm::vec3(0.0f), glm::vec3(0, 1, 0));
     glm::mat4 lightProjection = orthoProjection * lightView;
 
-    GLint g_lightProjection = glGetUniformLocation(mFrameBufferProgram, "lightProjection");
-
-    if (g_lightProjection >= 0)
-    {
-        glUniformMatrix4fv(g_lightProjection, 1, GL_FALSE, &lightProjection[0][0]);
-    }
-    else
-    {
-        std::cout << "Could not find g_LightProjection, maybe a mispelling?\n";
-        exit(EXIT_FAILURE);
-    }
+    mShadowShader.SetUniform("lightProjection", lightProjection);
 
     // render
     for (auto gameObject : mGameObjects)
@@ -175,17 +165,7 @@ void Engine::ShadowPass()
         glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f));
         model = glm::rotate(model, glm::radians(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 
-        GLint u_model = glGetUniformLocation(mFrameBufferProgram, "model");
-
-        if (u_model >= 0)
-        {
-            glUniformMatrix4fv(u_model, 1, GL_FALSE, &model[0][0]);
-        }
-        else
-        {
-            std::cout << "Could not find model, maybe a mispelling?\n";
-            exit(EXIT_FAILURE);
-        }
+        mShadowShader.SetUniform("model", model);
 
         gameObject->Render();
     }
@@ -199,101 +179,43 @@ void Engine::LightPass()
 
     glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
-    glUseProgram(mGraphicsPipelineShaderProgram);
+    // glUseProgram(mGraphicsPipelineShaderProgram);
+    mMainShader.Use();
 
     glClearColor(0.1f, 0.1f, 0.1f, 1.f);
 
     glActiveTexture(GL_TEXTURE0 + 1);
     glBindTexture(GL_TEXTURE_2D, mShadowMapTexture);
-    glUniform1i(glGetUniformLocation(mGraphicsPipelineShaderProgram, "shadowMap"), 1);
+
+    // glUniform1i(glGetUniformLocation(mGraphicsPipelineShaderProgram, "shadowMap"), 1);
+    mMainShader.SetUniform("shadowMap", 1);
 
     glm::mat4 projection = glm::perspective(glm::radians(45.0f),
                                             (float)mScreenWidth / (float)mScreenHeight,
                                             1.0f,
                                             100.0f);
 
-    GLint u_ProjectionLocation = glGetUniformLocation(mGraphicsPipelineShaderProgram, "u_Projection");
-
-    if (u_ProjectionLocation >= 0)
-    {
-        glUniformMatrix4fv(u_ProjectionLocation, 1, GL_FALSE, &projection[0][0]);
-    }
-    else
-    {
-        std::cout << "Could not find u_Projection, maybe a mispelling?\n";
-        exit(EXIT_FAILURE);
-    }
+    mMainShader.SetUniform("u_Projection", projection);
 
     glm::mat4 viewMtx = glm::lookAt(mCamera.position,
                                     mCamera.direction + mCamera.position,
                                     glm::vec3(0.0f, 1.0f, 0.0f));
 
     // set view matrix
-    GLint u_ViewLocation = glGetUniformLocation(mGraphicsPipelineShaderProgram, "u_View");
-    if (u_ViewLocation >= 0)
-    {
-        glUniformMatrix4fv(u_ViewLocation, 1, GL_FALSE, &viewMtx[0][0]);
-    }
-    else
-    {
-        std::cout << "Could not find u_ViewLocation, maybe a mispelling?\n";
-        exit(EXIT_FAILURE);
-    }
+    mMainShader.SetUniform("u_View", viewMtx);
 
     // set lightings
-    GLuint u_LightPosition = glGetUniformLocation(mGraphicsPipelineShaderProgram, "lightPos");
-    if (u_LightPosition >= 0)
-    {
-        glUniform3f(u_LightPosition, 3.0f, 3.0f, 3.0f);
-    }
-    else
-    {
-        std::cout << "Could not find u_LightPosition, maybe a mispelling?\n";
-        exit(EXIT_FAILURE);
-    }
+    mMainShader.SetUniform("lightPos", glm::vec3(3.0f, 3.0f, 3.0f));
 
-    GLuint u_LightColor = glGetUniformLocation(mGraphicsPipelineShaderProgram, "lightColor");
-    if (u_LightColor >= 0)
-    {
-        glUniform3f(u_LightColor, 1.0f, 1.0f, 1.0f);
-    }
-    else
-    {
-        std::cout << "Could not find u_LightColor, maybe a mispelling?\n";
-        exit(EXIT_FAILURE);
-    }
+    mMainShader.SetUniform("lightColor", glm::vec3(1.0f, 1.0f, 1.0f));
 
-    GLuint u_ViewPosition = glGetUniformLocation(mGraphicsPipelineShaderProgram, "viewPos");
-    if (u_ViewPosition >= 0)
-    {
-        glUniform3f(u_ViewPosition, mCamera.position.x, mCamera.position.y, mCamera.position.z);
-    }
-    else
-    {
-        std::cout << "Could not find u_ViewPosition, maybe a mispelling?\n";
-        exit(EXIT_FAILURE);
-    }
-
-    // glUniform3f(u_LightColor, 1.0f, 1.0f, 1.0f);
-    // glUniform3f(u_LightPosition, 2.f, 2.f, 2.f);
-    // glUniform3f(u_ViewPosition, mCamera.position.x, mCamera.position.y, mCamera.position.z);
+    mMainShader.SetUniform("viewPos", mCamera.position);
 
     glm::mat4 orthoProjection = glm::ortho(-35.f, 35.f, -35.f, 35.f, 0.1f, 75.f);
     glm::mat4 lightView = glm::lookAt(glm::vec3(30.f, 30.f, 30.f), glm::vec3(0.0f), glm::vec3(0, 1, 0));
     glm::mat4 lightProjection = orthoProjection * lightView;
 
-    GLint u_lightProjection = glGetUniformLocation(mGraphicsPipelineShaderProgram, "u_LightProjection");
-
-    if (u_lightProjection >= 0)
-    {
-        glUniformMatrix4fv(u_lightProjection, 1, GL_FALSE, &lightProjection[0][0]);
-    }
-    else
-    {
-        std::cout << "Could not find u_LightProjection, maybe a mispelling?\n";
-        exit(EXIT_FAILURE);
-    }
-
+    mMainShader.SetUniform("u_LightProjection", lightProjection);
 
     for (auto &gameObject : mGameObjects)
     {
@@ -301,17 +223,7 @@ void Engine::LightPass()
         model = glm::rotate(model, glm::radians(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
         // model = glm::scale(model, glm::vec3(g_uScale, g_uScale, g_uScale));
 
-        GLint u_ModelMatrixLocation = glGetUniformLocation(mGraphicsPipelineShaderProgram, "u_ModelMatrix");
-
-        if (u_ModelMatrixLocation >= 0)
-        {
-            glUniformMatrix4fv(u_ModelMatrixLocation, 1, GL_FALSE, &model[0][0]);
-        }
-        else
-        {
-            std::cout << "Could not find u_ModelMatrix, maybe a mispelling?\n";
-            exit(EXIT_FAILURE);
-        }
+        mMainShader.SetUniform("u_ModelMatrix", model);
 
         gameObject->Render();
     }
@@ -405,8 +317,8 @@ void Engine::InitializeGraphicsProgram()
 void Engine::InitializeShadowMap()
 {
 
-    const int shadowMapWidth = 1024;
-    const int shadowMapHeight = 1024;
+    const int shadowMapWidth = 2048;
+    const int shadowMapHeight = 2048;
 
     glGenFramebuffers(1, &mShadowMapFBO);
 
@@ -433,51 +345,9 @@ void Engine::InitializeShadowMap()
 
 void Engine::CreateGraphicsPipeline()
 {
-    std::string vertexShaderSource = LoadShaderAsString("./shaders/vert.glsl");
-    std::string fragmentShaderSource = LoadShaderAsString("./shaders/frag.glsl");
 
-    mGraphicsPipelineShaderProgram = CreateShaderProgram(vertexShaderSource, fragmentShaderSource);
-
-    std::string vertFrameBuffer = LoadShaderAsString("./shaders/shadow_v.glsl");
-    std::string fragFrameBuffer = LoadShaderAsString("./shaders/shadow_f.glsl");
-
-    mFrameBufferProgram = CreateShaderProgram(vertFrameBuffer, fragFrameBuffer);
-}
-
-GLuint Engine::CreateShaderProgram(const std::string &vertexShaderSource, const std::string &fragmentShaderSource)
-{
-    GLuint programObject = glCreateProgram();
-
-    GLuint myVertexShader = CompileShader(GL_VERTEX_SHADER, vertexShaderSource);
-    GLuint myFragmentShader = CompileShader(GL_FRAGMENT_SHADER, fragmentShaderSource);
-
-    glAttachShader(programObject, myVertexShader);
-    glAttachShader(programObject, myFragmentShader);
-    glLinkProgram(programObject);
-
-    glValidateProgram(programObject);
-    // detach and delete
-
-    return programObject;
-}
-
-GLuint Engine::CompileShader(GLuint type, const std::string &source)
-{
-    GLuint shaderObject;
-    if (type == GL_VERTEX_SHADER)
-    {
-        shaderObject = glCreateShader(GL_VERTEX_SHADER);
-    }
-    else if (type == GL_FRAGMENT_SHADER)
-    {
-        shaderObject = glCreateShader(GL_FRAGMENT_SHADER);
-    }
-
-    const char *src = source.c_str();
-    glShaderSource(shaderObject, 1, &src, nullptr);
-    glCompileShader(shaderObject);
-
-    return shaderObject;
+    mMainShader.Init("./shaders/vert.glsl", "./shaders/frag.glsl");
+    mShadowShader.Init("./shaders/shadow_v.glsl", "./shaders/shadow_f.glsl");    
 }
 
 void Engine::GetOpenGLVersionInfo()
