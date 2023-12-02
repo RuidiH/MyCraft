@@ -98,6 +98,10 @@ void Cube::Render()
         glDisableVertexAttribArray(0);
         glDisableVertexAttribArray(1);
         glDisableVertexAttribArray(2);
+
+        glDeleteBuffers(1, &vbo);
+        glDeleteBuffers(1, &ibo);
+        glDeleteVertexArrays(1, &vao);
     }
 }
 

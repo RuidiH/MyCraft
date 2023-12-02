@@ -146,7 +146,7 @@ void Engine::Render()
 void Engine::ShadowPass()
 {
     glBindFramebuffer(GL_FRAMEBUFFER, mShadowMapFBO);
-    glViewport(0, 0, 2048, 2048);
+    glViewport(0, 0, mShadowResolution.x, mShadowResolution.y);
 
     glClear(GL_DEPTH_BUFFER_BIT);
 
@@ -169,12 +169,12 @@ void Engine::ShadowPass()
 
         gameObject->Render();
     }
+
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 void Engine::LightPass()
 {
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
     glViewport(0, 0, mScreenWidth, mScreenHeight);
 
     glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
@@ -276,7 +276,7 @@ void Engine::InitializeGraphicsProgram()
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
 
-    gGraphicsApplicationWindow = SDL_CreateWindow("Window", 500, 500, mScreenWidth, mScreenHeight, SDL_WINDOW_OPENGL);
+    gGraphicsApplicationWindow = SDL_CreateWindow("Window", 800, 300, mScreenWidth, mScreenHeight, SDL_WINDOW_OPENGL);
     if (gGraphicsApplicationWindow == nullptr)
     {
         std::cout << "SDL_Window not created" << std::endl;
@@ -300,7 +300,7 @@ void Engine::InitializeGraphicsProgram()
     GetOpenGLVersionInfo();
 
     mCamera.position = glm::vec3(3.f, 3.f, 3.f);
-    mCamera.angles = glm::vec3(-M_PI / 3.0f, M_PI / 2.8f, 20.0f);
+    mCamera.angles = glm::vec3(-M_PI / 3.0f, M_PI / 2.8f, 10.0f);
     // mCamera.direction = glm::vec3(-1.f, -1.f, -1.f);
 
     // recomputeOrientation();
@@ -317,15 +317,12 @@ void Engine::InitializeGraphicsProgram()
 void Engine::InitializeShadowMap()
 {
 
-    const int shadowMapWidth = 2048;
-    const int shadowMapHeight = 2048;
-
     glGenFramebuffers(1, &mShadowMapFBO);
 
     // Create a depth texture for the shadow map
     glGenTextures(1, &mShadowMapTexture);
     glBindTexture(GL_TEXTURE_2D, mShadowMapTexture);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, shadowMapWidth, shadowMapHeight, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, mShadowResolution.x, mShadowResolution.y, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_REF_TO_TEXTURE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
