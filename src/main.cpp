@@ -2,13 +2,13 @@
 
 int main(int argc, char *argv[])
 {
-    Engine engine(480, 640);
+    // Engine engine(480, 640);
 
-    engine.SetupObject();
+    // engine.SetupObject();
 
-    engine.MainLoop();
+    // engine.MainLoop();
 
-    engine.Shutdown();
+    // engine.Shutdown();
 
     return 0;
 }

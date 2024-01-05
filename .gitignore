@@ -3,3 +3,4 @@ include/glad
 lib/
 .vscode/
 lab.exe
+*.pyd
