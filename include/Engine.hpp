@@ -58,7 +58,7 @@ private:
     TextureManager mTextureManager;
     std::vector<GameObject *> mGameObjects;
     Camera mCamera;
-    glm::vec2 mShadowResolution = glm::vec2(1024, 1024);
+    glm::vec2 mShadowResolution = glm::vec2(4096, 4096);
     // game state
     bool mQuit = false;
 

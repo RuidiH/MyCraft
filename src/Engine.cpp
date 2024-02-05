@@ -78,7 +78,7 @@ void Engine::MainLoop()
 {
     while (!mQuit)
     {
-        std::cout << "camera values: " << mCamera.angles.x << " " << mCamera.angles.y << " " << mCamera.angles.z << std::endl;
+        // std::cout << "camera values: " << mCamera.angles.x << " " << mCamera.angles.y << " " << mCamera.angles.z << std::endl;
         // std::cout << "direction: " << mCamera.direction.x << " " << mCamera.direction.y << " " << mCamera.direction.z << std::endl;
         FrameCapping();
         Input();
@@ -155,6 +155,7 @@ void Engine::Render()
 
 void Engine::ShadowPass()
 {
+    // glCullFace(GL_FRONT);
     glBindFramebuffer(GL_FRAMEBUFFER, mShadowMapFBO);
     glViewport(0, 0, mShadowResolution.x, mShadowResolution.y);
 
@@ -185,6 +186,7 @@ void Engine::ShadowPass()
 
 void Engine::LightPass()
 {
+    // glCullFace(GL_BACK);
     glViewport(0, 0, mScreenWidth, mScreenHeight);
 
     glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);

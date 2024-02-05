@@ -38,7 +38,7 @@ void main()
 
     // calculate shadow
     float shadow = 0.0f;
-    float bias = 0.0008f;
+    float bias = 0.00085f;
     vec3 lightCoords = fPosLight.xyz / fPosLight.w;
     if (lightCoords.z <= 1.0f) {
         lightCoords = (lightCoords + 1.0f) / 2.0f;
@@ -50,6 +50,7 @@ void main()
         }
     }
 
+    //vec3 result = (ambient + (1.0 - shadow) * diffuse + specular) * textureColor;
     vec3 result = (ambient + (1.0 - shadow) * diffuse + specular) * textureColor;
     color = vec4(result, 1.0); 
 }
