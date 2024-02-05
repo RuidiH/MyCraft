@@ -33,6 +33,8 @@ struct Camera
     glm::vec3 upVector;
     glm::vec3 position;
     glm::vec3 direction;
+
+    // x = theta, y = phi, z = radius.
     glm::vec3 angles;
 };
 
@@ -96,6 +98,7 @@ private:
     // helper functions
     void GetOpenGLVersionInfo();
     std::string LoadShaderAsString(const std::string &filename);
+    glm::vec3 CalculateCameraAngles(const glm::vec3& cameraPos, const glm::vec3& lookAtPos);
 };
 
 #endif

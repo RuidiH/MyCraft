@@ -29,6 +29,11 @@ void Shader::Init(const char* vertexPath, const char* fragmentPath) {
     glAttachShader(mProgramID, fragmentShader);
     glLinkProgram(mProgramID);
     glValidateProgram(mProgramID);
+
+    glDetachShader(mProgramID, vertexShader);
+    glDetachShader(mProgramID, fragmentShader);
+    glDeleteShader(vertexShader);
+    glDeleteShader(fragmentShader);
 }
 
 void Shader::Use() {

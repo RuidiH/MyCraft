@@ -1,4 +1,7 @@
 #include "Engine.hpp"
+#include <glm/glm.hpp>
+#include <glm/gtc/constants.hpp>
+#include <cmath>
 
 Uint32 Engine::deltaTime;
 
@@ -75,6 +78,8 @@ void Engine::MainLoop()
 {
     while (!mQuit)
     {
+        std::cout << "camera values: " << mCamera.angles.x << " " << mCamera.angles.y << " " << mCamera.angles.z << std::endl;
+        // std::cout << "direction: " << mCamera.direction.x << " " << mCamera.direction.y << " " << mCamera.direction.z << std::endl;
         FrameCapping();
         Input();
 
@@ -98,18 +103,23 @@ void Engine::Input()
             std::cout << "Goodbye!" << std::endl;
             mQuit = true;
         }
-
         if (e.type == SDL_MOUSEMOTION)
         {
-            mCamera.angles.y = std::max(std::min(static_cast<float>(mCamera.angles.y + e.motion.yrel * 0.005), 180.0f), 0.0f);
-            mCamera.angles.x = mCamera.angles.x + e.motion.xrel * 0.005;
+            // Assuming mCamera.angles.y (phi) is pitch and mCamera.angles.x (theta) is yaw
+            // Adjust pitch, ensuring it doesn't flip over the top or bottom
+            mCamera.angles.y = std::max(std::min(mCamera.angles.y - e.motion.yrel * 0.005f, glm::radians(89.0f)), glm::radians(-89.0f));
+            mCamera.angles.x -= e.motion.xrel * 0.005f; // Adjust yaw
+
+            // Calculate the direction vector from spherical coordinates
+            // Note: Assuming angles are stored in radians. If in degrees, convert them to radians.
 
             mCamera.direction = glm::normalize(
                 glm::vec3(
-                    cos(mCamera.angles.y) * cos(mCamera.angles.x),
-                    sin(mCamera.angles.y),
-                    cos(mCamera.angles.y) * sin(mCamera.angles.x)));
-            mCamera.direction *= mCamera.angles.z;
+                    cos(mCamera.angles.y) * sin(mCamera.angles.x), // X
+                    sin(mCamera.angles.y),                         // Y
+                    cos(mCamera.angles.y) * cos(mCamera.angles.x)  // Z
+                    ));
+
         }
     }
 
@@ -119,11 +129,11 @@ void Engine::Input()
     // camera controls
     if (state[SDL_SCANCODE_W])
     {
-        mCamera.position += mCamera.direction * 0.01f;
+        mCamera.position += mCamera.direction * 0.1f;
     }
     if (state[SDL_SCANCODE_S])
     {
-        mCamera.position -= mCamera.direction * 0.01f;
+        mCamera.position -= mCamera.direction * 0.1f;
     }
 }
 
@@ -299,9 +309,11 @@ void Engine::InitializeGraphicsProgram()
 
     GetOpenGLVersionInfo();
 
-    mCamera.position = glm::vec3(3.f, 3.f, 3.f);
-    mCamera.angles = glm::vec3(-M_PI / 3.0f, M_PI / 2.8f, 10.0f);
-    // mCamera.direction = glm::vec3(-1.f, -1.f, -1.f);
+    mCamera.position = glm::vec3(-3.f, 3.f, 3.f);
+    // mCamera.angles = glm::vec3(-M_PI / 3.0f, M_PI / 2.8f, 1.0f);
+    mCamera.angles = glm::vec3(M_PI * 3 / 4.f, M_PI / 6.f, 10.0f);
+    // mCamera.angles = CalculateCameraAngles(mCamera.position, glm::vec3(0.f, 0.f, 0.f));
+    mCamera.direction = glm::vec3(0.f, 0.f, 0.f) - mCamera.position;
 
     // recomputeOrientation();
 
@@ -344,7 +356,7 @@ void Engine::CreateGraphicsPipeline()
 {
 
     mMainShader.Init("./shaders/vert.glsl", "./shaders/frag.glsl");
-    mShadowShader.Init("./shaders/shadow_v.glsl", "./shaders/shadow_f.glsl");    
+    mShadowShader.Init("./shaders/shadow_v.glsl", "./shaders/shadow_f.glsl");
 }
 
 void Engine::GetOpenGLVersionInfo()
@@ -371,4 +383,30 @@ std::string Engine::LoadShaderAsString(const std::string &filename)
         myFile.close();
     }
     return result;
+}
+
+/**
+ * @brief returns camera angles for pointing camera to the lookAtPos
+ *
+ * @param cameraPos camera position
+ * @param lookAtPos where the camera should look at
+ * @return glm::vec3 camera angles
+ */
+
+glm::vec3 Engine::CalculateCameraAngles(const glm::vec3 &cameraPos, const glm::vec3 &lookAtPos)
+{
+    glm::vec3 dir = glm::normalize(lookAtPos - cameraPos);
+
+    float radius = glm::distance(cameraPos, lookAtPos);
+
+    float theta = std::atan2(dir.z, dir.x);
+    float phi = std::acos(dir.y / radius);
+
+    // Adjust theta to be in the range [0, 2PI]
+    if (theta < 0.0f)
+    {
+        theta += glm::two_pi<float>();
+    }
+
+    return glm::vec3(theta, phi, radius);
 }

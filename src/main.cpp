@@ -1,14 +1,20 @@
+/*
+    * Study material reference: 
+    * Prof. Mike Shah - https://www.youtube.com/@MikeShah
+    * Dr. Jeffrey Paone - CSCI 441
+*/
+
 #include "Engine.hpp"
 
 int main(int argc, char *argv[])
 {
-    // Engine engine(480, 640);
+    Engine engine(480, 640);
 
-    // engine.SetupObject();
+    engine.SetupObject();
 
-    // engine.MainLoop();
+    engine.MainLoop();
 
-    // engine.Shutdown();
+    engine.Shutdown();
 
     return 0;
 }
