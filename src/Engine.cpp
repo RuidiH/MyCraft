@@ -1,6 +1,8 @@
 #include "Engine.hpp"
-#include <glm/glm.hpp>
-#include <glm/gtc/constants.hpp>
+// #include <glm/gtx/rotate_vector.hpp>
+// #include <glm/gtx/transform.hpp>
+
+
 #include <cmath>
 
 Uint32 Engine::deltaTime;
@@ -98,28 +100,19 @@ void Engine::Input()
 
     while (SDL_PollEvent(&e) != 0)
     {
-        if (e.type == SDL_QUIT)
+        if (e.type == SDL_QUIT) 
+        {
+            std::cout << "Goodbye!" << std::endl;
+            mQuit = true;
+        }
+        if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_ESCAPE)
         {
             std::cout << "Goodbye!" << std::endl;
             mQuit = true;
         }
         if (e.type == SDL_MOUSEMOTION)
         {
-            // Assuming mCamera.angles.y (phi) is pitch and mCamera.angles.x (theta) is yaw
-            // Adjust pitch, ensuring it doesn't flip over the top or bottom
-            mCamera.angles.y = std::max(std::min(mCamera.angles.y - e.motion.yrel * 0.005f, glm::radians(89.0f)), glm::radians(-89.0f));
-            mCamera.angles.x -= e.motion.xrel * 0.005f; // Adjust yaw
-
-            // Calculate the direction vector from spherical coordinates
-            // Note: Assuming angles are stored in radians. If in degrees, convert them to radians.
-
-            mCamera.direction = glm::normalize(
-                glm::vec3(
-                    cos(mCamera.angles.y) * sin(mCamera.angles.x), // X
-                    sin(mCamera.angles.y),                         // Y
-                    cos(mCamera.angles.y) * cos(mCamera.angles.x)  // Z
-                    ));
-
+            mCamera.RotateCamera(e.motion.xrel, e.motion.yrel);
         }
     }
 
@@ -129,12 +122,20 @@ void Engine::Input()
     // camera controls
     if (state[SDL_SCANCODE_W])
     {
-        mCamera.position += mCamera.direction * 0.1f;
-    }
-    if (state[SDL_SCANCODE_S])
+        mCamera.MoveForward(0.1f);
+    } else if (state[SDL_SCANCODE_S])
     {
-        mCamera.position -= mCamera.direction * 0.1f;
+        mCamera.MoveBackward(0.1f); 
     }
+
+    if (state[SDL_SCANCODE_A])
+    {
+        mCamera.MoveLeft(0.1f);
+    } else if (state[SDL_SCANCODE_D])
+    {
+        mCamera.MoveRight(0.1f); 
+    }
+
 }
 
 void Engine::Update()
@@ -205,13 +206,13 @@ void Engine::LightPass()
     glm::mat4 projection = glm::perspective(glm::radians(45.0f),
                                             (float)mScreenWidth / (float)mScreenHeight,
                                             1.0f,
-                                            100.0f);
+                                            50.0f);
 
     mMainShader.SetUniform("u_Projection", projection);
 
-    glm::mat4 viewMtx = glm::lookAt(mCamera.position,
-                                    mCamera.direction + mCamera.position,
-                                    glm::vec3(0.0f, 1.0f, 0.0f));
+    glm::mat4 viewMtx = glm::lookAt(mCamera.GetPosition(),
+                                    mCamera.GetDirection() + mCamera.GetPosition(),
+                                    mCamera.GetUpVector());
 
     // set view matrix
     mMainShader.SetUniform("u_View", viewMtx);
@@ -221,7 +222,7 @@ void Engine::LightPass()
 
     mMainShader.SetUniform("lightColor", glm::vec3(1.0f, 1.0f, 1.0f));
 
-    mMainShader.SetUniform("viewPos", mCamera.position);
+    mMainShader.SetUniform("viewPos", mCamera.GetPosition());
 
     glm::mat4 orthoProjection = glm::ortho(-35.f, 35.f, -35.f, 35.f, 0.1f, 75.f);
     glm::mat4 lightView = glm::lookAt(glm::vec3(30.f, 30.f, 30.f), glm::vec3(0.0f), glm::vec3(0, 1, 0));
@@ -288,7 +289,7 @@ void Engine::InitializeGraphicsProgram()
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
 
-    gGraphicsApplicationWindow = SDL_CreateWindow("Window", 800, 300, mScreenWidth, mScreenHeight, SDL_WINDOW_OPENGL);
+    gGraphicsApplicationWindow = SDL_CreateWindow("Window", 400, 300, mScreenWidth, mScreenHeight, SDL_WINDOW_OPENGL);
     if (gGraphicsApplicationWindow == nullptr)
     {
         std::cout << "SDL_Window not created" << std::endl;
@@ -311,13 +312,9 @@ void Engine::InitializeGraphicsProgram()
 
     GetOpenGLVersionInfo();
 
-    mCamera.position = glm::vec3(-3.f, 3.f, 3.f);
-    // mCamera.angles = glm::vec3(-M_PI / 3.0f, M_PI / 2.8f, 1.0f);
-    mCamera.angles = glm::vec3(M_PI * 3 / 4.f, M_PI / 6.f, 10.0f);
-    // mCamera.angles = CalculateCameraAngles(mCamera.position, glm::vec3(0.f, 0.f, 0.f));
-    mCamera.direction = glm::vec3(0.f, 0.f, 0.f) - mCamera.position;
-
-    // recomputeOrientation();
+    mCamera.SetPosition(glm::vec3(0.f, 5.f, 5.f));
+    mCamera.SetUpVector(glm::vec3(0.f, 1.f, 0.f));
+    mCamera.SetDirection(glm::vec3(0.f, 0.f, 0.f) - mCamera.GetPosition());
 
     SDL_SetRelativeMouseMode(SDL_TRUE);
 

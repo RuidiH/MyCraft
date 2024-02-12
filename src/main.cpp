@@ -8,7 +8,7 @@
 
 int main(int argc, char *argv[])
 {
-    Engine engine(480, 640);
+    Engine engine(1000, 600);
 
     engine.SetupObject();
 

@@ -51,6 +51,6 @@ void main()
     }
 
     //vec3 result = (ambient + (1.0 - shadow) * diffuse + specular) * textureColor;
-    vec3 result = (ambient + (1.0 - shadow) * diffuse + specular) * textureColor;
+    vec3 result = (ambient + (1.0 - shadow) * diffuse) * textureColor;
     color = vec4(result, 1.0); 
 }

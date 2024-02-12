@@ -26,17 +26,8 @@
 #include "TextureManager.hpp"
 #include "ShapeComponent.hpp"
 #include "Shader.hpp"
+#include "Camera.hpp"
 
-struct Camera
-{
-    glm::vec3 lookAt;
-    glm::vec3 upVector;
-    glm::vec3 position;
-    glm::vec3 direction;
-
-    // x = theta, y = phi, z = radius.
-    glm::vec3 angles;
-};
 
 class Engine
 {
