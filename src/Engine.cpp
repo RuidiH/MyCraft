@@ -1,8 +1,11 @@
 #include "Engine.hpp"
+#include "ShapeComponent.hpp"
+#include "TransformComponent.hpp"
+
 #include <glm/gtx/rotate_vector.hpp>
 #include <glm/gtx/transform.hpp>
-
 #include <cmath>
+// #include <glm/gtx/rotate_vector.hpp>
 
 Uint32 Engine::deltaTime;
 
@@ -30,6 +33,7 @@ void Engine::SetupObject()
 
     std::shared_ptr<GameObject> grass = std::make_shared<GameObject>();
     std::shared_ptr<ShapeComponent> shape1 = std::make_shared<ShapeComponent>();
+    std::shared_ptr<TransformComponent> transform1 = std::make_shared<TransformComponent>();
     std::shared_ptr<Cube> cube1 = std::make_shared<Cube>(glm::vec3(-1.f, 1.0f, 0.f), 1.0f);
     cube1->setFaceTexture("top", mTextureManager.GetTexture("grass_carried"));
     cube1->setFaceTexture("bottom", mTextureManager.GetTexture("dirt"));
@@ -38,8 +42,9 @@ void Engine::SetupObject()
     cube1->setFaceTexture("front", mTextureManager.GetTexture("grass_side_carried"));
     cube1->setFaceTexture("back", mTextureManager.GetTexture("grass_side_carried"));
     // shape1->setCube(cube1);
-    shape1->AddCube(cube1);
-    grass->AddComponent(shape1);
+    // shape1->AddCube(cube1);
+    grass->AddComponent<ShapeComponent>();
+    grass->GetComponent<ShapeComponent>()->AddCube(cube1);
     mGameObjects.push_back(grass);
 
     std::shared_ptr<GameObject> snow = std::make_shared<GameObject>();
@@ -52,7 +57,8 @@ void Engine::SetupObject()
     cube2->setFaceTexture("front", mTextureManager.GetTexture("grass_side_snowed"));
     cube2->setFaceTexture("back", mTextureManager.GetTexture("grass_side_snowed"));
     shape2->AddCube(cube2);
-    snow->AddComponent(shape2);
+    // snow->AddComponent<ShapeComponent>(shape2);
+    snow->AddComponent<ShapeComponent>()->AddCube(cube2);
     mGameObjects.push_back(snow);
 
     for (int i = -2; i < 3; i++)
@@ -69,7 +75,7 @@ void Engine::SetupObject()
             cube->setFaceTexture("front", mTextureManager.GetTexture("dirt"));
             cube->setFaceTexture("back", mTextureManager.GetTexture("dirt"));
             shape->AddCube(cube);
-            object->AddComponent(shape);
+            object->AddComponent<ShapeComponent>()->AddCube(cube);
             mGameObjects.push_back(object);
         }
     }

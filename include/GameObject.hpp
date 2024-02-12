@@ -5,6 +5,7 @@
 #include <memory>
 
 #include "Component.hpp"
+class Component;
 
 class GameObject
 {
@@ -17,7 +18,17 @@ public:
     void Update();
     void Render();
 
-    void AddComponent(std::shared_ptr<Component> component);
+    // void AddComponent(std::shared_ptr<Component> component);
+    template <typename T, typename... Args>
+    T *AddComponent(Args &&...args)
+    {
+        static_assert(std::is_base_of<Component, T>::value, "T must be a Component type");
+
+        auto component = std::make_shared<T>(std::forward<Args>(args)...);
+        component->SetParent(this);
+        mComponents.push_back(component);
+        return component.get();
+    }
 
     // Template method to get a component of a specific type
     template <typename T>

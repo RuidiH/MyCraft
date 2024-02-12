@@ -7,8 +7,11 @@
 #include <map>
 #include <vector>
 #include <string>
+#include <memory>
 
-// #include "ShapeComponent.hpp"
+#include "ShapeComponent.hpp"
+
+class ShapeComponent;
 
 class Cube
 {
@@ -20,9 +23,9 @@ public:
     void Update();
     void Render();
 
-    glm::vec3 getMinCorner() { return this->mMinCorner;};
-    glm::vec3 getMaxCorner() { return this->mMaxCorner;};
-    void setPosition(glm::vec3 position); 
+    glm::vec3 getMinCorner() { return this->mMinCorner; };
+    glm::vec3 getMaxCorner() { return this->mMaxCorner; };
+    void setPosition(glm::vec3 position);
     void setVertexData();
 
     void setTexture(GLuint *texId)
@@ -35,6 +38,11 @@ public:
         mTextureIdMap[face] = texId;
     }
 
+    void SetParentComponent(ShapeComponent *parent)
+    {
+        mParent = parent;
+    }
+
 private:
     std::map<std::string, std::vector<float>> mVertexDataMap;
     std::map<std::string, std::vector<GLuint>> mIndexBufferMap;
@@ -44,6 +52,8 @@ private:
     GLuint *mTexId;
     glm::vec3 mMinCorner;
     glm::vec3 mMaxCorner;
+
+    ShapeComponent *mParent;
 };
 
 #endif // CUBE_HPP

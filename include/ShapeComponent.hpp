@@ -10,6 +10,7 @@
 #include "Component.hpp"
 #include "Cube.hpp"
 
+class Cube;
 class ShapeComponent : public Component {
     public:
         // Game loop functions
@@ -18,11 +19,12 @@ class ShapeComponent : public Component {
         virtual void Render() override;
 
         // void setCube(Cube* cube);
-        void AddCube(std::shared_ptr<Cube> cube) {mCubes.push_back(cube);};
+        void AddCube(std::shared_ptr<Cube> cube);
         std::vector<std::shared_ptr<Cube>> GetCubes() {return mCubes;};
     private:
         // Cube *cube;                
         std::vector<std::shared_ptr<Cube>> mCubes;
+ 
 };
 
 

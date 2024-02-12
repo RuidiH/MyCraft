@@ -7,6 +7,11 @@
     #include <SDL.h>
 #endif
 
+#include <memory>
+#include "GameObject.hpp"
+
+class GameObject;
+
 class Component{
     public:
         virtual ~Component() {};
@@ -15,8 +20,11 @@ class Component{
         virtual void Render() {};
         virtual void Input() {}; 
 
+        virtual void SetParent(GameObject* parent) { mParent = parent; }
+        virtual GameObject* GetParent() { return mParent; }
     private:
-    
+        GameObject* mParent;
+        
 };
 
 

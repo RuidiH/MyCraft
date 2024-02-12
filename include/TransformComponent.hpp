@@ -14,6 +14,10 @@ class TransformComponent : public Component
         void Rotate(glm::vec3 rotation);
         void Scale(glm::vec3 scale);
 
+        glm::vec3 GetPosition() const { return mPosition; }
+        glm::vec3 GetRotation() const { return mRotation; } 
+        glm::vec3 GetScale() const { return mScale; }
+        glm::mat4 GetModelMatrix() const;
     private:
         glm::vec3 mPosition;
         glm::vec3 mRotation;

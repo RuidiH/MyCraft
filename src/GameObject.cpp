@@ -34,10 +34,11 @@ void GameObject::Render()
     }
 }
 
-void GameObject::AddComponent(std::shared_ptr<Component> component)
-{
-    if (component != nullptr)
-    {
-        mComponents.push_back(component);
-    }
-}
+// void GameObject::AddComponent(std::shared_ptr<Component> component)
+// {
+//     if (component != nullptr)
+//     {
+//         mComponents.push_back(component);
+//         component->SetParent(std::make_unique<GameObject>(*this));
+//     }
+// }

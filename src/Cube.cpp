@@ -115,7 +115,7 @@ void Cube::setVertexData()
     float radius = mSize / 2.0;
 
     // initialize vertex data map
-    const std::vector<float> vTop{
+    std::vector<float> vTop{
         // Top
         mPosition.x - radius, mPosition.y + radius, mPosition.z - radius, 0.0f, 0.0f, 0.f, 1.f, 0.f, // - + -
         mPosition.x - radius, mPosition.y + radius, mPosition.z + radius, 0.0f, 1.0f, 0.f, 1.f, 0.f, // - + +

@@ -26,7 +26,6 @@
 #include "GameObject.hpp"
 #include "Cube.hpp"
 #include "TextureManager.hpp"
-#include "ShapeComponent.hpp"
 #include "Shader.hpp"
 #include "Camera.hpp"
 
@@ -75,7 +74,7 @@ private:
     GLuint mShadowMapFBO;
 
     // light pass and shadowPass
-    // void ShadowPass(std::shared_ptr<GameObject> object, glm::mat4 model);
+    // void ShadowPass(std::shared_ptr<GameObject> object);
     void ShadowPass();
     void LightPass();
 
