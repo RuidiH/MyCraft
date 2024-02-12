@@ -6,9 +6,8 @@ Camera::Camera()
 {
 }
 
-Camera::Camera(glm::vec3 lookAt, glm::vec3 upVector, glm::vec3 position, glm::vec3 direction)
+Camera::Camera(glm::vec3 upVector, glm::vec3 position, glm::vec3 direction)
 {
-    this->lookAt = lookAt;
     this->upVector = upVector;
     this->position = position;
     this->direction = direction;
@@ -45,10 +44,15 @@ void Camera::RotateCamera(float x, float y)
     direction = glm::rotate(direction, -y * 0.003f, glm::cross(direction, upVector));
 }
 
-void Camera::SetLookAt(glm::vec3 lookAt)
+void Camera::UpdateViewMatrix()
 {
-    this->lookAt = lookAt;
+    viewMatrix = glm::lookAt(position, position + direction, upVector);
 }
+
+// void Camera::SetLookAt(glm::vec3 lookAt)
+// {
+//     this->lookAt = lookAt;
+// }
 
 void Camera::SetUpVector(glm::vec3 upVector)
 {
@@ -65,10 +69,15 @@ void Camera::SetDirection(glm::vec3 direction)
     this->direction = direction;
 }
 
-glm::vec3 Camera::GetLookAt()
+void Camera::SetProjectionMatrix(float fov, float aspect, float near, float far)
 {
-    return lookAt;
+    projectionMatrix = glm::perspective(fov, aspect, near, far);
 }
+
+// glm::vec3 Camera::GetLookAt()
+// {
+//     return lookAt;
+// }
 
 glm::vec3 Camera::GetUpVector()
 {
@@ -81,4 +90,12 @@ glm::vec3 Camera::GetPosition() {
 
 glm::vec3 Camera::GetDirection() {
     return direction;
+}
+
+glm::mat4 Camera::GetViewMatrix() {
+    return viewMatrix;
+}   
+
+glm::mat4 Camera::GetProjectionMatrix() {
+    return projectionMatrix;
 }

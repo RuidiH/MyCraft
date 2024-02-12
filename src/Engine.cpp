@@ -203,19 +203,20 @@ void Engine::LightPass()
     // glUniform1i(glGetUniformLocation(mGraphicsPipelineShaderProgram, "shadowMap"), 1);
     mMainShader.SetUniform("shadowMap", 1);
 
-    glm::mat4 projection = glm::perspective(glm::radians(45.0f),
-                                            (float)mScreenWidth / (float)mScreenHeight,
-                                            1.0f,
-                                            50.0f);
+    // glm::mat4 projection = glm::perspective(glm::radians(45.0f),
+    //                                         (float)mScreenWidth / (float)mScreenHeight,
+    //                                         1.0f,
+    //                                         50.0f);
 
-    mMainShader.SetUniform("u_Projection", projection);
+    mMainShader.SetUniform("u_Projection", mCamera.GetProjectionMatrix());
 
-    glm::mat4 viewMtx = glm::lookAt(mCamera.GetPosition(),
-                                    mCamera.GetDirection() + mCamera.GetPosition(),
-                                    mCamera.GetUpVector());
+    // glm::mat4 viewMtx = glm::lookAt(mCamera.GetPosition(),
+    //                                 mCamera.GetDirection() + mCamera.GetPosition(),
+    //                                 mCamera.GetUpVector());
 
     // set view matrix
-    mMainShader.SetUniform("u_View", viewMtx);
+    mCamera.UpdateViewMatrix();
+    mMainShader.SetUniform("u_View", mCamera.GetViewMatrix());
 
     // set lightings
     mMainShader.SetUniform("lightPos", glm::vec3(3.0f, 3.0f, 3.0f));
@@ -315,6 +316,7 @@ void Engine::InitializeGraphicsProgram()
     mCamera.SetPosition(glm::vec3(0.f, 5.f, 5.f));
     mCamera.SetUpVector(glm::vec3(0.f, 1.f, 0.f));
     mCamera.SetDirection(glm::vec3(0.f, 0.f, 0.f) - mCamera.GetPosition());
+    mCamera.SetProjectionMatrix(45.0f, (float)mScreenWidth / (float)mScreenHeight, 0.1f, 50.0f);
 
     SDL_SetRelativeMouseMode(SDL_TRUE);
 
