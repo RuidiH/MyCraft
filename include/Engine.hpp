@@ -6,6 +6,7 @@
 #include <SDL2/SDL_image.h>
 #include <glad/glad.h>
 #include <glm/glm.hpp>
+#include <glm/vec3.hpp>
 #include <glm/mat4x4.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -16,6 +17,7 @@
 #include <fstream>
 #include <iostream>
 #include <map>
+#include <memory>
 
 #ifndef M_PI
     #define M_PI 3.14159265358979323846
@@ -47,7 +49,7 @@ private:
     int mScreenWidth;
     int mScreenHeight;
     TextureManager mTextureManager;
-    std::vector<GameObject *> mGameObjects;
+    std::vector<std::shared_ptr<GameObject>> mGameObjects;
     Camera mCamera;
     glm::vec2 mShadowResolution = glm::vec2(4096, 4096);
     // game state
@@ -70,10 +72,10 @@ private:
     // shaders
     Shader mMainShader;
     Shader mShadowShader;
-
     GLuint mShadowMapFBO;
 
     // light pass and shadowPass
+    // void ShadowPass(std::shared_ptr<GameObject> object, glm::mat4 model);
     void ShadowPass();
     void LightPass();
 
@@ -90,6 +92,7 @@ private:
     void GetOpenGLVersionInfo();
     std::string LoadShaderAsString(const std::string &filename);
     glm::vec3 CalculateCameraAngles(const glm::vec3& cameraPos, const glm::vec3& lookAtPos);
+    bool RayCastTest(const glm::vec3 origin, const glm::vec3 direction, const glm::vec3 minCorner, const glm::vec3 maxCorner, float &tNear, float &tFar);
 };
 
 #endif

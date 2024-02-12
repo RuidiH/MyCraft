@@ -10,34 +10,40 @@
 
 // #include "ShapeComponent.hpp"
 
-class Cube {
-    public:
-        Cube();
-        Cube(glm::vec3 position, float size);
-        // ~Cube();
-        void Input();
-        void Update();
-        void Render(); 
+class Cube
+{
+public:
+    Cube();
+    Cube(glm::vec3 position, float size);
+    // ~Cube();
+    void Input();
+    void Update();
+    void Render();
 
-        /* Getter and setter functions */
-        void setPosition(glm::vec3 position); // call this function before setVertexData()
-        void setVertexData();
+    glm::vec3 getMinCorner() { return this->mMinCorner;};
+    glm::vec3 getMaxCorner() { return this->mMaxCorner;};
+    void setPosition(glm::vec3 position); 
+    void setVertexData();
 
-        void setTexture(GLuint *texId) {
-            mTexId = texId;
-        }
+    void setTexture(GLuint *texId)
+    {
+        mTexId = texId;
+    }
 
-        void setFaceTexture(std::string face, GLuint *texId) {
-            mTextureIdMap[face] = texId;
-        }
+    void setFaceTexture(std::string face, GLuint *texId)
+    {
+        mTextureIdMap[face] = texId;
+    }
 
-    private:
-        std::map<std::string, std::vector<float>> mVertexDataMap;
-        std::map<std::string, std::vector<GLuint>> mIndexBufferMap;
-        std::map<std::string, GLuint*> mTextureIdMap;
-        glm::vec3 mPosition;
-        float mSize;
-        GLuint *mTexId;
+private:
+    std::map<std::string, std::vector<float>> mVertexDataMap;
+    std::map<std::string, std::vector<GLuint>> mIndexBufferMap;
+    std::map<std::string, GLuint *> mTextureIdMap;
+    glm::vec3 mPosition;
+    float mSize;
+    GLuint *mTexId;
+    glm::vec3 mMinCorner;
+    glm::vec3 mMaxCorner;
 };
 
 #endif // CUBE_HPP

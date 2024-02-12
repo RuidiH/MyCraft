@@ -6,10 +6,10 @@ GameObject::GameObject()
 
 GameObject::~GameObject()
 {
-    for (auto component : mComponents)
-    {
-        delete component;
-    }
+    // for (auto component : mComponents)
+    // {
+    //     delete component;
+    // }
     mComponents.clear();
 }
 
@@ -34,7 +34,7 @@ void GameObject::Render()
     }
 }
 
-void GameObject::AddComponent(Component *component)
+void GameObject::AddComponent(std::shared_ptr<Component> component)
 {
     if (component != nullptr)
     {

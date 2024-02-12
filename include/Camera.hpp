@@ -30,6 +30,8 @@ class Camera {
         glm::mat4 GetViewMatrix();
         glm::mat4 GetProjectionMatrix();
 
+        glm::vec3 GetRayDirection(int screenWidth, int screenHeight, glm::vec2 rayStart);
+
     private:
         // glm::vec3 lookAt;
         glm::vec3 upVector;

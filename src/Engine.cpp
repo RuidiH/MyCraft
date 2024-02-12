@@ -1,7 +1,6 @@
 #include "Engine.hpp"
-// #include <glm/gtx/rotate_vector.hpp>
-// #include <glm/gtx/transform.hpp>
-
+#include <glm/gtx/rotate_vector.hpp>
+#include <glm/gtx/transform.hpp>
 
 #include <cmath>
 
@@ -29,29 +28,30 @@ void Engine::SetupObject()
     mTextureManager.LoadTexture("grass_side_snowed", "./assets/texture/grass_side_snowed.png");
     mTextureManager.LoadTexture("snow", "./assets/texture/snow.png");
 
-    GameObject *grass = new GameObject();
-    ShapeComponent *shape1 = new ShapeComponent();
-    Cube *cube1 = new Cube(glm::vec3(-1.f, 1.0f, 0.f), 1.0f);
+    std::shared_ptr<GameObject> grass = std::make_shared<GameObject>();
+    std::shared_ptr<ShapeComponent> shape1 = std::make_shared<ShapeComponent>();
+    std::shared_ptr<Cube> cube1 = std::make_shared<Cube>(glm::vec3(-1.f, 1.0f, 0.f), 1.0f);
     cube1->setFaceTexture("top", mTextureManager.GetTexture("grass_carried"));
     cube1->setFaceTexture("bottom", mTextureManager.GetTexture("dirt"));
     cube1->setFaceTexture("left", mTextureManager.GetTexture("grass_side_carried"));
     cube1->setFaceTexture("right", mTextureManager.GetTexture("grass_side_carried"));
     cube1->setFaceTexture("front", mTextureManager.GetTexture("grass_side_carried"));
     cube1->setFaceTexture("back", mTextureManager.GetTexture("grass_side_carried"));
-    shape1->setCube(cube1);
+    // shape1->setCube(cube1);
+    shape1->AddCube(cube1);
     grass->AddComponent(shape1);
     mGameObjects.push_back(grass);
 
-    GameObject *snow = new GameObject();
-    ShapeComponent *shape2 = new ShapeComponent();
-    Cube *cube2 = new Cube(glm::vec3(0.f, 1.f, 0.f), 1.0f);
+    std::shared_ptr<GameObject> snow = std::make_shared<GameObject>();
+    std::shared_ptr<ShapeComponent> shape2 = std::make_shared<ShapeComponent>();
+    std::shared_ptr<Cube> cube2 = std::make_shared<Cube>(glm::vec3(0.f, 1.f, 0.f), 1.0f);
     cube2->setFaceTexture("top", mTextureManager.GetTexture("snow"));
     cube2->setFaceTexture("bottom", mTextureManager.GetTexture("dirt"));
     cube2->setFaceTexture("left", mTextureManager.GetTexture("grass_side_snowed"));
     cube2->setFaceTexture("right", mTextureManager.GetTexture("grass_side_snowed"));
     cube2->setFaceTexture("front", mTextureManager.GetTexture("grass_side_snowed"));
     cube2->setFaceTexture("back", mTextureManager.GetTexture("grass_side_snowed"));
-    shape2->setCube(cube2);
+    shape2->AddCube(cube2);
     snow->AddComponent(shape2);
     mGameObjects.push_back(snow);
 
@@ -59,17 +59,16 @@ void Engine::SetupObject()
     {
         for (int j = -2; j < 3; j++)
         {
-            GameObject *object = new GameObject();
-            ShapeComponent *shape = new ShapeComponent();
-            Cube *cube = new Cube(glm::vec3(i, 0.0f, j), 1.0f);
-            // cube->setPosition(glm::vec3(i, 0.0f, j));
+            std::shared_ptr<GameObject> object = std::make_shared<GameObject>();
+            std::shared_ptr<ShapeComponent> shape = std::make_shared<ShapeComponent>();
+            std::shared_ptr<Cube> cube = std::make_shared<Cube>(glm::vec3(i, 0.0f, j), 1.0f);
             cube->setFaceTexture("top", mTextureManager.GetTexture("dirt"));
             cube->setFaceTexture("bottom", mTextureManager.GetTexture("dirt"));
             cube->setFaceTexture("left", mTextureManager.GetTexture("dirt"));
             cube->setFaceTexture("right", mTextureManager.GetTexture("dirt"));
             cube->setFaceTexture("front", mTextureManager.GetTexture("dirt"));
             cube->setFaceTexture("back", mTextureManager.GetTexture("dirt"));
-            shape->setCube(cube);
+            shape->AddCube(cube);
             object->AddComponent(shape);
             mGameObjects.push_back(object);
         }
@@ -100,7 +99,7 @@ void Engine::Input()
 
     while (SDL_PollEvent(&e) != 0)
     {
-        if (e.type == SDL_QUIT) 
+        if (e.type == SDL_QUIT)
         {
             std::cout << "Goodbye!" << std::endl;
             mQuit = true;
@@ -123,19 +122,35 @@ void Engine::Input()
     if (state[SDL_SCANCODE_W])
     {
         mCamera.MoveForward(0.1f);
-    } else if (state[SDL_SCANCODE_S])
+    }
+    else if (state[SDL_SCANCODE_S])
     {
-        mCamera.MoveBackward(0.1f); 
+        mCamera.MoveBackward(0.1f);
     }
 
     if (state[SDL_SCANCODE_A])
     {
         mCamera.MoveLeft(0.1f);
-    } else if (state[SDL_SCANCODE_D])
+    }
+    else if (state[SDL_SCANCODE_D])
     {
-        mCamera.MoveRight(0.1f); 
+        mCamera.MoveRight(0.1f);
     }
 
+    // ray casting test
+    glm::vec3 rayDir = mCamera.GetRayDirection(mScreenWidth, mScreenHeight, glm::vec2(mScreenWidth / 2, mScreenHeight / 2));
+    // std::cout << "ray direction: " << rayDir.x << " " << rayDir.y << " " << rayDir.z << std::endl;
+    // std::cout << "position: " << mCamera.GetPosition().x << " " << mCamera.GetPosition().y << " " << mCamera.GetPosition().z << std::endl;
+    for (std::shared_ptr<GameObject> gameObject : mGameObjects) {
+        ShapeComponent* shape = gameObject->GetComponent<ShapeComponent>();
+        for (auto cube : shape->GetCubes()) {
+            float tNear, tFar;
+            bool result = RayCastTest(mCamera.GetPosition(), rayDir, cube->getMinCorner(), cube->getMaxCorner(), tNear, tFar);
+            if (result) {
+                // std::cout << "hit," << "tNear: " << tNear << std::endl;
+            }
+        }
+    }
 }
 
 void Engine::Update()
@@ -148,6 +163,16 @@ void Engine::Update()
 
 void Engine::Render()
 {
+    // for (auto gameObject : mGameObjects)
+    // {
+    //     glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f));
+    //     model = glm::rotate(model, glm::radians(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+    //     mShadowShader.SetUniform("model", model);
+    //     ShadowPass();
+    //     gameObject->Render();
+    // }
+
+
     ShadowPass();
     LightPass();
 
@@ -176,9 +201,7 @@ void Engine::ShadowPass()
     {
         glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f));
         model = glm::rotate(model, glm::radians(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-
         mShadowShader.SetUniform("model", model);
-
         gameObject->Render();
     }
 
@@ -200,19 +223,9 @@ void Engine::LightPass()
     glActiveTexture(GL_TEXTURE0 + 1);
     glBindTexture(GL_TEXTURE_2D, mShadowMapTexture);
 
-    // glUniform1i(glGetUniformLocation(mGraphicsPipelineShaderProgram, "shadowMap"), 1);
     mMainShader.SetUniform("shadowMap", 1);
 
-    // glm::mat4 projection = glm::perspective(glm::radians(45.0f),
-    //                                         (float)mScreenWidth / (float)mScreenHeight,
-    //                                         1.0f,
-    //                                         50.0f);
-
     mMainShader.SetUniform("u_Projection", mCamera.GetProjectionMatrix());
-
-    // glm::mat4 viewMtx = glm::lookAt(mCamera.GetPosition(),
-    //                                 mCamera.GetDirection() + mCamera.GetPosition(),
-    //                                 mCamera.GetUpVector());
 
     // set view matrix
     mCamera.UpdateViewMatrix();
@@ -246,10 +259,10 @@ void Engine::LightPass()
 void Engine::Shutdown()
 {
     // clear all game objects
-    for (auto gameObject : mGameObjects)
-    {
-        delete gameObject;
-    }
+    // for (auto gameObject : mGameObjects)
+    // {
+    //     delete gameObject;
+    // }
     mGameObjects.clear();
 
     SDL_StopTextInput();
@@ -315,7 +328,7 @@ void Engine::InitializeGraphicsProgram()
 
     mCamera.SetPosition(glm::vec3(0.f, 5.f, 5.f));
     mCamera.SetUpVector(glm::vec3(0.f, 1.f, 0.f));
-    mCamera.SetDirection(glm::vec3(0.f, 0.f, 0.f) - mCamera.GetPosition());
+    mCamera.SetDirection(glm::normalize(glm::vec3(0.f, 0.f, 0.f) - mCamera.GetPosition()));
     mCamera.SetProjectionMatrix(45.0f, (float)mScreenWidth / (float)mScreenHeight, 0.1f, 50.0f);
 
     SDL_SetRelativeMouseMode(SDL_TRUE);
@@ -366,6 +379,21 @@ void Engine::GetOpenGLVersionInfo()
     std::cout << "Renderer: " << glGetString(GL_RENDERER) << std::endl;
     std::cout << "Version: " << glGetString(GL_VERSION) << std::endl;
     std::cout << "Shading Language: " << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
+}
+
+bool Engine::RayCastTest(const glm::vec3 origin, const glm::vec3 direction, glm::vec3 minCorner, glm::vec3 maxCorner, float &tNear, float &tFar)
+{
+    glm::vec3 invDir = 1.0f / direction;
+    glm::vec3 tMin = (minCorner - origin) * invDir;
+    glm::vec3 tMax = (maxCorner - origin) * invDir;
+
+    glm::vec3 t1 = glm::min(tMin, tMax);
+    glm::vec3 t2 = glm::max(tMin, tMax);
+
+    tNear = std::max(std::max(t1.x, t1.y), t1.z);
+    tFar = std::min(std::min(t2.x, t2.y), t2.z);
+
+    return tNear <= tFar;
 }
 
 std::string Engine::LoadShaderAsString(const std::string &filename)

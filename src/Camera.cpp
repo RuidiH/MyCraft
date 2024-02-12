@@ -39,9 +39,8 @@ void Camera::MoveRight(float speed)
 
 void Camera::RotateCamera(float x, float y)
 {
-
-    direction = glm::rotate(direction, -x * 0.003f, glm::vec3(0.0f, 1.0f, 0.0f));
-    direction = glm::rotate(direction, -y * 0.003f, glm::cross(direction, upVector));
+    direction = glm::rotate(direction, glm::radians(-x * 0.05f), glm::vec3(0.0f, 1.0f, 0.0f));
+    direction = glm::rotate(direction, glm::radians(-y * 0.05f), glm::cross(direction, upVector));
 }
 
 void Camera::UpdateViewMatrix()
@@ -98,4 +97,17 @@ glm::mat4 Camera::GetViewMatrix() {
 
 glm::mat4 Camera::GetProjectionMatrix() {
     return projectionMatrix;
+}
+glm::vec3 Camera::GetRayDirection(int screenWidth, int screenHeight, glm::vec2 rayStart) {
+    float x = (2.0f * rayStart.x / screenWidth) - 1.0f;
+    float y = 1.0f - (2.0f * rayStart.y / screenHeight);
+    glm::vec4 rayClip = glm::vec4(x, y, -1.0, 1.0);
+
+    glm::vec4 rayEye = inverse(projectionMatrix) * rayClip;
+    rayEye = glm::vec4(rayEye.x, rayEye.y, -1.0, 0.0);
+
+    glm::vec3 rayWorld = glm::vec3(inverse(viewMatrix) * rayEye);
+    rayWorld = glm::normalize(rayWorld);
+
+    return rayWorld;
 }

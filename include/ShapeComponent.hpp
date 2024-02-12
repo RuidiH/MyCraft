@@ -4,6 +4,9 @@
 #include <glad/glad.h>
 #include <glm/glm.hpp>
 
+#include <memory>
+#include <vector>
+
 #include "Component.hpp"
 #include "Cube.hpp"
 
@@ -14,10 +17,12 @@ class ShapeComponent : public Component {
         virtual void Update() override;
         virtual void Render() override;
 
-        void setCube(Cube* cube);
+        // void setCube(Cube* cube);
+        void AddCube(std::shared_ptr<Cube> cube) {mCubes.push_back(cube);};
+        std::vector<std::shared_ptr<Cube>> GetCubes() {return mCubes;};
     private:
-    // TODO: allow a vector of shapes instead of just one
-        Cube *cube;                
+        // Cube *cube;                
+        std::vector<std::shared_ptr<Cube>> mCubes;
 };
 
 

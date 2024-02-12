@@ -169,4 +169,7 @@ void Cube::setVertexData()
     mVertexDataMap["right"] = vRight;
     mVertexDataMap["front"] = vFront;
     mVertexDataMap["back"] = vBack;
+
+    mMinCorner = glm::vec3(mPosition.x - radius, mPosition.y - radius, mPosition.z - radius);
+    mMaxCorner = glm::vec3(mPosition.x + radius, mPosition.y + radius, mPosition.z + radius); 
 }
