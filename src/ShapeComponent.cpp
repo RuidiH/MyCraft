@@ -6,6 +6,10 @@ void ShapeComponent::Input()
 
 void ShapeComponent::Update()
 {
+    for (auto cube : mCubes)
+    {
+        cube->Update();
+    }
 }
 
 void ShapeComponent::Render()

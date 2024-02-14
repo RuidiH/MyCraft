@@ -67,11 +67,13 @@ private:
     void Input();
     void Update();
     void Render();
+    void FindSelectedObject();
 
     // shaders
     Shader mMainShader;
     Shader mShadowShader;
     GLuint mShadowMapFBO;
+    glm::mat4 mLightProjection; 
 
     // light pass and shadowPass
     // void ShadowPass(std::shared_ptr<GameObject> object);
@@ -91,6 +93,9 @@ private:
     void GetOpenGLVersionInfo();
     std::string LoadShaderAsString(const std::string &filename);
     glm::vec3 CalculateCameraAngles(const glm::vec3& cameraPos, const glm::vec3& lookAtPos);
+
+    // Ray Cast
+    std::shared_ptr<GameObject> mSelected;
     bool RayCastTest(const glm::vec3 origin, const glm::vec3 direction, const glm::vec3 minCorner, const glm::vec3 maxCorner, float &tNear, float &tFar);
 };
 

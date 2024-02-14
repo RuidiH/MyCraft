@@ -15,8 +15,15 @@ TransformComponent::~TransformComponent()
 {
 }
 
-void TransformComponent::Move(glm::vec3 position) {
+TransformComponent::TransformComponent(glm::vec3 position)
+{
     mPosition = position;
+    mRotation = glm::vec3(0.0f, 0.0f, 0.0f);
+    mScale = glm::vec3(1.0f, 1.0f, 1.0f);
+}
+
+void TransformComponent::Move(glm::vec3 direction) {
+    mPosition += mPosition;
 }
 
 void TransformComponent::Rotate(glm::vec3 rotation) {

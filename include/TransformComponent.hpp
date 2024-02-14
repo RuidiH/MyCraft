@@ -3,14 +3,18 @@
 
 #include "Component.hpp"
 #include <glm/glm.hpp>
+#include <Cube.hpp>
 
 class TransformComponent : public Component
 {
     public:
         TransformComponent();
+        TransformComponent(glm::vec3 position);
         ~TransformComponent();
 
-        void Move(glm::vec3 position);
+        void SetPosition(glm::vec3 position) { mPosition = position; }
+
+        void Move(glm::vec3 direction);
         void Rotate(glm::vec3 rotation);
         void Scale(glm::vec3 scale);
 

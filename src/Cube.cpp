@@ -3,6 +3,7 @@
 #include <vector>
 #include <iostream>
 #include <SDL2/SDL_image.h>
+#include "TransformComponent.hpp"
 
 Cube::Cube()
 {
@@ -14,8 +15,6 @@ Cube::Cube(glm::vec3 position, float size)
 {
     mPosition = position;
     mSize = size;
-
-    setVertexData();
 }
 
 // Cube::~Cube() {
@@ -28,6 +27,7 @@ void Cube::Input()
 
 void Cube::Update()
 {
+    UpdateVertexData(); 
 }
 
 void Cube::Render()
@@ -110,8 +110,10 @@ void Cube::setPosition(glm::vec3 position)
     mPosition = position;
 }
 
-void Cube::setVertexData()
+void Cube::UpdateVertexData()
 {
+//    // retrieve transform component
+//     glm::vec3 position = mParent->GetParent()->GetComponent<TransformComponent>()->GetPosition();
     float radius = mSize / 2.0;
 
     // initialize vertex data map

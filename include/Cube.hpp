@@ -23,17 +23,17 @@ public:
     void Update();
     void Render();
 
-    glm::vec3 getMinCorner() { return this->mMinCorner; };
-    glm::vec3 getMaxCorner() { return this->mMaxCorner; };
+    glm::vec3 GetMinCorner() { return this->mMinCorner; };
+    glm::vec3 GetMaxCorner() { return this->mMaxCorner; };
     void setPosition(glm::vec3 position);
-    void setVertexData();
+    void UpdateVertexData();
 
-    void setTexture(GLuint *texId)
+    void SetTexture(GLuint *texId)
     {
         mTexId = texId;
     }
 
-    void setFaceTexture(std::string face, GLuint *texId)
+    void SetFaceTexture(std::string face, GLuint *texId)
     {
         mTextureIdMap[face] = texId;
     }

@@ -16,6 +16,11 @@ Engine::Engine(int width, int height) : mScreenWidth(width), mScreenHeight(heigh
     CreateGraphicsPipeline();
 
     InitializeShadowMap();
+
+    // TODO: hard-coded light projection
+    glm::mat4 orthoProjection = glm::ortho(-35.f, 35.f, -35.f, 35.f, 0.1f, 75.f);
+    glm::mat4 lightView = glm::lookAt(glm::vec3(30.f, 30.f, 30.f), glm::vec3(0.0f), glm::vec3(0, 1, 0));
+    mLightProjection = orthoProjection * lightView;
 }
 
 Engine::~Engine()
@@ -32,33 +37,33 @@ void Engine::SetupObject()
     mTextureManager.LoadTexture("snow", "./assets/texture/snow.png");
 
     std::shared_ptr<GameObject> grass = std::make_shared<GameObject>();
-    std::shared_ptr<ShapeComponent> shape1 = std::make_shared<ShapeComponent>();
-    std::shared_ptr<TransformComponent> transform1 = std::make_shared<TransformComponent>();
     std::shared_ptr<Cube> cube1 = std::make_shared<Cube>(glm::vec3(-1.f, 1.0f, 0.f), 1.0f);
-    cube1->setFaceTexture("top", mTextureManager.GetTexture("grass_carried"));
-    cube1->setFaceTexture("bottom", mTextureManager.GetTexture("dirt"));
-    cube1->setFaceTexture("left", mTextureManager.GetTexture("grass_side_carried"));
-    cube1->setFaceTexture("right", mTextureManager.GetTexture("grass_side_carried"));
-    cube1->setFaceTexture("front", mTextureManager.GetTexture("grass_side_carried"));
-    cube1->setFaceTexture("back", mTextureManager.GetTexture("grass_side_carried"));
+    cube1->SetFaceTexture("top", mTextureManager.GetTexture("grass_carried"));
+    cube1->SetFaceTexture("bottom", mTextureManager.GetTexture("dirt"));
+    cube1->SetFaceTexture("left", mTextureManager.GetTexture("grass_side_carried"));
+    cube1->SetFaceTexture("right", mTextureManager.GetTexture("grass_side_carried"));
+    cube1->SetFaceTexture("front", mTextureManager.GetTexture("grass_side_carried"));
+    cube1->SetFaceTexture("back", mTextureManager.GetTexture("grass_side_carried"));
     // shape1->setCube(cube1);
     // shape1->AddCube(cube1);
     grass->AddComponent<ShapeComponent>();
     grass->GetComponent<ShapeComponent>()->AddCube(cube1);
+    grass->AddComponent<TransformComponent>();
+    grass->GetComponent<TransformComponent>()->SetPosition(glm::vec3(-1.f, 1.0f, 0.f));
     mGameObjects.push_back(grass);
 
     std::shared_ptr<GameObject> snow = std::make_shared<GameObject>();
-    std::shared_ptr<ShapeComponent> shape2 = std::make_shared<ShapeComponent>();
     std::shared_ptr<Cube> cube2 = std::make_shared<Cube>(glm::vec3(0.f, 1.f, 0.f), 1.0f);
-    cube2->setFaceTexture("top", mTextureManager.GetTexture("snow"));
-    cube2->setFaceTexture("bottom", mTextureManager.GetTexture("dirt"));
-    cube2->setFaceTexture("left", mTextureManager.GetTexture("grass_side_snowed"));
-    cube2->setFaceTexture("right", mTextureManager.GetTexture("grass_side_snowed"));
-    cube2->setFaceTexture("front", mTextureManager.GetTexture("grass_side_snowed"));
-    cube2->setFaceTexture("back", mTextureManager.GetTexture("grass_side_snowed"));
-    shape2->AddCube(cube2);
-    // snow->AddComponent<ShapeComponent>(shape2);
-    snow->AddComponent<ShapeComponent>()->AddCube(cube2);
+    cube2->SetFaceTexture("top", mTextureManager.GetTexture("snow"));
+    cube2->SetFaceTexture("bottom", mTextureManager.GetTexture("dirt"));
+    cube2->SetFaceTexture("left", mTextureManager.GetTexture("grass_side_snowed"));
+    cube2->SetFaceTexture("right", mTextureManager.GetTexture("grass_side_snowed"));
+    cube2->SetFaceTexture("front", mTextureManager.GetTexture("grass_side_snowed"));
+    cube2->SetFaceTexture("back", mTextureManager.GetTexture("grass_side_snowed"));
+    snow->AddComponent<ShapeComponent>();
+    snow->GetComponent<ShapeComponent>()->AddCube(cube2);
+    snow->AddComponent<TransformComponent>();
+    snow->GetComponent<TransformComponent>()->SetPosition(glm::vec3(0.f, 1.f, 0.f));
     mGameObjects.push_back(snow);
 
     for (int i = -2; i < 3; i++)
@@ -66,16 +71,17 @@ void Engine::SetupObject()
         for (int j = -2; j < 3; j++)
         {
             std::shared_ptr<GameObject> object = std::make_shared<GameObject>();
-            std::shared_ptr<ShapeComponent> shape = std::make_shared<ShapeComponent>();
             std::shared_ptr<Cube> cube = std::make_shared<Cube>(glm::vec3(i, 0.0f, j), 1.0f);
-            cube->setFaceTexture("top", mTextureManager.GetTexture("dirt"));
-            cube->setFaceTexture("bottom", mTextureManager.GetTexture("dirt"));
-            cube->setFaceTexture("left", mTextureManager.GetTexture("dirt"));
-            cube->setFaceTexture("right", mTextureManager.GetTexture("dirt"));
-            cube->setFaceTexture("front", mTextureManager.GetTexture("dirt"));
-            cube->setFaceTexture("back", mTextureManager.GetTexture("dirt"));
-            shape->AddCube(cube);
-            object->AddComponent<ShapeComponent>()->AddCube(cube);
+            cube->SetFaceTexture("top", mTextureManager.GetTexture("dirt"));
+            cube->SetFaceTexture("bottom", mTextureManager.GetTexture("dirt"));
+            cube->SetFaceTexture("left", mTextureManager.GetTexture("dirt"));
+            cube->SetFaceTexture("right", mTextureManager.GetTexture("dirt"));
+            cube->SetFaceTexture("front", mTextureManager.GetTexture("dirt"));
+            cube->SetFaceTexture("back", mTextureManager.GetTexture("dirt"));
+            object->AddComponent<ShapeComponent>();
+            object->GetComponent<ShapeComponent>()->AddCube(cube);
+            object->AddComponent<TransformComponent>();
+            object->GetComponent<TransformComponent>()->SetPosition(glm::vec3(i, 0.0f, j));
             mGameObjects.push_back(object);
         }
     }
@@ -91,7 +97,7 @@ void Engine::MainLoop()
         Input();
 
         // Update game here
-        // TODO: add update function
+        Update();
 
         Render();
 
@@ -144,19 +150,42 @@ void Engine::Input()
     }
 
     // ray casting test
+    FindSelectedObject();
+}
+
+void Engine::FindSelectedObject()
+{
     glm::vec3 rayDir = mCamera.GetRayDirection(mScreenWidth, mScreenHeight, glm::vec2(mScreenWidth / 2, mScreenHeight / 2));
-    // std::cout << "ray direction: " << rayDir.x << " " << rayDir.y << " " << rayDir.z << std::endl;
-    // std::cout << "position: " << mCamera.GetPosition().x << " " << mCamera.GetPosition().y << " " << mCamera.GetPosition().z << std::endl;
-    for (std::shared_ptr<GameObject> gameObject : mGameObjects) {
-        ShapeComponent* shape = gameObject->GetComponent<ShapeComponent>();
-        for (auto cube : shape->GetCubes()) {
-            float tNear, tFar;
-            bool result = RayCastTest(mCamera.GetPosition(), rayDir, cube->getMinCorner(), cube->getMaxCorner(), tNear, tFar);
-            if (result) {
-                // std::cout << "hit," << "tNear: " << tNear << std::endl;
+    float smallestTNear = -1.f;
+    std::shared_ptr<GameObject> hitObject;
+    for (std::shared_ptr<GameObject> gameObject : mGameObjects)
+    {
+        ShapeComponent *shape = gameObject->GetComponent<ShapeComponent>();
+        for (auto cube : shape->GetCubes())
+        {
+            float tNear, tFar = 0.f;
+            bool result = RayCastTest(mCamera.GetPosition(), rayDir, cube->GetMinCorner(), cube->GetMaxCorner(), tNear, tFar);
+
+            // base case for ray cast test
+            if (smallestTNear == -1.f)
+            {
+                smallestTNear = tNear;
+                hitObject = gameObject;
+                continue;
+            }
+
+            // keep track of closest colliding object
+            if (result)
+            {
+                if (tNear < smallestTNear)
+                {
+                    smallestTNear = tNear;
+                    hitObject = gameObject;
+                }
             }
         }
     }
+    mSelected = hitObject;
 }
 
 void Engine::Update()
@@ -196,11 +225,11 @@ void Engine::ShadowPass()
     mShadowShader.Use();
 
     // Shadow pass
-    glm::mat4 orthoProjection = glm::ortho(-35.f, 35.f, -35.f, 35.f, 0.1f, 75.f);
-    glm::mat4 lightView = glm::lookAt(glm::vec3(30.f, 30.f, 30.f), glm::vec3(0.0f), glm::vec3(0, 1, 0));
-    glm::mat4 lightProjection = orthoProjection * lightView;
+    // glm::mat4 orthoProjection = glm::ortho(-35.f, 35.f, -35.f, 35.f, 0.1f, 75.f);
+    // glm::mat4 lightView = glm::lookAt(glm::vec3(30.f, 30.f, 30.f), glm::vec3(0.0f), glm::vec3(0, 1, 0));
+    // glm::mat4 lightProjection = orthoProjection * lightView;
 
-    mShadowShader.SetUniform("lightProjection", lightProjection);
+    mShadowShader.SetUniform("lightProjection", mLightProjection);
 
     // render
     for (auto gameObject : mGameObjects)
@@ -244,11 +273,11 @@ void Engine::LightPass()
 
     mMainShader.SetUniform("viewPos", mCamera.GetPosition());
 
-    glm::mat4 orthoProjection = glm::ortho(-35.f, 35.f, -35.f, 35.f, 0.1f, 75.f);
-    glm::mat4 lightView = glm::lookAt(glm::vec3(30.f, 30.f, 30.f), glm::vec3(0.0f), glm::vec3(0, 1, 0));
-    glm::mat4 lightProjection = orthoProjection * lightView;
+    // glm::mat4 orthoProjection = glm::ortho(-35.f, 35.f, -35.f, 35.f, 0.1f, 75.f);
+    // glm::mat4 lightView = glm::lookAt(glm::vec3(30.f, 30.f, 30.f), glm::vec3(0.0f), glm::vec3(0, 1, 0));
+    // glm::mat4 lightProjection = orthoProjection * lightView;
 
-    mMainShader.SetUniform("u_LightProjection", lightProjection);
+    mMainShader.SetUniform("u_LightProjection", mLightProjection);
 
     for (auto &gameObject : mGameObjects)
     {
