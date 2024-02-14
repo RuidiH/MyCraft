@@ -7,13 +7,13 @@
 
 Cube::Cube()
 {
-    mPosition = glm::vec3(0.0f, 0.0f, 0.0f);
+    // mPosition = glm::vec3(0.0f, 0.0f, 0.0f);
     mSize = 1.0f;
 }
 
 Cube::Cube(glm::vec3 position, float size)
 {
-    mPosition = position;
+    // mPosition = position;
     mSize = size;
 }
 
@@ -27,7 +27,7 @@ void Cube::Input()
 
 void Cube::Update()
 {
-    UpdateVertexData(); 
+    UpdateVertexData();
 }
 
 void Cube::Render()
@@ -107,62 +107,63 @@ void Cube::Render()
 
 void Cube::setPosition(glm::vec3 position)
 {
-    mPosition = position;
+    // mPosition = position;
 }
 
 void Cube::UpdateVertexData()
 {
-//    // retrieve transform component
-//     glm::vec3 position = mParent->GetParent()->GetComponent<TransformComponent>()->GetPosition();
+    // retrieve transform component
+    glm::vec3 position = mParent->GetParent()->GetComponent<TransformComponent>()->GetPosition();
     float radius = mSize / 2.0;
+    // float radius = mSize / 1.0;
 
     // initialize vertex data map
     std::vector<float> vTop{
         // Top
-        mPosition.x - radius, mPosition.y + radius, mPosition.z - radius, 0.0f, 0.0f, 0.f, 1.f, 0.f, // - + -
-        mPosition.x - radius, mPosition.y + radius, mPosition.z + radius, 0.0f, 1.0f, 0.f, 1.f, 0.f, // - + +
-        mPosition.x + radius, mPosition.y + radius, mPosition.z + radius, 1.0f, 1.0f, 0.f, 1.f, 0.f, // + + +
-        mPosition.x + radius, mPosition.y + radius, mPosition.z - radius, 1.0f, 0.0f, 0.f, 1.f, 0.f  // + + -
+        -radius, radius, -radius, 0.0f, 0.0f, 0.f, 1.f, 0.f, // - + -
+        -radius, radius, radius, 0.0f, 1.0f, 0.f, 1.f, 0.f,  // - + +
+        radius, radius, radius, 1.0f, 1.0f, 0.f, 1.f, 0.f,   // + + +
+        radius, radius, -radius, 1.0f, 0.0f, 0.f, 1.f, 0.f   // + + -
     };
 
     std::vector<float> vBottom{
         // Bottom
-        mPosition.x - radius, mPosition.y - radius, mPosition.z + radius, 0.0f, 1.0f, 0.f, -1.f, 0.f, // - - +
-        mPosition.x - radius, mPosition.y - radius, mPosition.z - radius, 0.0f, 0.0f, 0.f, -1.f, 0.f, // - - -
-        mPosition.x + radius, mPosition.y - radius, mPosition.z - radius, 1.0f, 0.0f, 0.f, -1.f, 0.f, // + - -
-        mPosition.x + radius, mPosition.y - radius, mPosition.z + radius, 1.0f, 1.0f, 0.f, -1.f, 0.f  // + - +
+        -radius, -radius, radius, 0.0f, 1.0f, 0.f, -1.f, 0.f,  // - - +
+        -radius, -radius, -radius, 0.0f, 0.0f, 0.f, -1.f, 0.f, // - - -
+        radius, -radius, -radius, 1.0f, 0.0f, 0.f, -1.f, 0.f,  // + - -
+        radius, -radius, radius, 1.0f, 1.0f, 0.f, -1.f, 0.f    // + - +
     };
 
     std::vector<float> vLeft{
         // Left
-        mPosition.x - radius, mPosition.y + radius, mPosition.z - radius, 0.0f, 0.0f, -1.f, 0.f, 0.f, // - + -
-        mPosition.x - radius, mPosition.y - radius, mPosition.z - radius, 0.0f, 1.0f, -1.f, 0.f, 0.f, // - - -
-        mPosition.x - radius, mPosition.y - radius, mPosition.z + radius, 1.0f, 1.0f, -1.f, 0.f, 0.f, // - - +
-        mPosition.x - radius, mPosition.y + radius, mPosition.z + radius, 1.0f, 0.0f, -1.f, 0.f, 0.f  // - + +
+        -radius, radius, -radius, 0.0f, 0.0f, -1.f, 0.f, 0.f,  // - + -
+        -radius, -radius, -radius, 0.0f, 1.0f, -1.f, 0.f, 0.f, // - - -
+        -radius, -radius, radius, 1.0f, 1.0f, -1.f, 0.f, 0.f,  // - - +
+        -radius, radius, radius, 1.0f, 0.0f, -1.f, 0.f, 0.f    // - + +
     };
 
     std::vector<float> vRight{
         // Right
-        mPosition.x + radius, mPosition.y + radius, mPosition.z + radius, 0.0f, 0.0f, 1.f, 0.f, 0.f, // + + +
-        mPosition.x + radius, mPosition.y - radius, mPosition.z + radius, 0.0f, 1.0f, 1.f, 0.f, 0.f, // + - +
-        mPosition.x + radius, mPosition.y - radius, mPosition.z - radius, 1.0f, 1.0f, 1.f, 0.f, 0.f, // + - -
-        mPosition.x + radius, mPosition.y + radius, mPosition.z - radius, 1.0f, 0.0f, 1.f, 0.f, 0.f  // + + -
+        radius, radius, radius, 0.0f, 0.0f, 1.f, 0.f, 0.f,   // + + +
+        radius, -radius, radius, 0.0f, 1.0f, 1.f, 0.f, 0.f,  // + - +
+        radius, -radius, -radius, 1.0f, 1.0f, 1.f, 0.f, 0.f, // + - -
+        radius, radius, -radius, 1.0f, 0.0f, 1.f, 0.f, 0.f   // + + -
     };
 
     std::vector<float> vFront{
         // Front
-        mPosition.x - radius, mPosition.y + radius, mPosition.z + radius, 0.0f, 0.0f, 0.f, 0.f, 1.f, // - + +
-        mPosition.x - radius, mPosition.y - radius, mPosition.z + radius, 0.0f, 1.0f, 0.f, 0.f, 1.f, // - - +
-        mPosition.x + radius, mPosition.y - radius, mPosition.z + radius, 1.0f, 1.0f, 0.f, 0.f, 1.f, // + - +
-        mPosition.x + radius, mPosition.y + radius, mPosition.z + radius, 1.0f, 0.0f, 0.f, 0.f, 1.f  // + + +
+        -radius, radius, radius, 0.0f, 0.0f, 0.f, 0.f, 1.f,  // - + +
+        -radius, -radius, radius, 0.0f, 1.0f, 0.f, 0.f, 1.f, // - - +
+        radius, -radius, radius, 1.0f, 1.0f, 0.f, 0.f, 1.f,  // + - +
+        radius, radius, radius, 1.0f, 0.0f, 0.f, 0.f, 1.f    // + + +
     };
 
     std::vector<float> vBack{
         // Back
-        mPosition.x - radius, mPosition.y - radius, mPosition.z - radius, 1.0f, 1.0f, 0.f, 0.f, -1.f, // - - -
-        mPosition.x - radius, mPosition.y + radius, mPosition.z - radius, 1.0f, 0.0f, 0.f, 0.f, -1.f, // - + -
-        mPosition.x + radius, mPosition.y + radius, mPosition.z - radius, 0.0f, 0.0f, 0.f, 0.f, -1.f, // + + -
-        mPosition.x + radius, mPosition.y - radius, mPosition.z - radius, 0.0f, 1.0f, 0.f, 0.f, -1.f  // + - -
+        -radius, -radius, -radius, 1.0f, 1.0f, 0.f, 0.f, -1.f, // - - -
+        -radius, radius, -radius, 1.0f, 0.0f, 0.f, 0.f, -1.f,  // - + -
+        radius, radius, -radius, 0.0f, 0.0f, 0.f, 0.f, -1.f,   // + + -
+        radius, -radius, -radius, 0.0f, 1.0f, 0.f, 0.f, -1.f   // + - -
     };
 
     mVertexDataMap["top"] = vTop;
@@ -172,6 +173,6 @@ void Cube::UpdateVertexData()
     mVertexDataMap["front"] = vFront;
     mVertexDataMap["back"] = vBack;
 
-    mMinCorner = glm::vec3(mPosition.x - radius, mPosition.y - radius, mPosition.z - radius);
-    mMaxCorner = glm::vec3(mPosition.x + radius, mPosition.y + radius, mPosition.z + radius); 
+    mMinCorner = glm::vec3(-radius, -radius, -radius);
+    mMaxCorner = glm::vec3(radius, radius, radius);
 }

@@ -47,7 +47,7 @@ private:
     std::map<std::string, std::vector<float>> mVertexDataMap;
     std::map<std::string, std::vector<GLuint>> mIndexBufferMap;
     std::map<std::string, GLuint *> mTextureIdMap;
-    glm::vec3 mPosition;
+    // glm::vec3 mPosition;
     float mSize;
     GLuint *mTexId;
     glm::vec3 mMinCorner;

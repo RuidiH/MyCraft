@@ -17,10 +17,6 @@ Engine::Engine(int width, int height) : mScreenWidth(width), mScreenHeight(heigh
 
     InitializeShadowMap();
 
-    // TODO: hard-coded light projection
-    glm::mat4 orthoProjection = glm::ortho(-35.f, 35.f, -35.f, 35.f, 0.1f, 75.f);
-    glm::mat4 lightView = glm::lookAt(glm::vec3(30.f, 30.f, 30.f), glm::vec3(0.0f), glm::vec3(0, 1, 0));
-    mLightProjection = orthoProjection * lightView;
 }
 
 Engine::~Engine()
@@ -37,7 +33,7 @@ void Engine::SetupObject()
     mTextureManager.LoadTexture("snow", "./assets/texture/snow.png");
 
     std::shared_ptr<GameObject> grass = std::make_shared<GameObject>();
-    std::shared_ptr<Cube> cube1 = std::make_shared<Cube>(glm::vec3(-1.f, 1.0f, 0.f), 1.0f);
+    std::shared_ptr<Cube> cube1 = std::make_shared<Cube>();
     cube1->SetFaceTexture("top", mTextureManager.GetTexture("grass_carried"));
     cube1->SetFaceTexture("bottom", mTextureManager.GetTexture("dirt"));
     cube1->SetFaceTexture("left", mTextureManager.GetTexture("grass_side_carried"));
@@ -49,11 +45,11 @@ void Engine::SetupObject()
     grass->AddComponent<ShapeComponent>();
     grass->GetComponent<ShapeComponent>()->AddCube(cube1);
     grass->AddComponent<TransformComponent>();
-    grass->GetComponent<TransformComponent>()->SetPosition(glm::vec3(-1.f, 1.0f, 0.f));
+    grass->GetComponent<TransformComponent>()->SetPosition(glm::vec3(-1.0f, 2.0f, 0.f));
     mGameObjects.push_back(grass);
 
     std::shared_ptr<GameObject> snow = std::make_shared<GameObject>();
-    std::shared_ptr<Cube> cube2 = std::make_shared<Cube>(glm::vec3(0.f, 1.f, 0.f), 1.0f);
+    std::shared_ptr<Cube> cube2 = std::make_shared<Cube>();
     cube2->SetFaceTexture("top", mTextureManager.GetTexture("snow"));
     cube2->SetFaceTexture("bottom", mTextureManager.GetTexture("dirt"));
     cube2->SetFaceTexture("left", mTextureManager.GetTexture("grass_side_snowed"));
@@ -71,7 +67,7 @@ void Engine::SetupObject()
         for (int j = -2; j < 3; j++)
         {
             std::shared_ptr<GameObject> object = std::make_shared<GameObject>();
-            std::shared_ptr<Cube> cube = std::make_shared<Cube>(glm::vec3(i, 0.0f, j), 1.0f);
+            std::shared_ptr<Cube> cube = std::make_shared<Cube>();
             cube->SetFaceTexture("top", mTextureManager.GetTexture("dirt"));
             cube->SetFaceTexture("bottom", mTextureManager.GetTexture("dirt"));
             cube->SetFaceTexture("left", mTextureManager.GetTexture("dirt"));
@@ -91,8 +87,6 @@ void Engine::MainLoop()
 {
     while (!mQuit)
     {
-        // std::cout << "camera values: " << mCamera.angles.x << " " << mCamera.angles.y << " " << mCamera.angles.z << std::endl;
-        // std::cout << "direction: " << mCamera.direction.x << " " << mCamera.direction.y << " " << mCamera.direction.z << std::endl;
         FrameCapping();
         Input();
 
@@ -198,15 +192,10 @@ void Engine::Update()
 
 void Engine::Render()
 {
-    // for (auto gameObject : mGameObjects)
-    // {
-    //     glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f));
-    //     model = glm::rotate(model, glm::radians(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-    //     mShadowShader.SetUniform("model", model);
-    //     ShadowPass();
-    //     gameObject->Render();
-    // }
 
+    glm::mat4 orthoProjection = glm::ortho(-35.f, 35.f, -35.f, 35.f, 0.1f, 75.f);
+    glm::mat4 lightView = glm::lookAt(glm::vec3(3.f, 3.f, 3.f), glm::vec3(0.0f), glm::vec3(0, 1, 0));
+    mLightProjection = orthoProjection * lightView;
 
     ShadowPass();
     LightPass();
@@ -216,7 +205,6 @@ void Engine::Render()
 
 void Engine::ShadowPass()
 {
-    // glCullFace(GL_FRONT);
     glBindFramebuffer(GL_FRAMEBUFFER, mShadowMapFBO);
     glViewport(0, 0, mShadowResolution.x, mShadowResolution.y);
 
@@ -224,18 +212,12 @@ void Engine::ShadowPass()
 
     mShadowShader.Use();
 
-    // Shadow pass
-    // glm::mat4 orthoProjection = glm::ortho(-35.f, 35.f, -35.f, 35.f, 0.1f, 75.f);
-    // glm::mat4 lightView = glm::lookAt(glm::vec3(30.f, 30.f, 30.f), glm::vec3(0.0f), glm::vec3(0, 1, 0));
-    // glm::mat4 lightProjection = orthoProjection * lightView;
-
     mShadowShader.SetUniform("lightProjection", mLightProjection);
 
     // render
     for (auto gameObject : mGameObjects)
     {
-        glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f));
-        model = glm::rotate(model, glm::radians(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+        glm::mat4 model = gameObject->GetComponent<TransformComponent>()->GetModelMatrix();
         mShadowShader.SetUniform("model", model);
         gameObject->Render();
     }
@@ -245,15 +227,12 @@ void Engine::ShadowPass()
 
 void Engine::LightPass()
 {
-    // glCullFace(GL_BACK);
     glViewport(0, 0, mScreenWidth, mScreenHeight);
 
+    glClearColor(0.1f, 0.1f, 0.1f, 1.f);
     glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
-    // glUseProgram(mGraphicsPipelineShaderProgram);
     mMainShader.Use();
-
-    glClearColor(0.1f, 0.1f, 0.1f, 1.f);
 
     glActiveTexture(GL_TEXTURE0 + 1);
     glBindTexture(GL_TEXTURE_2D, mShadowMapTexture);
@@ -273,20 +252,13 @@ void Engine::LightPass()
 
     mMainShader.SetUniform("viewPos", mCamera.GetPosition());
 
-    // glm::mat4 orthoProjection = glm::ortho(-35.f, 35.f, -35.f, 35.f, 0.1f, 75.f);
-    // glm::mat4 lightView = glm::lookAt(glm::vec3(30.f, 30.f, 30.f), glm::vec3(0.0f), glm::vec3(0, 1, 0));
-    // glm::mat4 lightProjection = orthoProjection * lightView;
 
     mMainShader.SetUniform("u_LightProjection", mLightProjection);
 
     for (auto &gameObject : mGameObjects)
     {
-        glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f));
-        model = glm::rotate(model, glm::radians(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-        // model = glm::scale(model, glm::vec3(g_uScale, g_uScale, g_uScale));
-
+        glm::mat4 model = gameObject->GetComponent<TransformComponent>()->GetModelMatrix();
         mMainShader.SetUniform("u_ModelMatrix", model);
-
         gameObject->Render();
     }
 }
