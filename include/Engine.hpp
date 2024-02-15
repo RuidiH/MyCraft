@@ -72,6 +72,7 @@ private:
     // shaders
     Shader mMainShader;
     Shader mShadowShader;
+    Shader mQuadShader;
     GLuint mShadowMapFBO;
     glm::mat4 mLightProjection; 
 

@@ -16,7 +16,6 @@ Engine::Engine(int width, int height) : mScreenWidth(width), mScreenHeight(heigh
     CreateGraphicsPipeline();
 
     InitializeShadowMap();
-
 }
 
 Engine::~Engine()
@@ -45,26 +44,26 @@ void Engine::SetupObject()
     grass->AddComponent<ShapeComponent>();
     grass->GetComponent<ShapeComponent>()->AddCube(cube1);
     grass->AddComponent<TransformComponent>();
-    grass->GetComponent<TransformComponent>()->SetPosition(glm::vec3(-1.0f, 2.0f, 0.f));
+    grass->GetComponent<TransformComponent>()->SetPosition(glm::vec3(1.0f, 1.0f, 1.f));
     mGameObjects.push_back(grass);
 
-    std::shared_ptr<GameObject> snow = std::make_shared<GameObject>();
-    std::shared_ptr<Cube> cube2 = std::make_shared<Cube>();
-    cube2->SetFaceTexture("top", mTextureManager.GetTexture("snow"));
-    cube2->SetFaceTexture("bottom", mTextureManager.GetTexture("dirt"));
-    cube2->SetFaceTexture("left", mTextureManager.GetTexture("grass_side_snowed"));
-    cube2->SetFaceTexture("right", mTextureManager.GetTexture("grass_side_snowed"));
-    cube2->SetFaceTexture("front", mTextureManager.GetTexture("grass_side_snowed"));
-    cube2->SetFaceTexture("back", mTextureManager.GetTexture("grass_side_snowed"));
-    snow->AddComponent<ShapeComponent>();
-    snow->GetComponent<ShapeComponent>()->AddCube(cube2);
-    snow->AddComponent<TransformComponent>();
-    snow->GetComponent<TransformComponent>()->SetPosition(glm::vec3(0.f, 1.f, 0.f));
-    mGameObjects.push_back(snow);
+    // std::shared_ptr<GameObject> snow = std::make_shared<GameObject>();
+    // std::shared_ptr<Cube> cube2 = std::make_shared<Cube>();
+    // cube2->SetFaceTexture("top", mTextureManager.GetTexture("snow"));
+    // cube2->SetFaceTexture("bottom", mTextureManager.GetTexture("dirt"));
+    // cube2->SetFaceTexture("left", mTextureManager.GetTexture("grass_side_snowed"));
+    // cube2->SetFaceTexture("right", mTextureManager.GetTexture("grass_side_snowed"));
+    // cube2->SetFaceTexture("front", mTextureManager.GetTexture("grass_side_snowed"));
+    // cube2->SetFaceTexture("back", mTextureManager.GetTexture("grass_side_snowed"));
+    // snow->AddComponent<ShapeComponent>();
+    // snow->GetComponent<ShapeComponent>()->AddCube(cube2);
+    // snow->AddComponent<TransformComponent>();
+    // snow->GetComponent<TransformComponent>()->SetPosition(glm::vec3(0.f, 1.f, 0.f));
+    // mGameObjects.push_back(snow);
 
-    for (int i = -2; i < 3; i++)
+    for (int i = -3; i < 4; i++)
     {
-        for (int j = -2; j < 3; j++)
+        for (int j = -3; j < 4; j++)
         {
             std::shared_ptr<GameObject> object = std::make_shared<GameObject>();
             std::shared_ptr<Cube> cube = std::make_shared<Cube>();
@@ -193,11 +192,53 @@ void Engine::Update()
 void Engine::Render()
 {
 
-    glm::mat4 orthoProjection = glm::ortho(-35.f, 35.f, -35.f, 35.f, 0.1f, 75.f);
-    glm::mat4 lightView = glm::lookAt(glm::vec3(3.f, 3.f, 3.f), glm::vec3(0.0f), glm::vec3(0, 1, 0));
+    glm::mat4 orthoProjection = glm::ortho(-15.f, 15.f, -15.f, 15.f, 1.f, 35.f);
+    glm::mat4 lightView = glm::lookAt(glm::vec3(3.f, 3.f, 3.f), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
+    // glm::mat4 lightView = glm::lookAt(mCamera.GetPosition(), mCamera.GetPosition() + mCamera.GetDirection(), glm::vec3(0, 1, 0));
     mLightProjection = orthoProjection * lightView;
 
     ShadowPass();
+
+    // glDisable(GL_DEPTH_TEST);
+    // float quadVertices[] = {
+    //     // positions   // texCoords
+    //     -1.0f, 1.0f, 0.0f, 1.0f,
+    //     -1.0f, -1.0f, 0.0f, 0.0f,
+    //     1.0f, -1.0f, 1.0f, 0.0f,
+
+    //     -1.0f, 1.0f, 0.0f, 1.0f,
+    //     1.0f, -1.0f, 1.0f, 0.0f,
+    //     1.0f, 1.0f, 1.0f, 1.0f};
+
+    // unsigned int quadVAO, quadVBO;
+    // glGenVertexArrays(1, &quadVAO);
+    // glGenBuffers(1, &quadVBO);
+    // glBindVertexArray(quadVAO);
+    // glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
+    // glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
+    // glEnableVertexAttribArray(0);
+    // glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void *)0);
+    // glEnableVertexAttribArray(1);
+    // glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void *)(2 * sizeof(float)));
+
+    // glViewport(0, 0, mScreenWidth, mScreenHeight);
+
+    // // Use the quad shader program
+    // mQuadShader.Use();
+    // glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    // // Bind the shadow map texture
+    // glActiveTexture(GL_TEXTURE0);
+    // glBindTexture(GL_TEXTURE_2D, mShadowMapTexture); // Assume shadowMapTexture is your depth texture
+    // glUniform1i(glGetUniformLocation(mQuadShader.GetProgramID(), "shadowMap"), 0);
+
+    // // Bind the quad VAO and draw
+    // glBindVertexArray(quadVAO);
+    // glDrawArrays(GL_TRIANGLES, 0, 6);
+
+    // // Optionally reset state
+    // glBindVertexArray(0);
+    // glEnable(GL_DEPTH_TEST);
+
     LightPass();
 
     glUseProgram(0);
@@ -251,7 +292,6 @@ void Engine::LightPass()
     mMainShader.SetUniform("lightColor", glm::vec3(1.0f, 1.0f, 1.0f));
 
     mMainShader.SetUniform("viewPos", mCamera.GetPosition());
-
 
     mMainShader.SetUniform("u_LightProjection", mLightProjection);
 
@@ -378,6 +418,7 @@ void Engine::CreateGraphicsPipeline()
 
     mMainShader.Init("./shaders/vert.glsl", "./shaders/frag.glsl");
     mShadowShader.Init("./shaders/shadow_v.glsl", "./shaders/shadow_f.glsl");
+    mQuadShader.Init("./shaders/quad_v.glsl", "./shaders/quad_f.glsl");
 }
 
 void Engine::GetOpenGLVersionInfo()

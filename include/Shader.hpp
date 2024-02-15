@@ -15,6 +15,8 @@ class Shader{
         void SetUniform(const char* name, glm::vec3 value) const;
         void SetUniform(const char* name, glm::mat4 matrix) const; 
 
+        GLuint GetProgramID() const { return mProgramID; }
+
     private:
         GLuint mProgramID; 
         
