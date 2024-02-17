@@ -20,5 +20,5 @@ void main()
     fTexCoord = vTexture;
     fNormal = mat3(transpose(inverse(u_ModelMatrix))) * vNormal;
     gl_Position = u_Projection * u_View * vec4(fPos, 1.0);
-    fPosLight = u_LightProjection * vec4(vPosition, 1.0);
+    fPosLight = u_LightProjection * u_ModelMatrix * vec4(vPosition, 1.0);
 }
