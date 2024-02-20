@@ -12,9 +12,7 @@ TextureManager::~TextureManager()
         glDeleteTextures(1, texture.second);
         delete texture.second;
     }
-
 }
-
 
 void TextureManager::LoadTexture(const std::string &textureName, const std::string &filePath)
 {
@@ -29,6 +27,7 @@ void TextureManager::LoadTexture(const std::string &textureName, const std::stri
     }
 
     mTextureMap.insert(std::pair<std::string, GLuint*>(textureName, textureId));
+    mTexturePathMap.insert(std::pair<std::string, std::string>(textureName, filePath));
 
     glGenTextures(1, textureId);
     glBindTexture(GL_TEXTURE_2D, *textureId);
@@ -57,4 +56,16 @@ GLuint* TextureManager::GetTexture(const std::string &textureName)
         std::cout << "ERROR: Texture not found" << std::endl;
         return nullptr;
     }
+}
+
+std::string TextureManager::FindTextureName(GLuint *textureId)
+{
+    for (auto &texture : mTextureMap)
+    {
+        if (texture.second == textureId)
+        {
+            return texture.first;
+        }
+    }
+    return "";
 }

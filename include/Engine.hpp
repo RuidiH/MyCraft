@@ -28,6 +28,7 @@
 #include "TextureManager.hpp"
 #include "Shader.hpp"
 #include "Camera.hpp"
+#include "WorldSerializer.hpp"
 
 
 class Engine
@@ -51,6 +52,7 @@ private:
     std::vector<std::shared_ptr<GameObject>> mGameObjects;
     Camera mCamera;
     glm::vec2 mShadowResolution = glm::vec2(4096, 4096);
+
     // game state
     bool mQuit = false;
 
@@ -59,6 +61,9 @@ private:
     GLuint mGraphicsPipelineShaderProgram;
     GLuint mFrameBufferProgram;
     GLuint mShadowMapTexture;
+
+    // World Serializer
+    WorldSerializer mWorldSerializer;
 
     // for framecap
     uint32_t prevTime = 0;

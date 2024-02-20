@@ -23,6 +23,9 @@ TransformComponent::TransformComponent(glm::vec3 position)
     mScale = glm::vec3(1.0f, 1.0f, 1.0f);
 }
 
+
+
+
 void TransformComponent::Move(glm::vec3 direction)
 {
     mPosition += direction;
@@ -30,12 +33,12 @@ void TransformComponent::Move(glm::vec3 direction)
 
 void TransformComponent::Rotate(glm::vec3 rotation)
 {
-    mRotation = rotation;
+    mRotation += rotation;
 }
 
 void TransformComponent::Scale(glm::vec3 scale)
 {
-    mScale = scale;
+    mScale += scale;
 }
 
 glm::mat4 TransformComponent::GetModelMatrix() const

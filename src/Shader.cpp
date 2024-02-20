@@ -7,6 +7,10 @@
 Shader::Shader() {
 }
 
+Shader::~Shader() {
+    glDeleteProgram(mProgramID);
+}
+
 void Shader::Init(const char* vertexPath, const char* fragmentPath) {
     std::string vertexCode = LoadShaderAsString(vertexPath);
     std::string fragmentCode = LoadShaderAsString(fragmentPath);

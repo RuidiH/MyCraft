@@ -23,11 +23,11 @@ elif platform.system()=="Darwin":
     INCLUDE_DIR="-I ./include/ -I/Library/Frameworks/SDL2.framework/Headers"
     LIBRARIES="-F/Library/Frameworks -framework SDL2"
 elif platform.system()=="Windows":
-    COMPILER="g++ -std=c++17 -g" # Note we use g++ here as it is more likely what you have
+    COMPILER="g++ -std=c++17" # Note we use g++ here as it is more likely what you have
     ARGUMENTS="-D MINGW -std=c++17 -static-libgcc -static-libstdc++" 
     INCLUDE_DIR="-I./include/"
     EXECUTABLE="lab.exe"
-    LIBRARIES="-lmingw32 -lSDL2main -lSDL2 -lSDL2_ttf -lSDL2_image -lopengl32"
+    LIBRARIES="-lmingw32 -lSDL2main -lSDL2 -lSDL2_image"
 # (2)=================== Platform specific configuration ===================== #
 
 # (3)====================== Building the Executable ========================== #

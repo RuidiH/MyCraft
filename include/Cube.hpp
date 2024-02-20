@@ -25,27 +25,19 @@ public:
 
     glm::vec3 GetMinCorner() { return this->mMinCorner; };
     glm::vec3 GetMaxCorner() { return this->mMaxCorner; };
+    std::map<std::string, GLuint *> GetTextureIdMap() { return mTextureIdMap; };
+
     void setPosition(glm::vec3 position);
-    void UpdateVertexData();
+    void SetVertexData();
+    void SetTexture(GLuint *texId) { mTexId = texId; }
 
-    void SetTexture(GLuint *texId)
-    {
-        mTexId = texId;
-    }
+    void SetFaceTexture(std::string face, GLuint *texId) { mTextureIdMap[face] = texId; }
 
-    void SetFaceTexture(std::string face, GLuint *texId)
-    {
-        mTextureIdMap[face] = texId;
-    }
-
-    void SetParentComponent(ShapeComponent *parent)
-    {
-        mParent = parent;
-    }
+    void SetParentComponent(ShapeComponent *parent) { mParent = parent; }
 
 private:
     std::map<std::string, std::vector<float>> mVertexDataMap;
-    std::map<std::string, std::vector<GLuint>> mIndexBufferMap;
+    // std::map<std::string, std::vector<GLuint>> mIndexBufferMap;
     std::map<std::string, GLuint *> mTextureIdMap;
     // glm::vec3 mPosition;
     float mSize;

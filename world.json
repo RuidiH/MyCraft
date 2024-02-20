@@ -1,0 +1,1404 @@
+{
+    "World": [
+        {
+            "Textures": [
+                {
+                    "dirt": "./assets/texture/dirt.png"
+                },
+                {
+                    "grass_carried": "./assets/texture/grass_carried.png"
+                },
+                {
+                    "grass_side_carried": "./assets/texture/grass_side_carried.png"
+                },
+                {
+                    "grass_side_snowed": "./assets/texture/grass_side_snowed.png"
+                },
+                {
+                    "snow": "./assets/texture/snow.png"
+                }
+            ]
+        },
+        {
+            "GameObjects": [
+                {
+                    "Object": [
+                        {
+                            "TransformComponent": [
+                                {
+                                    "Position": [
+                                        -2.0,
+                                        1.0,
+                                        -1.0
+                                    ]
+                                },
+                                {
+                                    "Rotation": [
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ]
+                                },
+                                {
+                                    "Scale": [
+                                        1.0,
+                                        1.0,
+                                        1.0
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "ShapeComponent": [
+                                {
+                                    "top": "grass_carried"
+                                },
+                                {
+                                    "bottom": "dirt"
+                                },
+                                {
+                                    "front": "grass_side_carried"
+                                },
+                                {
+                                    "back": "grass_side_carried"
+                                },
+                                {
+                                    "left": "grass_side_carried"
+                                },
+                                {
+                                    "right": "grass_side_carried"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "Object": [
+                        {
+                            "TransformComponent": [
+                                {
+                                    "Position": [
+                                        0.0,
+                                        1.0,
+                                        0.0
+                                    ]
+                                },
+                                {
+                                    "Rotation": [
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ]
+                                },
+                                {
+                                    "Scale": [
+                                        1.0,
+                                        1.0,
+                                        1.0
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "ShapeComponent": [
+                                {
+                                    "top": "snow"
+                                },
+                                {
+                                    "bottom": "dirt"
+                                },
+                                {
+                                    "front": "grass_side_snowed"
+                                },
+                                {
+                                    "back": "grass_side_snowed"
+                                },
+                                {
+                                    "left": "grass_side_snowed"
+                                },
+                                {
+                                    "right": "grass_side_snowed"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "Object": [
+                        {
+                            "TransformComponent": [
+                                {
+                                    "Position": [
+                                        -2.0,
+                                        0.0,
+                                        -2.0
+                                    ]
+                                },
+                                {
+                                    "Rotation": [
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ]
+                                },
+                                {
+                                    "Scale": [
+                                        1.0,
+                                        1.0,
+                                        1.0
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "ShapeComponent": [
+                                {
+                                    "top": "dirt"
+                                },
+                                {
+                                    "bottom": "dirt"
+                                },
+                                {
+                                    "front": "dirt"
+                                },
+                                {
+                                    "back": "dirt"
+                                },
+                                {
+                                    "left": "dirt"
+                                },
+                                {
+                                    "right": "dirt"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "Object": [
+                        {
+                            "TransformComponent": [
+                                {
+                                    "Position": [
+                                        -2.0,
+                                        0.0,
+                                        -1.0
+                                    ]
+                                },
+                                {
+                                    "Rotation": [
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ]
+                                },
+                                {
+                                    "Scale": [
+                                        1.0,
+                                        1.0,
+                                        1.0
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "ShapeComponent": [
+                                {
+                                    "top": "dirt"
+                                },
+                                {
+                                    "bottom": "dirt"
+                                },
+                                {
+                                    "front": "dirt"
+                                },
+                                {
+                                    "back": "dirt"
+                                },
+                                {
+                                    "left": "dirt"
+                                },
+                                {
+                                    "right": "dirt"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "Object": [
+                        {
+                            "TransformComponent": [
+                                {
+                                    "Position": [
+                                        -2.0,
+                                        0.0,
+                                        0.0
+                                    ]
+                                },
+                                {
+                                    "Rotation": [
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ]
+                                },
+                                {
+                                    "Scale": [
+                                        1.0,
+                                        1.0,
+                                        1.0
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "ShapeComponent": [
+                                {
+                                    "top": "dirt"
+                                },
+                                {
+                                    "bottom": "dirt"
+                                },
+                                {
+                                    "front": "dirt"
+                                },
+                                {
+                                    "back": "dirt"
+                                },
+                                {
+                                    "left": "dirt"
+                                },
+                                {
+                                    "right": "dirt"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "Object": [
+                        {
+                            "TransformComponent": [
+                                {
+                                    "Position": [
+                                        -2.0,
+                                        0.0,
+                                        1.0
+                                    ]
+                                },
+                                {
+                                    "Rotation": [
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ]
+                                },
+                                {
+                                    "Scale": [
+                                        1.0,
+                                        1.0,
+                                        1.0
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "ShapeComponent": [
+                                {
+                                    "top": "dirt"
+                                },
+                                {
+                                    "bottom": "dirt"
+                                },
+                                {
+                                    "front": "dirt"
+                                },
+                                {
+                                    "back": "dirt"
+                                },
+                                {
+                                    "left": "dirt"
+                                },
+                                {
+                                    "right": "dirt"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "Object": [
+                        {
+                            "TransformComponent": [
+                                {
+                                    "Position": [
+                                        -2.0,
+                                        0.0,
+                                        2.0
+                                    ]
+                                },
+                                {
+                                    "Rotation": [
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ]
+                                },
+                                {
+                                    "Scale": [
+                                        1.0,
+                                        1.0,
+                                        1.0
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "ShapeComponent": [
+                                {
+                                    "top": "dirt"
+                                },
+                                {
+                                    "bottom": "dirt"
+                                },
+                                {
+                                    "front": "dirt"
+                                },
+                                {
+                                    "back": "dirt"
+                                },
+                                {
+                                    "left": "dirt"
+                                },
+                                {
+                                    "right": "dirt"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "Object": [
+                        {
+                            "TransformComponent": [
+                                {
+                                    "Position": [
+                                        -1.0,
+                                        0.0,
+                                        -2.0
+                                    ]
+                                },
+                                {
+                                    "Rotation": [
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ]
+                                },
+                                {
+                                    "Scale": [
+                                        1.0,
+                                        1.0,
+                                        1.0
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "ShapeComponent": [
+                                {
+                                    "top": "dirt"
+                                },
+                                {
+                                    "bottom": "dirt"
+                                },
+                                {
+                                    "front": "dirt"
+                                },
+                                {
+                                    "back": "dirt"
+                                },
+                                {
+                                    "left": "dirt"
+                                },
+                                {
+                                    "right": "dirt"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "Object": [
+                        {
+                            "TransformComponent": [
+                                {
+                                    "Position": [
+                                        -1.0,
+                                        0.0,
+                                        -1.0
+                                    ]
+                                },
+                                {
+                                    "Rotation": [
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ]
+                                },
+                                {
+                                    "Scale": [
+                                        1.0,
+                                        1.0,
+                                        1.0
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "ShapeComponent": [
+                                {
+                                    "top": "dirt"
+                                },
+                                {
+                                    "bottom": "dirt"
+                                },
+                                {
+                                    "front": "dirt"
+                                },
+                                {
+                                    "back": "dirt"
+                                },
+                                {
+                                    "left": "dirt"
+                                },
+                                {
+                                    "right": "dirt"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "Object": [
+                        {
+                            "TransformComponent": [
+                                {
+                                    "Position": [
+                                        -1.0,
+                                        0.0,
+                                        0.0
+                                    ]
+                                },
+                                {
+                                    "Rotation": [
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ]
+                                },
+                                {
+                                    "Scale": [
+                                        1.0,
+                                        1.0,
+                                        1.0
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "ShapeComponent": [
+                                {
+                                    "top": "dirt"
+                                },
+                                {
+                                    "bottom": "dirt"
+                                },
+                                {
+                                    "front": "dirt"
+                                },
+                                {
+                                    "back": "dirt"
+                                },
+                                {
+                                    "left": "dirt"
+                                },
+                                {
+                                    "right": "dirt"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "Object": [
+                        {
+                            "TransformComponent": [
+                                {
+                                    "Position": [
+                                        -1.0,
+                                        0.0,
+                                        1.0
+                                    ]
+                                },
+                                {
+                                    "Rotation": [
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ]
+                                },
+                                {
+                                    "Scale": [
+                                        1.0,
+                                        1.0,
+                                        1.0
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "ShapeComponent": [
+                                {
+                                    "top": "dirt"
+                                },
+                                {
+                                    "bottom": "dirt"
+                                },
+                                {
+                                    "front": "dirt"
+                                },
+                                {
+                                    "back": "dirt"
+                                },
+                                {
+                                    "left": "dirt"
+                                },
+                                {
+                                    "right": "dirt"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "Object": [
+                        {
+                            "TransformComponent": [
+                                {
+                                    "Position": [
+                                        -1.0,
+                                        0.0,
+                                        2.0
+                                    ]
+                                },
+                                {
+                                    "Rotation": [
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ]
+                                },
+                                {
+                                    "Scale": [
+                                        1.0,
+                                        1.0,
+                                        1.0
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "ShapeComponent": [
+                                {
+                                    "top": "dirt"
+                                },
+                                {
+                                    "bottom": "dirt"
+                                },
+                                {
+                                    "front": "dirt"
+                                },
+                                {
+                                    "back": "dirt"
+                                },
+                                {
+                                    "left": "dirt"
+                                },
+                                {
+                                    "right": "dirt"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "Object": [
+                        {
+                            "TransformComponent": [
+                                {
+                                    "Position": [
+                                        0.0,
+                                        0.0,
+                                        -2.0
+                                    ]
+                                },
+                                {
+                                    "Rotation": [
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ]
+                                },
+                                {
+                                    "Scale": [
+                                        1.0,
+                                        1.0,
+                                        1.0
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "ShapeComponent": [
+                                {
+                                    "top": "dirt"
+                                },
+                                {
+                                    "bottom": "dirt"
+                                },
+                                {
+                                    "front": "dirt"
+                                },
+                                {
+                                    "back": "dirt"
+                                },
+                                {
+                                    "left": "dirt"
+                                },
+                                {
+                                    "right": "dirt"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "Object": [
+                        {
+                            "TransformComponent": [
+                                {
+                                    "Position": [
+                                        0.0,
+                                        0.0,
+                                        -1.0
+                                    ]
+                                },
+                                {
+                                    "Rotation": [
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ]
+                                },
+                                {
+                                    "Scale": [
+                                        1.0,
+                                        1.0,
+                                        1.0
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "ShapeComponent": [
+                                {
+                                    "top": "dirt"
+                                },
+                                {
+                                    "bottom": "dirt"
+                                },
+                                {
+                                    "front": "dirt"
+                                },
+                                {
+                                    "back": "dirt"
+                                },
+                                {
+                                    "left": "dirt"
+                                },
+                                {
+                                    "right": "dirt"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "Object": [
+                        {
+                            "TransformComponent": [
+                                {
+                                    "Position": [
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ]
+                                },
+                                {
+                                    "Rotation": [
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ]
+                                },
+                                {
+                                    "Scale": [
+                                        1.0,
+                                        1.0,
+                                        1.0
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "ShapeComponent": [
+                                {
+                                    "top": "dirt"
+                                },
+                                {
+                                    "bottom": "dirt"
+                                },
+                                {
+                                    "front": "dirt"
+                                },
+                                {
+                                    "back": "dirt"
+                                },
+                                {
+                                    "left": "dirt"
+                                },
+                                {
+                                    "right": "dirt"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "Object": [
+                        {
+                            "TransformComponent": [
+                                {
+                                    "Position": [
+                                        0.0,
+                                        0.0,
+                                        1.0
+                                    ]
+                                },
+                                {
+                                    "Rotation": [
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ]
+                                },
+                                {
+                                    "Scale": [
+                                        1.0,
+                                        1.0,
+                                        1.0
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "ShapeComponent": [
+                                {
+                                    "top": "dirt"
+                                },
+                                {
+                                    "bottom": "dirt"
+                                },
+                                {
+                                    "front": "dirt"
+                                },
+                                {
+                                    "back": "dirt"
+                                },
+                                {
+                                    "left": "dirt"
+                                },
+                                {
+                                    "right": "dirt"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "Object": [
+                        {
+                            "TransformComponent": [
+                                {
+                                    "Position": [
+                                        0.0,
+                                        0.0,
+                                        2.0
+                                    ]
+                                },
+                                {
+                                    "Rotation": [
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ]
+                                },
+                                {
+                                    "Scale": [
+                                        1.0,
+                                        1.0,
+                                        1.0
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "ShapeComponent": [
+                                {
+                                    "top": "dirt"
+                                },
+                                {
+                                    "bottom": "dirt"
+                                },
+                                {
+                                    "front": "dirt"
+                                },
+                                {
+                                    "back": "dirt"
+                                },
+                                {
+                                    "left": "dirt"
+                                },
+                                {
+                                    "right": "dirt"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "Object": [
+                        {
+                            "TransformComponent": [
+                                {
+                                    "Position": [
+                                        1.0,
+                                        0.0,
+                                        -2.0
+                                    ]
+                                },
+                                {
+                                    "Rotation": [
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ]
+                                },
+                                {
+                                    "Scale": [
+                                        1.0,
+                                        1.0,
+                                        1.0
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "ShapeComponent": [
+                                {
+                                    "top": "dirt"
+                                },
+                                {
+                                    "bottom": "dirt"
+                                },
+                                {
+                                    "front": "dirt"
+                                },
+                                {
+                                    "back": "dirt"
+                                },
+                                {
+                                    "left": "dirt"
+                                },
+                                {
+                                    "right": "dirt"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "Object": [
+                        {
+                            "TransformComponent": [
+                                {
+                                    "Position": [
+                                        1.0,
+                                        0.0,
+                                        -1.0
+                                    ]
+                                },
+                                {
+                                    "Rotation": [
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ]
+                                },
+                                {
+                                    "Scale": [
+                                        1.0,
+                                        1.0,
+                                        1.0
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "ShapeComponent": [
+                                {
+                                    "top": "dirt"
+                                },
+                                {
+                                    "bottom": "dirt"
+                                },
+                                {
+                                    "front": "dirt"
+                                },
+                                {
+                                    "back": "dirt"
+                                },
+                                {
+                                    "left": "dirt"
+                                },
+                                {
+                                    "right": "dirt"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "Object": [
+                        {
+                            "TransformComponent": [
+                                {
+                                    "Position": [
+                                        1.0,
+                                        0.0,
+                                        0.0
+                                    ]
+                                },
+                                {
+                                    "Rotation": [
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ]
+                                },
+                                {
+                                    "Scale": [
+                                        1.0,
+                                        1.0,
+                                        1.0
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "ShapeComponent": [
+                                {
+                                    "top": "dirt"
+                                },
+                                {
+                                    "bottom": "dirt"
+                                },
+                                {
+                                    "front": "dirt"
+                                },
+                                {
+                                    "back": "dirt"
+                                },
+                                {
+                                    "left": "dirt"
+                                },
+                                {
+                                    "right": "dirt"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "Object": [
+                        {
+                            "TransformComponent": [
+                                {
+                                    "Position": [
+                                        1.0,
+                                        0.0,
+                                        1.0
+                                    ]
+                                },
+                                {
+                                    "Rotation": [
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ]
+                                },
+                                {
+                                    "Scale": [
+                                        1.0,
+                                        1.0,
+                                        1.0
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "ShapeComponent": [
+                                {
+                                    "top": "dirt"
+                                },
+                                {
+                                    "bottom": "dirt"
+                                },
+                                {
+                                    "front": "dirt"
+                                },
+                                {
+                                    "back": "dirt"
+                                },
+                                {
+                                    "left": "dirt"
+                                },
+                                {
+                                    "right": "dirt"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "Object": [
+                        {
+                            "TransformComponent": [
+                                {
+                                    "Position": [
+                                        1.0,
+                                        0.0,
+                                        2.0
+                                    ]
+                                },
+                                {
+                                    "Rotation": [
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ]
+                                },
+                                {
+                                    "Scale": [
+                                        1.0,
+                                        1.0,
+                                        1.0
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "ShapeComponent": [
+                                {
+                                    "top": "dirt"
+                                },
+                                {
+                                    "bottom": "dirt"
+                                },
+                                {
+                                    "front": "dirt"
+                                },
+                                {
+                                    "back": "dirt"
+                                },
+                                {
+                                    "left": "dirt"
+                                },
+                                {
+                                    "right": "dirt"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "Object": [
+                        {
+                            "TransformComponent": [
+                                {
+                                    "Position": [
+                                        2.0,
+                                        0.0,
+                                        -2.0
+                                    ]
+                                },
+                                {
+                                    "Rotation": [
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ]
+                                },
+                                {
+                                    "Scale": [
+                                        1.0,
+                                        1.0,
+                                        1.0
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "ShapeComponent": [
+                                {
+                                    "top": "dirt"
+                                },
+                                {
+                                    "bottom": "dirt"
+                                },
+                                {
+                                    "front": "dirt"
+                                },
+                                {
+                                    "back": "dirt"
+                                },
+                                {
+                                    "left": "dirt"
+                                },
+                                {
+                                    "right": "dirt"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "Object": [
+                        {
+                            "TransformComponent": [
+                                {
+                                    "Position": [
+                                        2.0,
+                                        0.0,
+                                        -1.0
+                                    ]
+                                },
+                                {
+                                    "Rotation": [
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ]
+                                },
+                                {
+                                    "Scale": [
+                                        1.0,
+                                        1.0,
+                                        1.0
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "ShapeComponent": [
+                                {
+                                    "top": "dirt"
+                                },
+                                {
+                                    "bottom": "dirt"
+                                },
+                                {
+                                    "front": "dirt"
+                                },
+                                {
+                                    "back": "dirt"
+                                },
+                                {
+                                    "left": "dirt"
+                                },
+                                {
+                                    "right": "dirt"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "Object": [
+                        {
+                            "TransformComponent": [
+                                {
+                                    "Position": [
+                                        2.0,
+                                        0.0,
+                                        0.0
+                                    ]
+                                },
+                                {
+                                    "Rotation": [
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ]
+                                },
+                                {
+                                    "Scale": [
+                                        1.0,
+                                        1.0,
+                                        1.0
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "ShapeComponent": [
+                                {
+                                    "top": "dirt"
+                                },
+                                {
+                                    "bottom": "dirt"
+                                },
+                                {
+                                    "front": "dirt"
+                                },
+                                {
+                                    "back": "dirt"
+                                },
+                                {
+                                    "left": "dirt"
+                                },
+                                {
+                                    "right": "dirt"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "Object": [
+                        {
+                            "TransformComponent": [
+                                {
+                                    "Position": [
+                                        2.0,
+                                        0.0,
+                                        1.0
+                                    ]
+                                },
+                                {
+                                    "Rotation": [
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ]
+                                },
+                                {
+                                    "Scale": [
+                                        1.0,
+                                        1.0,
+                                        1.0
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "ShapeComponent": [
+                                {
+                                    "top": "dirt"
+                                },
+                                {
+                                    "bottom": "dirt"
+                                },
+                                {
+                                    "front": "dirt"
+                                },
+                                {
+                                    "back": "dirt"
+                                },
+                                {
+                                    "left": "dirt"
+                                },
+                                {
+                                    "right": "dirt"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "Object": [
+                        {
+                            "TransformComponent": [
+                                {
+                                    "Position": [
+                                        2.0,
+                                        0.0,
+                                        2.0
+                                    ]
+                                },
+                                {
+                                    "Rotation": [
+                                        0.0,
+                                        0.0,
+                                        0.0
+                                    ]
+                                },
+                                {
+                                    "Scale": [
+                                        1.0,
+                                        1.0,
+                                        1.0
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "ShapeComponent": [
+                                {
+                                    "top": "dirt"
+                                },
+                                {
+                                    "bottom": "dirt"
+                                },
+                                {
+                                    "front": "dirt"
+                                },
+                                {
+                                    "back": "dirt"
+                                },
+                                {
+                                    "left": "dirt"
+                                },
+                                {
+                                    "right": "dirt"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

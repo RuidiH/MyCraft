@@ -13,6 +13,9 @@ class TransformComponent : public Component
         ~TransformComponent();
 
         void SetPosition(glm::vec3 position) { mPosition = position; }
+        void SetRotation(glm::vec3 rotation) { mRotation = rotation; }
+        void SetScale(glm::vec3 scale) { mScale = scale; }
+
 
         void Move(glm::vec3 direction);
         void Rotate(glm::vec3 rotation);

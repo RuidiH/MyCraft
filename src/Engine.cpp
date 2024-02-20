@@ -25,7 +25,7 @@ Engine::Engine(int width, int height) : mScreenWidth(width), mScreenHeight(heigh
 
 Engine::~Engine()
 {
-    // TODO: clear all pointer reference
+    // TODO: clear all pointer reference 
 }
 
 void Engine::SetupObject()
@@ -47,7 +47,7 @@ void Engine::SetupObject()
     grass->AddComponent<ShapeComponent>();
     grass->GetComponent<ShapeComponent>()->AddCube(cube1);
     grass->AddComponent<TransformComponent>();
-    grass->GetComponent<TransformComponent>()->SetPosition(glm::vec3(-1.0f, 1.0f, -1.f));
+    grass->GetComponent<TransformComponent>()->SetPosition(glm::vec3(-2.0f, 1.0f, -1.f));
     mGameObjects.push_back(grass);
 
     std::shared_ptr<GameObject> snow = std::make_shared<GameObject>();
@@ -107,15 +107,11 @@ void Engine::Input()
 
     while (SDL_PollEvent(&e) != 0)
     {
-        if (e.type == SDL_QUIT)
+        if (e.type == SDL_QUIT || (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_ESCAPE))
         {
             std::cout << "Goodbye!" << std::endl;
             mQuit = true;
-        }
-        if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_ESCAPE)
-        {
-            std::cout << "Goodbye!" << std::endl;
-            mQuit = true;
+            mWorldSerializer.SaveWorld("./world.json", mGameObjects, mTextureManager);
         }
         if (e.type == SDL_MOUSEMOTION)
         {
@@ -152,15 +148,18 @@ void Engine::Input()
 void Engine::FindSelectedObject()
 {
     glm::vec3 rayDir = mCamera.GetRayDirection(mScreenWidth, mScreenHeight, glm::vec2(mScreenWidth / 2, mScreenHeight / 2));
+    // std::cout << "Ray direction: " << rayDir.x << " " << rayDir.y << " " << rayDir.z << std::endl;
     float smallestTNear = -1.f;
     std::shared_ptr<GameObject> hitObject;
     for (std::shared_ptr<GameObject> gameObject : mGameObjects)
     {
         ShapeComponent *shape = gameObject->GetComponent<ShapeComponent>();
-        for (auto cube : shape->GetCubes())
+        for (const auto &cube : shape->GetCubes())
         {
             float tNear, tFar = 0.f;
             bool result = RayCastTest(mCamera.GetPosition(), rayDir, cube->GetMinCorner(), cube->GetMaxCorner(), tNear, tFar);
+
+            // std::cout << "tNear: " << tNear << " tFar: " << tFar << std::endl;
 
             // base case for ray cast test
             if (smallestTNear == -1.f)
@@ -249,6 +248,14 @@ void Engine::LightPass()
     {
         glm::mat4 model = gameObject->GetComponent<TransformComponent>()->GetModelMatrix();
         mMainShader.SetUniform("u_ModelMatrix", model);
+        if (gameObject == mSelected)
+        {
+            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        }
+        else
+        {
+            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        }
         gameObject->Render();
     }
 }
@@ -261,6 +268,8 @@ void Engine::Shutdown()
     //     delete gameObject;
     // }
     mGameObjects.clear();
+
+    
 
     SDL_StopTextInput();
     SDL_DestroyWindow(gGraphicsApplicationWindow);

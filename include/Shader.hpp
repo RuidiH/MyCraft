@@ -8,6 +8,7 @@
 class Shader{
     public:
         Shader();
+        ~Shader();
 
         void Init(const char* vertexPath, const char* fragmentPath);
         void Use();

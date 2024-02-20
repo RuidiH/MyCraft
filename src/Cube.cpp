@@ -9,12 +9,14 @@ Cube::Cube()
 {
     // mPosition = glm::vec3(0.0f, 0.0f, 0.0f);
     mSize = 1.0f;
+    SetVertexData();
 }
 
 Cube::Cube(glm::vec3 position, float size)
 {
     // mPosition = position;
     mSize = size;
+    SetVertexData();
 }
 
 // Cube::~Cube() {
@@ -27,7 +29,10 @@ void Cube::Input()
 
 void Cube::Update()
 {
-    UpdateVertexData();
+    // update max and min corners
+    glm::vec3 position = mParent->GetParent()->GetComponent<TransformComponent>()->GetPosition();
+    mMinCorner = position - glm::vec3(mSize / 2.0);
+    mMaxCorner = position + glm::vec3(mSize / 2.0);
 }
 
 void Cube::Render()
@@ -110,10 +115,10 @@ void Cube::setPosition(glm::vec3 position)
     // mPosition = position;
 }
 
-void Cube::UpdateVertexData()
+void Cube::SetVertexData()
 {
     // retrieve transform component
-    glm::vec3 position = mParent->GetParent()->GetComponent<TransformComponent>()->GetPosition();
+    // glm::vec3 position = mParent->GetParent()->GetComponent<TransformComponent>()->GetPosition();
     float radius = mSize / 2.0;
     // float radius = mSize / 1.0;
 
@@ -172,7 +177,4 @@ void Cube::UpdateVertexData()
     mVertexDataMap["right"] = vRight;
     mVertexDataMap["front"] = vFront;
     mVertexDataMap["back"] = vBack;
-
-    mMinCorner = glm::vec3(-radius, -radius, -radius);
-    mMaxCorner = glm::vec3(radius, radius, radius);
 }
