@@ -2,8 +2,11 @@
 
 #include <vector>
 #include <iostream>
+#include <map>
 #include <SDL2/SDL_image.h>
+
 #include "TransformComponent.hpp"
+#include "TextureComponent.hpp"
 
 Cube::Cube()
 {
@@ -37,8 +40,8 @@ void Cube::Update()
 
 void Cube::Render()
 {
-
-    for (const auto &face : mVertexDataMap)
+    std::map<std::string, GLuint *> textureIdMap = mParent->GetParent()->GetComponent<TextureComponent>()->GetTextureGroup();
+    for (const auto &face : textureIdMap)
     {
         GLuint vao;
 
@@ -46,7 +49,7 @@ void Cube::Render()
 
         GLuint ibo;
 
-        GLuint *currentTexID = mTextureIdMap[face.first];
+        GLuint *currentTexID = face.second;
 
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, *currentTexID);
@@ -57,8 +60,8 @@ void Cube::Render()
         glGenBuffers(1, &vbo);
         glBindBuffer(GL_ARRAY_BUFFER, vbo);
         glBufferData(GL_ARRAY_BUFFER,
-                     face.second.size() * sizeof(GL_FLOAT),
-                     face.second.data(),
+                     mVertexDataMap[face.first].size() * sizeof(GL_FLOAT),
+                     mVertexDataMap[face.first].data(),
                      GL_STATIC_DRAW);
 
         // Set up Index Buffer Object

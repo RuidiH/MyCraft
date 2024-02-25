@@ -29,6 +29,13 @@ void ShapeComponent::AddCube(std::shared_ptr<Cube> cube)
     }
 }
 
+std::shared_ptr<Cube> ShapeComponent::AddCube() {
+    std::shared_ptr<Cube> cube = std::make_shared<Cube>();
+    cube->SetParentComponent(this);
+    mCubes.push_back(cube); 
+    return cube;
+}
+
 // void ShapeComponent::setCube(Cube *cube)
 // {
 //     if (cube != nullptr)

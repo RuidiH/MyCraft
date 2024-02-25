@@ -23,37 +23,104 @@ void WorldSerializer::SaveWorld(std::string filename, std::vector<std::shared_pt
     rapidjson::StringBuffer s;
     rapidjson::PrettyWriter<rapidjson::StringBuffer> writer(s);
 
-    writer.StartObject();
-    writer.Key("World");
-    writer.StartArray();
+    writer.StartObject(); // start root
+    writer.Key("world");
+    writer.StartObject(); // start world
+    // writer.StartArray();
 
-    SaveTexture(writer, textureMappings);
+    // SaveTexture(writer, textureMappings);
 
-    writer.StartObject();
-    writer.Key("GameObjects");
-    writer.StartArray();
+    // hard-coded object texture definitions
+    writer.Key("textures");
+    writer.StartObject(); // start textures
+    writer.Key("snow");
+    writer.StartArray(); // start snow
+    writer.String("./assets/texture/snow.png");
+    writer.String("./assets/texture/dirt.png");
+    writer.String("./assets/texture/grass_side_snowed.png");
+    writer.String("./assets/texture/grass_side_snowed.png");
+    writer.String("./assets/texture/grass_side_snowed.png");
+    writer.String("./assets/texture/grass_side_snowed.png");
+    writer.EndArray(); // end snow
+
+    writer.Key("grass");
+    writer.StartArray(); // start dirt
+    writer.String("./assets/texture/grass_carried.png");
+    writer.String("./assets/texture/dirt.png");
+    writer.String("./assets/texture/grass_side_carried.png");
+    writer.String("./assets/texture/grass_side_carried.png");
+    writer.String("./assets/texture/grass_side_carried.png");
+    writer.String("./assets/texture/grass_side_carried.png");
+    writer.EndArray(); // end dirt
+
+    writer.Key("dirt");
+    writer.StartArray(); // start dirt
+    writer.String("./assets/texture/dirt.png");
+    writer.String("./assets/texture/dirt.png");
+    writer.String("./assets/texture/dirt.png");
+    writer.String("./assets/texture/dirt.png");
+    writer.String("./assets/texture/dirt.png");
+    writer.String("./assets/texture/dirt.png");
+    writer.EndArray(); // end dirt
+    writer.EndObject(); // end textures
+
+    writer.Key("objects");
+    writer.StartArray(); // start objects
 
     for (const auto &gameObject : gameObjects)
     {
         // save game object
-        writer.StartObject();
-        writer.Key("Object");
-        writer.StartArray();
+        // writer.StartObject();
+        // writer.Key("Object");
+        // writer.StartArray();
         
         SaveObjectTransform(gameObject, writer);
 
-        SaveObjectShape(gameObject, writer, textureManager);
+        // SaveObjectShape(gameObject, writer, textureManager);
 
-        writer.EndArray();
-        writer.EndObject();
+        // writer.EndArray();
+        // writer.EndObject();
     }
     // End game objects
-    writer.EndArray();
-    writer.EndObject();
+    writer.EndArray(); // End of the "objects" array
+    writer.EndObject(); // End of the "world" object
+    writer.EndObject(); // End of the root object
 
-    // End world
-    writer.EndArray();
-    writer.EndObject();
+    // writer.StartObject(); // Start of the root object
+
+    // writer.Key("world");
+    // writer.StartObject(); // Start of the "world" object
+
+    // writer.Key("objects");
+    // writer.StartArray(); // Start of the "objects" array
+
+    // // First game object
+    // writer.StartObject(); // Start of the first object
+    // writer.Key("transform");
+    // writer.StartArray(); // Start of the transform array
+    // writer.Double(0.0f);
+    // writer.Double(0.0f);
+    // writer.Double(0.0f);
+    // writer.EndArray(); // End of the transform array
+    // writer.Key("texture");
+    // writer.String("snow");
+    // writer.EndObject(); // End of the first object
+
+    // // Second game object
+    // writer.StartObject(); // Start of the second object
+    // writer.Key("transform");
+    // writer.StartArray(); // Start of the transform array
+    // writer.Double(1.0f);
+    // writer.Double(1.0f);
+    // writer.Double(1.0f);
+    // writer.EndArray(); // End of the transform array
+    // writer.Key("texture");
+    // writer.String("dirt");
+    // writer.EndObject(); // End of the second object
+
+    // writer.EndArray(); // End of the "objects" array
+    // writer.EndObject(); // End of the "world" object
+    // writer.EndObject(); // End of the root object
 
     // write to file
     std::ofstream file;
@@ -94,10 +161,11 @@ void WorldSerializer::SaveObjectTransform(const std::shared_ptr<GameObject> &gam
     if (transform != nullptr)
     {
         writer.StartObject();
-        writer.Key("TransformComponent");
+        writer.Key("transform");
         writer.StartArray();
+
         writer.StartObject();
-        writer.Key("Position");
+        writer.Key("position");
         writer.StartArray();
         writer.Double(transform->GetPosition().x);
         writer.Double(transform->GetPosition().y);
@@ -106,21 +174,23 @@ void WorldSerializer::SaveObjectTransform(const std::shared_ptr<GameObject> &gam
         writer.EndObject();
 
         writer.StartObject();
-        writer.Key("Rotation");
+        writer.Key("rotation");
         writer.StartArray();
         writer.Double(transform->GetRotation().x);
         writer.Double(transform->GetRotation().y);
         writer.Double(transform->GetRotation().z);
         writer.EndArray();
         writer.EndObject();
+        
         writer.StartObject();
-        writer.Key("Scale");
+        writer.Key("scale");
         writer.StartArray();
         writer.Double(transform->GetScale().x);
         writer.Double(transform->GetScale().y);
         writer.Double(transform->GetScale().z);
         writer.EndArray();
         writer.EndObject();
+
         writer.EndArray();
         writer.EndObject();
     }

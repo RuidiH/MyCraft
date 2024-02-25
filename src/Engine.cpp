@@ -1,11 +1,14 @@
 #include "Engine.hpp"
 #include "ShapeComponent.hpp"
 #include "TransformComponent.hpp"
+#include "TextureComponent.hpp"
 
 #include <glm/gtx/rotate_vector.hpp>
 #include <glm/gtx/transform.hpp>
 #include <cmath>
 // #include <glm/gtx/rotate_vector.hpp>
+
+#include <array>
 
 Uint32 Engine::deltaTime;
 
@@ -36,32 +39,45 @@ void Engine::SetupObject()
     mTextureManager.LoadTexture("grass_side_snowed", "./assets/texture/grass_side_snowed.png");
     mTextureManager.LoadTexture("snow", "./assets/texture/snow.png");
 
+    std::map<std::string, std::string> dirtMap; 
+    dirtMap.insert(std::pair<std::string, std::string>("top", "dirt"));
+    dirtMap.insert(std::pair<std::string, std::string>("bottom", "dirt"));
+    dirtMap.insert(std::pair<std::string, std::string>("left", "dirt"));
+    dirtMap.insert(std::pair<std::string, std::string>("right", "dirt"));
+    dirtMap.insert(std::pair<std::string, std::string>("front", "dirt"));
+    dirtMap.insert(std::pair<std::string, std::string>("back", "dirt"));
+    mTextureManager.LoadTextureGroup("dirt", dirtMap);
+
+    std::map<std::string, std::string> grassMap;
+    grassMap.insert(std::pair<std::string, std::string>("top", "grass_carried"));
+    grassMap.insert(std::pair<std::string, std::string>("bottom", "dirt"));
+    grassMap.insert(std::pair<std::string, std::string>("left", "grass_side_carried"));
+    grassMap.insert(std::pair<std::string, std::string>("right", "grass_side_carried"));
+    grassMap.insert(std::pair<std::string, std::string>("front", "grass_side_carried"));
+    grassMap.insert(std::pair<std::string, std::string>("back", "grass_side_carried"));
+    mTextureManager.LoadTextureGroup("grass", grassMap);
+
+    std::map<std::string, std::string> snowMap;
+    snowMap.insert(std::pair<std::string, std::string>("top", "snow"));
+    snowMap.insert(std::pair<std::string, std::string>("bottom", "dirt"));
+    snowMap.insert(std::pair<std::string, std::string>("left", "grass_side_snowed"));
+    snowMap.insert(std::pair<std::string, std::string>("right", "grass_side_snowed"));
+    snowMap.insert(std::pair<std::string, std::string>("front", "grass_side_snowed"));
+    snowMap.insert(std::pair<std::string, std::string>("back", "grass_side_snowed"));
+    mTextureManager.LoadTextureGroup("snow", snowMap);
+
     std::shared_ptr<GameObject> grass = std::make_shared<GameObject>();
-    std::shared_ptr<Cube> cube1 = std::make_shared<Cube>();
-    cube1->SetFaceTexture("top", mTextureManager.GetTexture("grass_carried"));
-    cube1->SetFaceTexture("bottom", mTextureManager.GetTexture("dirt"));
-    cube1->SetFaceTexture("left", mTextureManager.GetTexture("grass_side_carried"));
-    cube1->SetFaceTexture("right", mTextureManager.GetTexture("grass_side_carried"));
-    cube1->SetFaceTexture("front", mTextureManager.GetTexture("grass_side_carried"));
-    cube1->SetFaceTexture("back", mTextureManager.GetTexture("grass_side_carried"));
-    grass->AddComponent<ShapeComponent>();
-    grass->GetComponent<ShapeComponent>()->AddCube(cube1);
-    grass->AddComponent<TransformComponent>();
-    grass->GetComponent<TransformComponent>()->SetPosition(glm::vec3(-2.0f, 1.0f, -1.f));
+    grass->AddComponent<ShapeComponent>()->AddCube();
+    grass->AddComponent<TransformComponent>()->SetPosition(glm::vec3(-2.0f, 1.0f, -1.f));
+    grass->AddComponent<TextureComponent>()->SetTextureGroupName("grass");
+    grass->GetComponent<TextureComponent>()->SetTextureGroup(mTextureManager.GetTextureGroup("grass"));
     mGameObjects.push_back(grass);
 
     std::shared_ptr<GameObject> snow = std::make_shared<GameObject>();
-    std::shared_ptr<Cube> cube2 = std::make_shared<Cube>();
-    cube2->SetFaceTexture("top", mTextureManager.GetTexture("snow"));
-    cube2->SetFaceTexture("bottom", mTextureManager.GetTexture("dirt"));
-    cube2->SetFaceTexture("left", mTextureManager.GetTexture("grass_side_snowed"));
-    cube2->SetFaceTexture("right", mTextureManager.GetTexture("grass_side_snowed"));
-    cube2->SetFaceTexture("front", mTextureManager.GetTexture("grass_side_snowed"));
-    cube2->SetFaceTexture("back", mTextureManager.GetTexture("grass_side_snowed"));
-    snow->AddComponent<ShapeComponent>();
-    snow->GetComponent<ShapeComponent>()->AddCube(cube2);
-    snow->AddComponent<TransformComponent>();
-    snow->GetComponent<TransformComponent>()->SetPosition(glm::vec3(0.f, 1.f, 0.f));
+    snow->AddComponent<ShapeComponent>()->AddCube();
+    snow->AddComponent<TransformComponent>()->SetPosition(glm::vec3(0.f, 1.f, 0.f));
+    snow->AddComponent<TextureComponent>()->SetTextureGroupName("snow");
+    snow->GetComponent<TextureComponent>()->SetTextureGroup(mTextureManager.GetTextureGroup("snow"));
     mGameObjects.push_back(snow);
 
     for (int i = -2; i < 3; i++)
@@ -70,16 +86,13 @@ void Engine::SetupObject()
         {
             std::shared_ptr<GameObject> object = std::make_shared<GameObject>();
             std::shared_ptr<Cube> cube = std::make_shared<Cube>();
-            cube->SetFaceTexture("top", mTextureManager.GetTexture("dirt"));
-            cube->SetFaceTexture("bottom", mTextureManager.GetTexture("dirt"));
-            cube->SetFaceTexture("left", mTextureManager.GetTexture("dirt"));
-            cube->SetFaceTexture("right", mTextureManager.GetTexture("dirt"));
-            cube->SetFaceTexture("front", mTextureManager.GetTexture("dirt"));
-            cube->SetFaceTexture("back", mTextureManager.GetTexture("dirt"));
             object->AddComponent<ShapeComponent>();
             object->GetComponent<ShapeComponent>()->AddCube(cube);
             object->AddComponent<TransformComponent>();
             object->GetComponent<TransformComponent>()->SetPosition(glm::vec3(i, 0.0f, j));
+            object->AddComponent<TextureComponent>()->SetTextureGroupName("dirt");
+            object->GetComponent<TextureComponent>()->SetTextureGroup(mTextureManager.GetTextureGroup("dirt"));
+
             mGameObjects.push_back(object);
         }
     }

@@ -8,6 +8,8 @@
 #include <vector>
 #include <string>
 #include <memory>
+#include <array>
+
 
 #include "ShapeComponent.hpp"
 
@@ -32,6 +34,7 @@ public:
     void SetTexture(GLuint *texId) { mTexId = texId; }
 
     void SetFaceTexture(std::string face, GLuint *texId) { mTextureIdMap[face] = texId; }
+    void SetFaceTexture(const std::map<std::string, GLuint *> &textureIdMap) { mTextureIdMap = textureIdMap; }
 
     void SetParentComponent(ShapeComponent *parent) { mParent = parent; }
 

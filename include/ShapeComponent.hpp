@@ -18,8 +18,8 @@ class ShapeComponent : public Component {
         virtual void Update() override;
         virtual void Render() override;
 
-        // void setCube(Cube* cube);
         void AddCube(std::shared_ptr<Cube> cube);
+        std::shared_ptr<Cube> AddCube();
         std::vector<std::shared_ptr<Cube>> GetCubes() {return mCubes;};
     private:
         // Cube *cube;                
