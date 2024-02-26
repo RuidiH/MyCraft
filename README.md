@@ -25,6 +25,30 @@ MyCraft is built using a combination of powerful tools and libraries, chosen for
 - **RapidJSON**: Facilitates serialization of the game world into JSON files for easy saving and loading.
 - **Entity-Component System**: A design pattern learned from the "Build Game Engine" course, enabling efficient and flexible game entity management.
 
+## TODO Lists
+
+### In-progress
+
+- [ ] Represent objects in a grid-like data structure for adding and deleting objects
+- [ ] Create objects next to another using ray-caster; Use Linear Algebra to determine which side the new cube should be added to
+- [ ] Object destruction mechanism
+- [ ] Skybox to the world
+- [ ] More advanced graphics (i.e. water)
+- [ ] Add Resource Manager based on Texture Manager
+- [ ] Use Python UI for creating new objects
+
+### Completed
+- [x] Implement Entity-Component System
+- [x] Phong Lighting
+- [x] Shadow 
+- [x] Render cube with textures
+- [x] Free Camera
+- [x] Loading and saving world
+- [x] Ray caster that draw an object in wireframe mode
+- [x] Texture Manager for loading and saving pointers to texture
+- [x] Refactored components (i.e. transform, texture, shape)
+- [x] Create and refactored shader program
+
 ## Requirements
 To run MyCraft, you'll need:
 - A system capable of running SDL2 and OpenGL4.
@@ -32,7 +56,13 @@ To run MyCraft, you'll need:
 - SDL2, SDL Image, GLM, and RapidJSON libraries installed.
 
 ## Installation and Setup
-To Compile the program, simply run the file 'build.py' and run the binary file created.
+To Compile the program, simply run the python scripty 'build.py' and run the binary file created.
+
+```python
+python3 build.py
+
+./lab
+```
 
 ## Usage
 Camera Control:
@@ -51,7 +81,7 @@ As I continue my educational journey through the "Computer Graphics Course," I p
 ## Acknowledgments
 - The original Minecraft game, for being a source of inspiration and creativity.
 - The "Build Game Engine" and "Computer Graphics" courses By [Mike Shah](https://mshah.io/) at Northeastern University, for providing the knowledge foundation for this project.
-- The undergraduate level "Computer Graphics" by [Dr.Jeffrey Paone](https://inside.mines.edu/~jpaone/) at Colorado School of Mines. 
+- The "Computer Graphics" by [Dr.Jeffrey Paone](https://inside.mines.edu/~jpaone/) at Colorado School of Mines for introductory into graphics. 
 
 ## Contact
 For more information, questions, or collaborations, please contact me at reeedhuang@gmail.com.
