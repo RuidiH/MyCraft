@@ -1,12 +1,16 @@
 #include "WorldSerializer.hpp"
-#include "rapidjson/writer.h"
-#include "rapidjson/stringbuffer.h"
-#include "rapidjson/prettywriter.h"
 #include "TransformComponent.hpp"
 #include "ShapeComponent.hpp"
+#include "TextureComponent.hpp"
 #include "Cube.hpp"
 
 #include <fstream>
+
+#include "rapidjson/writer.h"
+#include "rapidjson/stringbuffer.h"
+#include "rapidjson/prettywriter.h"
+#include "rapidjson/document.h"
+#include "rapidjson/filereadstream.h"
 
 WorldSerializer::WorldSerializer()
 {
@@ -16,7 +20,7 @@ WorldSerializer::~WorldSerializer()
 {
 }
 
-void WorldSerializer::SaveWorld(std::string filename, std::vector<std::shared_ptr<GameObject>> gameObjects, TextureManager& textureManager)
+void WorldSerializer::SaveWorld(std::string filename, std::vector<std::shared_ptr<GameObject>> gameObjects, TextureManager &textureManager)
 {
     std::map<std::string, std::string> textureMappings = textureManager.GetTexturePathMap();
 
@@ -32,8 +36,12 @@ void WorldSerializer::SaveWorld(std::string filename, std::vector<std::shared_pt
 
     // hard-coded object texture definitions
     writer.Key("textures");
-    writer.StartObject(); // start textures
-    writer.Key("snow");
+    writer.StartArray();
+
+    writer.StartObject(); // start snow
+    writer.Key("name");
+    writer.String("snow");
+    writer.Key("values");
     writer.StartArray(); // start snow
     writer.String("./assets/texture/snow.png");
     writer.String("./assets/texture/dirt.png");
@@ -41,19 +49,27 @@ void WorldSerializer::SaveWorld(std::string filename, std::vector<std::shared_pt
     writer.String("./assets/texture/grass_side_snowed.png");
     writer.String("./assets/texture/grass_side_snowed.png");
     writer.String("./assets/texture/grass_side_snowed.png");
-    writer.EndArray(); // end snow
+    writer.EndArray();  // end snow
+    writer.EndObject(); // end snow
 
-    writer.Key("grass");
-    writer.StartArray(); // start dirt
+    writer.StartObject(); // start grass
+    writer.Key("name");
+    writer.String("grass");
+    writer.Key("values");
+    writer.StartArray(); // start grass
     writer.String("./assets/texture/grass_carried.png");
     writer.String("./assets/texture/dirt.png");
     writer.String("./assets/texture/grass_side_carried.png");
     writer.String("./assets/texture/grass_side_carried.png");
     writer.String("./assets/texture/grass_side_carried.png");
     writer.String("./assets/texture/grass_side_carried.png");
-    writer.EndArray(); // end dirt
+    writer.EndArray();  // end grass
+    writer.EndObject(); // end grass
 
-    writer.Key("dirt");
+    writer.StartObject(); // start dirt
+    writer.Key("name");
+    writer.String("dirt");
+    writer.Key("values");
     writer.StartArray(); // start dirt
     writer.String("./assets/texture/dirt.png");
     writer.String("./assets/texture/dirt.png");
@@ -62,7 +78,10 @@ void WorldSerializer::SaveWorld(std::string filename, std::vector<std::shared_pt
     writer.String("./assets/texture/dirt.png");
     writer.String("./assets/texture/dirt.png");
     writer.EndArray(); // end dirt
-    writer.EndObject(); // end textures
+    writer.EndObject();
+
+    writer.EndArray();
+    // writer.EndObject(); // end texture groups
 
     writer.Key("objects");
     writer.StartArray(); // start objects
@@ -70,57 +89,20 @@ void WorldSerializer::SaveWorld(std::string filename, std::vector<std::shared_pt
     for (const auto &gameObject : gameObjects)
     {
         // save game object
-        // writer.StartObject();
-        // writer.Key("Object");
-        // writer.StartArray();
-        
+        writer.StartObject();
+
         SaveObjectTransform(gameObject, writer);
 
+        writer.Key("texture");
+        writer.String(gameObject->GetComponent<TextureComponent>()->GetTextureGroupName().c_str());
         // SaveObjectShape(gameObject, writer, textureManager);
 
-        // writer.EndArray();
-        // writer.EndObject();
+        writer.EndObject();
     }
     // End game objects
-    writer.EndArray(); // End of the "objects" array
+    writer.EndArray();  // End of the "objects" array
     writer.EndObject(); // End of the "world" object
     writer.EndObject(); // End of the root object
-
-    // writer.StartObject(); // Start of the root object
-
-    // writer.Key("world");
-    // writer.StartObject(); // Start of the "world" object
-
-    // writer.Key("objects");
-    // writer.StartArray(); // Start of the "objects" array
-
-    // // First game object
-    // writer.StartObject(); // Start of the first object
-    // writer.Key("transform");
-    // writer.StartArray(); // Start of the transform array
-    // writer.Double(0.0f);
-    // writer.Double(0.0f);
-    // writer.Double(0.0f);
-    // writer.EndArray(); // End of the transform array
-    // writer.Key("texture");
-    // writer.String("snow");
-    // writer.EndObject(); // End of the first object
-
-    // // Second game object
-    // writer.StartObject(); // Start of the second object
-    // writer.Key("transform");
-    // writer.StartArray(); // Start of the transform array
-    // writer.Double(1.0f);
-    // writer.Double(1.0f);
-    // writer.Double(1.0f);
-    // writer.EndArray(); // End of the transform array
-    // writer.Key("texture");
-    // writer.String("dirt");
-    // writer.EndObject(); // End of the second object
-
-    // writer.EndArray(); // End of the "objects" array
-    // writer.EndObject(); // End of the "world" object
-    // writer.EndObject(); // End of the root object
 
     // write to file
     std::ofstream file;
@@ -160,7 +142,7 @@ void WorldSerializer::SaveObjectTransform(const std::shared_ptr<GameObject> &gam
     TransformComponent *transform = gameObject->GetComponent<TransformComponent>();
     if (transform != nullptr)
     {
-        writer.StartObject();
+        // writer.StartObject();
         writer.Key("transform");
         writer.StartArray();
 
@@ -181,7 +163,7 @@ void WorldSerializer::SaveObjectTransform(const std::shared_ptr<GameObject> &gam
         writer.Double(transform->GetRotation().z);
         writer.EndArray();
         writer.EndObject();
-        
+
         writer.StartObject();
         writer.Key("scale");
         writer.StartArray();
@@ -192,7 +174,7 @@ void WorldSerializer::SaveObjectTransform(const std::shared_ptr<GameObject> &gam
         writer.EndObject();
 
         writer.EndArray();
-        writer.EndObject();
+        // writer.EndObject();
     }
 }
 
@@ -215,6 +197,73 @@ void WorldSerializer::SaveTexture(rapidjson::PrettyWriter<rapidjson::StringBuffe
     writer.EndObject();
 }
 
-void WorldSerializer::LoadWorld(std::string filename)
+void WorldSerializer::LoadWorld(std::string filename, std::vector<std::shared_ptr<GameObject>> &gameObjects, TextureManager &textureManager)
 {
+
+    // Open the file
+    FILE *fp = fopen(filename.c_str(), "rb"); // Use "r" for reading
+    if (!fp)
+    {
+        std::cerr << "Cannot open file!" << std::endl;
+        return;
+    }
+
+    char readBuffer[65536]; // Buffer for reading the file
+    rapidjson::FileReadStream is(fp, readBuffer, sizeof(readBuffer));
+
+    rapidjson::Document d;
+    d.ParseStream(is);
+    fclose(fp); // Close the file as soon as it's read
+
+    // Check if the structure is as expected
+    if (!d.HasMember("world") || !d["world"].IsObject())
+    {
+        std::cerr << "JSON format is not as expected!" << std::endl;
+        return;
+    }
+
+    const rapidjson::Value &world = d["world"];
+    if (!world.HasMember("objects") || !world["objects"].IsArray())
+    {
+        std::cerr << "JSON format is not as expected!" << std::endl;
+        return;
+    }
+
+    // handle textures
+    const auto& textures = d["world"]["textures"].GetArray();
+
+    for (const auto& texture : textures)
+    {
+        const auto &name = texture["name"].GetString();
+        std::cout << "Texture Name: " << name << std::endl;
+        const auto &values = texture["values"].GetArray();
+        for (const auto &value : values)
+        {
+            std::cout << "Texture Path: " << value.GetString() << std::endl;
+        }
+    }
+
+
+
+    // handle objects
+    const auto& objects = d["world"]["objects"].GetArray();
+
+    for (const auto& obj : objects)
+    {
+        const auto &transformArray = obj["transform"].GetArray();
+        for (const auto &transformComponent : transformArray)
+        {
+            if (transformComponent.HasMember("position"))
+            {
+                std::cout << "Position: ";
+                for (const auto &pos : transformComponent["position"].GetArray())
+                {
+                    // gameObject.transform.position.push_back(pos.GetFloat());
+                    std::cout << pos.GetFloat() << " ";
+                }
+            }
+        }
+        const auto &texture = obj["texture"].GetString();
+        std::cout << "Texture: " << texture << std::endl;
+    }
 }

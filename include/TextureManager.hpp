@@ -15,7 +15,7 @@ class TextureManager {
         ~TextureManager();
 
         void LoadTexture(const std::string &textureName, const std::string &filePath);
-        void LoadTexture(const std::string &filePath);
+        // void LoadTexture(const std::string &filePath);
 
         GLuint* GetTexture(const std::string &textureName);
         std::string FindTextureName(GLuint *textureId);

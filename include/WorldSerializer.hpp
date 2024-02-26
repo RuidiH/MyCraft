@@ -19,7 +19,7 @@ public:
     ~WorldSerializer();
 
     void SaveWorld(std::string filename, std::vector<std::shared_ptr<GameObject>> gameObjects, TextureManager &textureManager);
-    void LoadWorld(std::string filename);
+    void LoadWorld(std::string filename, std::vector<std::shared_ptr<GameObject>> &gameObjects, TextureManager &textureManager);
 
 private:
     void SaveTexture(rapidjson::PrettyWriter<rapidjson::StringBuffer> &writer, std::map<std::string, std::string> &textureMappings);

@@ -21,7 +21,7 @@ public:
 
     void SetTextureGroupName(std::string texture) { mTexutureGroupName = texture; }
     void SetTextureGroup(std::map<std::string, GLuint *> textureGroup) { mTextureGroup = textureGroup;}
-    std::string GetTexture() {  return mTexutureGroupName; }; 
+    std::string GetTextureGroupName() {  return mTexutureGroupName; }; 
     std::map<std::string, GLuint *> GetTextureGroup() { return mTextureGroup; }
 
 private:

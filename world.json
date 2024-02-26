@@ -1,31 +1,40 @@
 {
     "world": {
-        "textures": {
-            "snow": [
-                "./assets/texture/snow.png",
-                "./assets/texture/dirt.png",
-                "./assets/texture/grass_side_snowed.png",
-                "./assets/texture/grass_side_snowed.png",
-                "./assets/texture/grass_side_snowed.png",
-                "./assets/texture/grass_side_snowed.png"
-            ],
-            "grass": [
-                "./assets/texture/grass_carried.png",
-                "./assets/texture/dirt.png",
-                "./assets/texture/grass_side_carried.png",
-                "./assets/texture/grass_side_carried.png",
-                "./assets/texture/grass_side_carried.png",
-                "./assets/texture/grass_side_carried.png"
-            ],
-            "dirt": [
-                "./assets/texture/dirt.png",
-                "./assets/texture/dirt.png",
-                "./assets/texture/dirt.png",
-                "./assets/texture/dirt.png",
-                "./assets/texture/dirt.png",
-                "./assets/texture/dirt.png"
-            ]
-        },
+        "textures": [
+            {
+                "name": "snow",
+                "values": [
+                    "./assets/texture/snow.png",
+                    "./assets/texture/dirt.png",
+                    "./assets/texture/grass_side_snowed.png",
+                    "./assets/texture/grass_side_snowed.png",
+                    "./assets/texture/grass_side_snowed.png",
+                    "./assets/texture/grass_side_snowed.png"
+                ]
+            },
+            {
+                "name": "grass",
+                "values": [
+                    "./assets/texture/grass_carried.png",
+                    "./assets/texture/dirt.png",
+                    "./assets/texture/grass_side_carried.png",
+                    "./assets/texture/grass_side_carried.png",
+                    "./assets/texture/grass_side_carried.png",
+                    "./assets/texture/grass_side_carried.png"
+                ]
+            },
+            {
+                "name": "dirt",
+                "values": [
+                    "./assets/texture/dirt.png",
+                    "./assets/texture/dirt.png",
+                    "./assets/texture/dirt.png",
+                    "./assets/texture/dirt.png",
+                    "./assets/texture/dirt.png",
+                    "./assets/texture/dirt.png"
+                ]
+            }
+        ],
         "objects": [
             {
                 "transform": [
@@ -50,7 +59,8 @@
                             1.0
                         ]
                     }
-                ]
+                ],
+                "texture": "grass"
             },
             {
                 "transform": [
@@ -75,7 +85,8 @@
                             1.0
                         ]
                     }
-                ]
+                ],
+                "texture": "snow"
             },
             {
                 "transform": [
@@ -100,7 +111,8 @@
                             1.0
                         ]
                     }
-                ]
+                ],
+                "texture": "dirt"
             },
             {
                 "transform": [
@@ -125,7 +137,8 @@
                             1.0
                         ]
                     }
-                ]
+                ],
+                "texture": "dirt"
             },
             {
                 "transform": [
@@ -150,7 +163,8 @@
                             1.0
                         ]
                     }
-                ]
+                ],
+                "texture": "dirt"
             },
             {
                 "transform": [
@@ -175,7 +189,8 @@
                             1.0
                         ]
                     }
-                ]
+                ],
+                "texture": "dirt"
             },
             {
                 "transform": [
@@ -200,7 +215,8 @@
                             1.0
                         ]
                     }
-                ]
+                ],
+                "texture": "dirt"
             },
             {
                 "transform": [
@@ -225,7 +241,8 @@
                             1.0
                         ]
                     }
-                ]
+                ],
+                "texture": "dirt"
             },
             {
                 "transform": [
@@ -250,7 +267,8 @@
                             1.0
                         ]
                     }
-                ]
+                ],
+                "texture": "dirt"
             },
             {
                 "transform": [
@@ -275,7 +293,8 @@
                             1.0
                         ]
                     }
-                ]
+                ],
+                "texture": "dirt"
             },
             {
                 "transform": [
@@ -300,7 +319,8 @@
                             1.0
                         ]
                     }
-                ]
+                ],
+                "texture": "dirt"
             },
             {
                 "transform": [
@@ -325,7 +345,8 @@
                             1.0
                         ]
                     }
-                ]
+                ],
+                "texture": "dirt"
             },
             {
                 "transform": [
@@ -350,7 +371,8 @@
                             1.0
                         ]
                     }
-                ]
+                ],
+                "texture": "dirt"
             },
             {
                 "transform": [
@@ -375,7 +397,8 @@
                             1.0
                         ]
                     }
-                ]
+                ],
+                "texture": "dirt"
             },
             {
                 "transform": [
@@ -400,7 +423,8 @@
                             1.0
                         ]
                     }
-                ]
+                ],
+                "texture": "dirt"
             },
             {
                 "transform": [
@@ -425,7 +449,8 @@
                             1.0
                         ]
                     }
-                ]
+                ],
+                "texture": "dirt"
             },
             {
                 "transform": [
@@ -450,7 +475,8 @@
                             1.0
                         ]
                     }
-                ]
+                ],
+                "texture": "dirt"
             },
             {
                 "transform": [
@@ -475,7 +501,8 @@
                             1.0
                         ]
                     }
-                ]
+                ],
+                "texture": "dirt"
             },
             {
                 "transform": [
@@ -500,7 +527,8 @@
                             1.0
                         ]
                     }
-                ]
+                ],
+                "texture": "dirt"
             },
             {
                 "transform": [
@@ -525,7 +553,8 @@
                             1.0
                         ]
                     }
-                ]
+                ],
+                "texture": "dirt"
             },
             {
                 "transform": [
@@ -550,7 +579,8 @@
                             1.0
                         ]
                     }
-                ]
+                ],
+                "texture": "dirt"
             },
             {
                 "transform": [
@@ -575,7 +605,8 @@
                             1.0
                         ]
                     }
-                ]
+                ],
+                "texture": "dirt"
             },
             {
                 "transform": [
@@ -600,7 +631,8 @@
                             1.0
                         ]
                     }
-                ]
+                ],
+                "texture": "dirt"
             },
             {
                 "transform": [
@@ -625,7 +657,8 @@
                             1.0
                         ]
                     }
-                ]
+                ],
+                "texture": "dirt"
             },
             {
                 "transform": [
@@ -650,7 +683,8 @@
                             1.0
                         ]
                     }
-                ]
+                ],
+                "texture": "dirt"
             },
             {
                 "transform": [
@@ -675,7 +709,8 @@
                             1.0
                         ]
                     }
-                ]
+                ],
+                "texture": "dirt"
             },
             {
                 "transform": [
@@ -700,7 +735,8 @@
                             1.0
                         ]
                     }
-                ]
+                ],
+                "texture": "dirt"
             }
         ]
     }

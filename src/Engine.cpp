@@ -33,6 +33,9 @@ Engine::~Engine()
 
 void Engine::SetupObject()
 {
+
+    mWorldSerializer.LoadWorld("./world.json", mGameObjects, mTextureManager);
+
     mTextureManager.LoadTexture("dirt", "./assets/texture/dirt.png");
     mTextureManager.LoadTexture("grass_carried", "./assets/texture/grass_carried.png");
     mTextureManager.LoadTexture("grass_side_carried", "./assets/texture/grass_side_carried.png");
