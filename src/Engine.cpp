@@ -28,7 +28,7 @@ Engine::Engine(int width, int height) : mScreenWidth(width), mScreenHeight(heigh
 
 Engine::~Engine()
 {
-    // TODO: clear all pointer reference 
+    // TODO: clear all pointer reference
 }
 
 void Engine::SetupObject()
@@ -36,69 +36,6 @@ void Engine::SetupObject()
 
     mWorldSerializer.LoadWorld("./world.json", mGameObjects, mTextureManager);
 
-    mTextureManager.LoadTexture("dirt", "./assets/texture/dirt.png");
-    mTextureManager.LoadTexture("grass_carried", "./assets/texture/grass_carried.png");
-    mTextureManager.LoadTexture("grass_side_carried", "./assets/texture/grass_side_carried.png");
-    mTextureManager.LoadTexture("grass_side_snowed", "./assets/texture/grass_side_snowed.png");
-    mTextureManager.LoadTexture("snow", "./assets/texture/snow.png");
-
-    std::map<std::string, std::string> dirtMap; 
-    dirtMap.insert(std::pair<std::string, std::string>("top", "dirt"));
-    dirtMap.insert(std::pair<std::string, std::string>("bottom", "dirt"));
-    dirtMap.insert(std::pair<std::string, std::string>("left", "dirt"));
-    dirtMap.insert(std::pair<std::string, std::string>("right", "dirt"));
-    dirtMap.insert(std::pair<std::string, std::string>("front", "dirt"));
-    dirtMap.insert(std::pair<std::string, std::string>("back", "dirt"));
-    mTextureManager.LoadTextureGroup("dirt", dirtMap);
-
-    std::map<std::string, std::string> grassMap;
-    grassMap.insert(std::pair<std::string, std::string>("top", "grass_carried"));
-    grassMap.insert(std::pair<std::string, std::string>("bottom", "dirt"));
-    grassMap.insert(std::pair<std::string, std::string>("left", "grass_side_carried"));
-    grassMap.insert(std::pair<std::string, std::string>("right", "grass_side_carried"));
-    grassMap.insert(std::pair<std::string, std::string>("front", "grass_side_carried"));
-    grassMap.insert(std::pair<std::string, std::string>("back", "grass_side_carried"));
-    mTextureManager.LoadTextureGroup("grass", grassMap);
-
-    std::map<std::string, std::string> snowMap;
-    snowMap.insert(std::pair<std::string, std::string>("top", "snow"));
-    snowMap.insert(std::pair<std::string, std::string>("bottom", "dirt"));
-    snowMap.insert(std::pair<std::string, std::string>("left", "grass_side_snowed"));
-    snowMap.insert(std::pair<std::string, std::string>("right", "grass_side_snowed"));
-    snowMap.insert(std::pair<std::string, std::string>("front", "grass_side_snowed"));
-    snowMap.insert(std::pair<std::string, std::string>("back", "grass_side_snowed"));
-    mTextureManager.LoadTextureGroup("snow", snowMap);
-
-    std::shared_ptr<GameObject> grass = std::make_shared<GameObject>();
-    grass->AddComponent<ShapeComponent>()->AddCube();
-    grass->AddComponent<TransformComponent>()->SetPosition(glm::vec3(-2.0f, 1.0f, -1.f));
-    grass->AddComponent<TextureComponent>()->SetTextureGroupName("grass");
-    grass->GetComponent<TextureComponent>()->SetTextureGroup(mTextureManager.GetTextureGroup("grass"));
-    mGameObjects.push_back(grass);
-
-    std::shared_ptr<GameObject> snow = std::make_shared<GameObject>();
-    snow->AddComponent<ShapeComponent>()->AddCube();
-    snow->AddComponent<TransformComponent>()->SetPosition(glm::vec3(0.f, 1.f, 0.f));
-    snow->AddComponent<TextureComponent>()->SetTextureGroupName("snow");
-    snow->GetComponent<TextureComponent>()->SetTextureGroup(mTextureManager.GetTextureGroup("snow"));
-    mGameObjects.push_back(snow);
-
-    for (int i = -2; i < 3; i++)
-    {
-        for (int j = -2; j < 3; j++)
-        {
-            std::shared_ptr<GameObject> object = std::make_shared<GameObject>();
-            std::shared_ptr<Cube> cube = std::make_shared<Cube>();
-            object->AddComponent<ShapeComponent>();
-            object->GetComponent<ShapeComponent>()->AddCube(cube);
-            object->AddComponent<TransformComponent>();
-            object->GetComponent<TransformComponent>()->SetPosition(glm::vec3(i, 0.0f, j));
-            object->AddComponent<TextureComponent>()->SetTextureGroupName("dirt");
-            object->GetComponent<TextureComponent>()->SetTextureGroup(mTextureManager.GetTextureGroup("dirt"));
-
-            mGameObjects.push_back(object);
-        }
-    }
 }
 
 void Engine::MainLoop()
@@ -127,7 +64,6 @@ void Engine::Input()
         {
             std::cout << "Goodbye!" << std::endl;
             mQuit = true;
-            mWorldSerializer.SaveWorld("./world.json", mGameObjects, mTextureManager);
         }
         if (e.type == SDL_MOUSEMOTION)
         {
@@ -137,6 +73,13 @@ void Engine::Input()
 
     // Retrieve keyboard state
     const Uint8 *state = SDL_GetKeyboardState(NULL);
+
+    // save world
+    if (state[SDL_SCANCODE_LCTRL] && state[SDL_SCANCODE_S])
+    {
+        mWorldSerializer.SaveWorld("./world.json", mGameObjects, mTextureManager);
+        std::cout << "World saved to ./world.json" << std::endl;        
+    }
 
     // camera controls
     if (state[SDL_SCANCODE_W])
@@ -208,7 +151,7 @@ void Engine::Update()
 }
 
 void Engine::Render()
-{ 
+{
     ShadowPass();
     LightPass();
     glUseProgram(0);
@@ -230,7 +173,7 @@ void Engine::ShadowPass()
         glm::mat4 model = gameObject->GetComponent<TransformComponent>()->GetModelMatrix();
         mShadowShader.SetUniform("model", model);
         gameObject->Render();
-    }   
+    }
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
@@ -284,8 +227,6 @@ void Engine::Shutdown()
     //     delete gameObject;
     // }
     mGameObjects.clear();
-
-    
 
     SDL_StopTextInput();
     SDL_DestroyWindow(gGraphicsApplicationWindow);

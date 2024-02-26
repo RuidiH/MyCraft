@@ -5,6 +5,7 @@
 #include "Cube.hpp"
 
 #include <fstream>
+#include <array>
 
 #include "rapidjson/writer.h"
 #include "rapidjson/stringbuffer.h"
@@ -230,40 +231,63 @@ void WorldSerializer::LoadWorld(std::string filename, std::vector<std::shared_pt
     }
 
     // handle textures
-    const auto& textures = d["world"]["textures"].GetArray();
+    const auto &textures = d["world"]["textures"].GetArray();
 
-    for (const auto& texture : textures)
+    for (const auto &texture : textures)
     {
         const auto &name = texture["name"].GetString();
+        std::array<std::string, 6> texturePaths;
         std::cout << "Texture Name: " << name << std::endl;
         const auto &values = texture["values"].GetArray();
-        for (const auto &value : values)
+        for (int i = 0; i < values.Size(); i++)
         {
-            std::cout << "Texture Path: " << value.GetString() << std::endl;
+            std::cout << "Texture Path: " << values[i].GetString() << std::endl;
+            textureManager.LoadTexture(values[i].GetString());
+            texturePaths[i] = values[i].GetString();
         }
+        textureManager.LoadTextureGroup(name, texturePaths);
     }
 
-
-
     // handle objects
-    const auto& objects = d["world"]["objects"].GetArray();
+    const auto &objects = d["world"]["objects"].GetArray();
 
-    for (const auto& obj : objects)
+    for (const auto &obj : objects)
     {
+        std::shared_ptr<GameObject> gameObject = std::make_shared<GameObject>();
+        gameObject->AddComponent<ShapeComponent>()->AddCube();
+        gameObject->AddComponent<TransformComponent>();
         const auto &transformArray = obj["transform"].GetArray();
         for (const auto &transformComponent : transformArray)
         {
             if (transformComponent.HasMember("position"))
             {
-                std::cout << "Position: ";
-                for (const auto &pos : transformComponent["position"].GetArray())
-                {
-                    // gameObject.transform.position.push_back(pos.GetFloat());
-                    std::cout << pos.GetFloat() << " ";
-                }
+                glm::vec3 position(transformComponent["position"][0].GetFloat(),
+                                   transformComponent["position"][1].GetFloat(),
+                                   transformComponent["position"][2].GetFloat());
+                gameObject->GetComponent<TransformComponent>()->SetPosition(position);
+            }
+            if (transformComponent.HasMember("rotation"))
+            {
+                glm::vec3 rotation(transformComponent["rotation"][0].GetFloat(),
+                                   transformComponent["rotation"][1].GetFloat(),
+                                   transformComponent["rotation"][2].GetFloat());
+                gameObject->GetComponent<TransformComponent>()->SetRotation(rotation);
+            }
+            if (transformComponent.HasMember("scale"))
+            {
+                glm::vec3 scale(transformComponent["scale"][0].GetFloat(),
+                                transformComponent["scale"][1].GetFloat(),
+                                transformComponent["scale"][2].GetFloat());
+                gameObject->GetComponent<TransformComponent>()->SetScale(scale);
             }
         }
-        const auto &texture = obj["texture"].GetString();
-        std::cout << "Texture: " << texture << std::endl;
+
+        if (obj.HasMember("texture"))
+        {
+            const auto &texture = obj["texture"].GetString();
+            gameObject->AddComponent<TextureComponent>()->SetTextureGroupName(texture);
+            gameObject->GetComponent<TextureComponent>()->SetTextureGroup(textureManager.GetTextureGroup(texture));
+        }
+        gameObjects.push_back(gameObject);
     }
 }

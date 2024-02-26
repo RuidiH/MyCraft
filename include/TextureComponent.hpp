@@ -6,6 +6,7 @@
 #include <string>
 #include <map>
 #include <iostream>
+#include <array>
 
 #include "Component.hpp"
 
@@ -20,7 +21,7 @@ public:
     void Render() {};
 
     void SetTextureGroupName(std::string texture) { mTexutureGroupName = texture; }
-    void SetTextureGroup(std::map<std::string, GLuint *> textureGroup) { mTextureGroup = textureGroup;}
+    void SetTextureGroup(std::array<GLuint *, 6> textureGroup); 
     std::string GetTextureGroupName() {  return mTexutureGroupName; }; 
     std::map<std::string, GLuint *> GetTextureGroup() { return mTextureGroup; }
 
