@@ -237,11 +237,9 @@ void WorldSerializer::LoadWorld(std::string filename, std::vector<std::shared_pt
     {
         const auto &name = texture["name"].GetString();
         std::array<std::string, 6> texturePaths;
-        std::cout << "Texture Name: " << name << std::endl;
         const auto &values = texture["values"].GetArray();
         for (int i = 0; i < values.Size(); i++)
         {
-            std::cout << "Texture Path: " << values[i].GetString() << std::endl;
             textureManager.LoadTexture(values[i].GetString());
             texturePaths[i] = values[i].GetString();
         }

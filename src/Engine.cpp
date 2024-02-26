@@ -35,7 +35,6 @@ void Engine::SetupObject()
 {
 
     mWorldSerializer.LoadWorld("./world.json", mGameObjects, mTextureManager);
-
 }
 
 void Engine::MainLoop()
@@ -69,24 +68,32 @@ void Engine::Input()
         {
             mCamera.RotateCamera(e.motion.xrel, e.motion.yrel);
         }
+
+        if (e.type == SDL_KEYDOWN && e.key.repeat == 0)
+        {
+            if (e.key.keysym.sym == SDLK_s)
+            {
+                const Uint8 *state = SDL_GetKeyboardState(NULL);
+                // Check if either CTRL key is pressed
+                if (state[SDL_SCANCODE_LCTRL] || state[SDL_SCANCODE_RCTRL])
+                {
+                    // Save world
+                    mWorldSerializer.SaveWorld("./world.json", mGameObjects, mTextureManager);
+                    std::cout << "World saved to ./world.json" << std::endl;
+                }
+            }
+        }
     }
 
     // Retrieve keyboard state
     const Uint8 *state = SDL_GetKeyboardState(NULL);
-
-    // save world
-    if (state[SDL_SCANCODE_LCTRL] && state[SDL_SCANCODE_S])
-    {
-        mWorldSerializer.SaveWorld("./world.json", mGameObjects, mTextureManager);
-        std::cout << "World saved to ./world.json" << std::endl;        
-    }
 
     // camera controls
     if (state[SDL_SCANCODE_W])
     {
         mCamera.MoveForward(0.1f);
     }
-    else if (state[SDL_SCANCODE_S])
+    else if (state[SDL_SCANCODE_S] && !state[SDL_SCANCODE_LCTRL])
     {
         mCamera.MoveBackward(0.1f);
     }

@@ -19,7 +19,7 @@ void TextureManager::LoadTexture(const std::string &filePath)
     // skip loading if texture already exists
     if (GetTexture(filePath) != nullptr)
     {
-        std::cout << "Texture " + filePath + " already loaded" << std::endl;
+        // std::cout << "Texture " + filePath + " already loaded" << std::endl;
         return;
     }
 
@@ -53,12 +53,10 @@ GLuint* TextureManager::GetTexture(const std::string &textureName)
     // find the textureName in the map, return the textureId if found
     if (mTextureMap.find(textureName) != mTextureMap.end())
     {
-        // std::cout << "Texture " + textureName + " found" << std::endl;
         return mTextureMap[textureName];
     }
     else
     {
-        // std::cout << "ERROR: Texture " << textureName << " not found" << std::endl;
         return nullptr;
     }
 }
