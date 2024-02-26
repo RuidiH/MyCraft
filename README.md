@@ -1,7 +1,7 @@
 # MyCraft
 
 <p align="center">
-  <img src="./media/example.jpg" alt="Alt text" title="Game Image" style="padding: 5px;"/>
+  <img src="./media/example.png" alt="Alt text" title="Game Image" style="padding: 5px;"/>
 </p>
 
 ## Introduction
@@ -66,13 +66,13 @@ python3 build.py
 
 ## Usage
 Camera Control:
-    - [W] -> Forward
-    - [S] -> Backward
-    - [A] -> Move Left
-    - [D] -> Move Right
+  - [W] -> Forward
+  - [S] -> Backward
+  - [A] -> Move Left
+  - [D] -> Move Right
 
 World:
-    - [Ctrl] + [S] -> Save world. 
+  - [Ctrl] + [S] -> Save world. 
 
 ## Future Plans
 As I continue my educational journey through the "Computer Graphics Course," I plan to enrich MyCraft with advanced graphics utilities, exploring more complex lighting, shading, and rendering techniques to bring the game closer to its inspiration while carving out its unique identity.
@@ -80,7 +80,7 @@ As I continue my educational journey through the "Computer Graphics Course," I p
 
 ## Acknowledgments
 - The original Minecraft game, for being a source of inspiration and creativity.
-- The "Build Game Engine" and "Computer Graphics" courses By [Mike Shah](https://mshah.io/) at Northeastern University, for providing the knowledge foundation for this project.
+- The "Build Game Engine" and "Computer Graphics" courses By [Prof. Mike Shah](https://mshah.io/) at Northeastern University, for providing the knowledge foundation for this project.
 - The "Computer Graphics" by [Dr.Jeffrey Paone](https://inside.mines.edu/~jpaone/) at Colorado School of Mines for introductory into graphics. 
 
 ## Contact
