@@ -116,6 +116,7 @@ void Engine::FindSelectedObject()
     glm::vec3 rayDir = mCamera.GetRayDirection(mScreenWidth, mScreenHeight, glm::vec2(mScreenWidth / 2, mScreenHeight / 2));
     // std::cout << "Ray direction: " << rayDir.x << " " << rayDir.y << " " << rayDir.z << std::endl;
     float smallestTNear = -1.f;
+    std::string clostestHitSide;
     std::shared_ptr<GameObject> hitObject;
     for (std::shared_ptr<GameObject> gameObject : mGameObjects)
     {
@@ -123,7 +124,8 @@ void Engine::FindSelectedObject()
         for (const auto &cube : shape->GetCubes())
         {
             float tNear, tFar = 0.f;
-            bool result = RayCastTest(mCamera.GetPosition(), rayDir, cube->GetMinCorner(), cube->GetMaxCorner(), tNear, tFar);
+            std::string hitSide;
+            bool result = RayCastTest(mCamera.GetPosition(), rayDir, cube->GetCorners(), tNear, tFar, hitSide);
 
             // std::cout << "tNear: " << tNear << " tFar: " << tFar << std::endl;
 
@@ -132,6 +134,7 @@ void Engine::FindSelectedObject()
             {
                 smallestTNear = tNear;
                 hitObject = gameObject;
+                clostestHitSide = hitSide;
                 continue;
             }
 
@@ -142,10 +145,12 @@ void Engine::FindSelectedObject()
                 {
                     smallestTNear = tNear;
                     hitObject = gameObject;
+                    clostestHitSide = hitSide;
                 }
             }
         }
     }
+    std::cout << "Hit side: " << clostestHitSide << std::endl;
     mSelected = hitObject;
 }
 
@@ -352,8 +357,11 @@ void Engine::GetOpenGLVersionInfo()
     std::cout << "Shading Language: " << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
 }
 
-bool Engine::RayCastTest(const glm::vec3 origin, const glm::vec3 direction, glm::vec3 minCorner, glm::vec3 maxCorner, float &tNear, float &tFar)
+bool Engine::RayCastTest(const glm::vec3 origin, const glm::vec3 direction, const std::array<glm::vec3, 2> &box ,float &tNear, float &tFar, std::string &hitSide)
 {
+    glm::vec3 minCorner = box[0];
+    glm::vec3 maxCorner = box[1];
+
     glm::vec3 invDir = 1.0f / direction;
     glm::vec3 tMin = (minCorner - origin) * invDir;
     glm::vec3 tMax = (maxCorner - origin) * invDir;
@@ -363,6 +371,29 @@ bool Engine::RayCastTest(const glm::vec3 origin, const glm::vec3 direction, glm:
 
     tNear = std::max(std::max(t1.x, t1.y), t1.z);
     tFar = std::min(std::min(t2.x, t2.y), t2.z);
+
+    float tHit = tNear; // The time at which the ray hits the cube
+
+    if (tNear > tFar)
+    {
+        return false;
+    }
+
+    // Check which axis had the intersection and determine the direction
+    if (tHit == t1.x)
+    {
+        hitSide = direction.x < 0 ? "right" : "left";
+    }
+    else if (tHit == t1.y)
+    {
+        hitSide = direction.y < 0 ? "top" : "bottom";
+    }
+    else if (tHit == t1.z)
+    {
+        hitSide = direction.z < 0 ? "front" : "back";
+    }
+
+    // std::cout << "Hit side: " << hitSide << std::endl;
 
     return tNear <= tFar;
 }

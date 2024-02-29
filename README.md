@@ -29,11 +29,11 @@ MyCraft is built using a combination of powerful tools and libraries, chosen for
 
 ### In-progress
 
-- [ ] Represent objects in a grid-like data structure for adding and deleting objects
-- [ ] Create objects next to another using ray-caster; Use Linear Algebra to determine which side the new cube should be added to
+- [ ] Object creation using ray-caster and cube side normals. 
 - [ ] Object destruction mechanism
 - [ ] Skybox to the world
 - [ ] More advanced graphics (i.e. water)
+- [ ] Hash objects for quick lookup
 - [ ] Add Resource Manager based on Texture Manager
 - [ ] Use Python UI for creating new objects
 

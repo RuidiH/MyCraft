@@ -18,6 +18,7 @@
 #include <iostream>
 #include <map>
 #include <memory>
+#include <unordered_map>
 
 #ifndef M_PI
     #define M_PI 3.14159265358979323846
@@ -50,6 +51,7 @@ private:
     int mScreenHeight;
     TextureManager mTextureManager;
     std::vector<std::shared_ptr<GameObject>> mGameObjects;
+
     Camera mCamera;
     glm::vec2 mShadowResolution = glm::vec2(4096, 4096);
 
@@ -102,7 +104,7 @@ private:
 
     // Ray Cast
     std::shared_ptr<GameObject> mSelected;
-    bool RayCastTest(const glm::vec3 origin, const glm::vec3 direction, const glm::vec3 minCorner, const glm::vec3 maxCorner, float &tNear, float &tFar);
+    bool RayCastTest(const glm::vec3 origin, const glm::vec3 direction, const std::array<glm::vec3, 2> &box, float &tNear, float &tFar, std::string &hitSide);
 };
 
 #endif

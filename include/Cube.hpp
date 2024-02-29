@@ -27,6 +27,7 @@ public:
 
     glm::vec3 GetMinCorner() { return this->mMinCorner; };
     glm::vec3 GetMaxCorner() { return this->mMaxCorner; };
+    std::array<glm::vec3, 2> GetCorners() { return {mMinCorner, mMaxCorner}; };
     std::map<std::string, GLuint *> GetTextureIdMap() { return mTextureIdMap; };
 
     void setPosition(glm::vec3 position);
