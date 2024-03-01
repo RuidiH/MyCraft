@@ -125,6 +125,8 @@ void Cube::SetVertexData()
     float radius = mSize / 2.0;
     // float radius = mSize / 1.0;
 
+    // x, y, z, u, v, nx, ny, nz
+
     // initialize vertex data map
     std::vector<float> vTop{
         // Top
@@ -180,4 +182,22 @@ void Cube::SetVertexData()
     mVertexDataMap["right"] = vRight;
     mVertexDataMap["front"] = vFront;
     mVertexDataMap["back"] = vBack;
+}
+
+glm::vec3 Cube::GetSideNormal(std::string side) {
+    if (side == "top") {
+        return glm::vec3(0.f, 1.f, 0.f);
+    } else if (side == "bottom") {
+        return glm::vec3(0.f, -1.f, 0.f);
+    } else if (side == "left") {
+        return glm::vec3(-1.f, 0.f, 0.f);
+    } else if (side == "right") {
+        return glm::vec3(1.f, 0.f, 0.f);
+    } else if (side == "front") {
+        return glm::vec3(0.f, 0.f, 1.f);
+    } else if (side == "back") {
+        return glm::vec3(0.f, 0.f, -1.f);
+    }
+    std::cout << "Invalid side\n";
+    return glm::vec3(0.f, 0.f, 0.f);
 }

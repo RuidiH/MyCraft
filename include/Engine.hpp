@@ -72,6 +72,8 @@ private:
 
     // game loop functions
     void Input();
+    void RemoveObject();
+    void AddObject();
     void Update();
     void Render();
     void FindSelectedObject();
@@ -80,6 +82,7 @@ private:
     Shader mMainShader;
     Shader mShadowShader;
     Shader mQuadShader;
+    Shader mCrosshairShader;
     GLuint mShadowMapFBO;
     glm::mat4 mLightProjection; 
 
@@ -87,6 +90,7 @@ private:
     // void ShadowPass(std::shared_ptr<GameObject> object);
     void ShadowPass();
     void LightPass();
+    void CrosshairPass();
 
     // opengl settup
     void InitializeGraphicsProgram();
@@ -104,7 +108,14 @@ private:
 
     // Ray Cast
     std::shared_ptr<GameObject> mSelected;
+    std::string mSelectedFace = "none";
+    std::string mNewObjectTextureGroup = "dirt";
     bool RayCastTest(const glm::vec3 origin, const glm::vec3 direction, const std::array<glm::vec3, 2> &box, float &tNear, float &tFar, std::string &hitSide);
+
+    // Crosshair logic
+    std::array<float, 12> mCrosshairVertices;
+    GLuint mCrosshairVAO;
+    GLuint mCrosshairVBO;
 };
 
 #endif

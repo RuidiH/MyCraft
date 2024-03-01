@@ -25,6 +25,7 @@ public:
     void Update();
     void Render();
 
+    glm::vec3 GetSideNormal(std::string side);
     glm::vec3 GetMinCorner() { return this->mMinCorner; };
     glm::vec3 GetMaxCorner() { return this->mMaxCorner; };
     std::array<glm::vec3, 2> GetCorners() { return {mMinCorner, mMaxCorner}; };

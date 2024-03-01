@@ -9,6 +9,7 @@
 // #include <glm/gtx/rotate_vector.hpp>
 
 #include <array>
+#include <algorithm>
 
 Uint32 Engine::deltaTime;
 
@@ -24,6 +25,25 @@ Engine::Engine(int width, int height) : mScreenWidth(width), mScreenHeight(heigh
     glm::mat4 orthoProjection = glm::ortho(-15.f, 15.f, -15.f, 15.f, 1.f, 35.f);
     glm::mat4 lightView = glm::lookAt(glm::vec3(3.f, 3.f, 3.f), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
     mLightProjection = orthoProjection * lightView;
+
+    // hard-coded crosshair
+    float aspectRatio = (float)mScreenWidth / (float)mScreenHeight;
+    mCrosshairVertices = {
+        -0.03f, 0.0f * aspectRatio, 0.0f, // Left point
+        0.03f, 0.0f * aspectRatio, 0.0f,  // Right point
+        0.0f, -0.03f * aspectRatio, 0.0f, // Bottom point
+        0.0f, 0.03f * aspectRatio, 0.0f   // Top point}
+    };
+    glGenVertexArrays(1, &mCrosshairVAO);
+    glBindVertexArray(mCrosshairVAO);
+    glGenBuffers(1, &mCrosshairVBO);
+    glBindBuffer(GL_ARRAY_BUFFER, mCrosshairVBO);
+
+    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * mCrosshairVertices.size(), mCrosshairVertices.data(), GL_STATIC_DRAW);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *)0);
+    glEnableVertexAttribArray(0);
+
+    glBindVertexArray(0);
 }
 
 Engine::~Engine()
@@ -63,6 +83,7 @@ void Engine::Input()
         {
             std::cout << "Goodbye!" << std::endl;
             mQuit = true;
+            break;
         }
         if (e.type == SDL_MOUSEMOTION)
         {
@@ -81,6 +102,18 @@ void Engine::Input()
                     mWorldSerializer.SaveWorld("./world.json", mGameObjects, mTextureManager);
                     std::cout << "World saved to ./world.json" << std::endl;
                 }
+            }
+        }
+        if (e.type == SDL_MOUSEBUTTONDOWN)
+        {
+            if (e.button.button == SDL_BUTTON_RIGHT)
+            {
+                // Right mouse button was clicked
+                AddObject();
+            }
+            else if (e.button.button == SDL_BUTTON_LEFT)
+            {
+                RemoveObject();
             }
         }
     }
@@ -109,6 +142,73 @@ void Engine::Input()
 
     // ray casting test
     FindSelectedObject();
+
+    // switch type of object to make
+    if (state[SDL_SCANCODE_1])
+    {
+        mNewObjectTextureGroup = "dirt";
+    }
+    else if (state[SDL_SCANCODE_2])
+    {
+        mNewObjectTextureGroup = "grass";
+    }
+    else if (state[SDL_SCANCODE_3])
+    {
+        mNewObjectTextureGroup = "snow";
+    }
+}
+
+void Engine::RemoveObject()
+{
+    // Left mouse button was clicked
+    if (mSelected != nullptr)
+    {
+
+        mGameObjects.erase(std::remove(mGameObjects.begin(), mGameObjects.end(), mSelected), mGameObjects.end());
+        mSelected = nullptr;
+        mSelectedFace = "none";
+    }
+}
+
+void Engine::AddObject()
+{
+    if (mSelected != nullptr && mSelectedFace != "none")
+    {
+        glm::vec3 normal = mSelected->GetComponent<ShapeComponent>()->GetCubes()[0]->GetSideNormal(mSelectedFace);
+        glm::vec3 placementPos = mSelected->GetComponent<TransformComponent>()->GetPosition() + normal;
+
+        // make sure the placement position is not occupied
+        bool isOccupied = false;
+        for (auto gameObject : mGameObjects)
+        {
+            if (gameObject != mSelected)
+            {
+                ShapeComponent *shape = gameObject->GetComponent<ShapeComponent>();
+                for (const auto &cube : shape->GetCubes())
+                {
+                    if (glm::distance(placementPos, cube->GetMinCorner()) < 0.1f)
+                    {
+                        isOccupied = true;
+                        break;
+                    }
+                }
+            }
+        }
+        if (!isOccupied)
+        {
+            std::shared_ptr<GameObject> newCube = std::make_shared<GameObject>();
+            newCube->AddComponent<TransformComponent>()->SetPosition(placementPos);
+            newCube->AddComponent<ShapeComponent>()->AddCube();
+            newCube->AddComponent<TextureComponent>()->SetTextureGroupName(mNewObjectTextureGroup);
+            newCube->GetComponent<TextureComponent>()->SetTextureGroup(mTextureManager.GetTextureGroup(mNewObjectTextureGroup));
+            mGameObjects.push_back(newCube);
+            std::cout << "New cube placed at " << placementPos.x << " " << placementPos.y << " " << placementPos.z << std::endl;
+        }
+        else
+        {
+            std::cout << "Placement position is occupied" << std::endl;
+        }
+    }
 }
 
 void Engine::FindSelectedObject()
@@ -129,18 +229,18 @@ void Engine::FindSelectedObject()
 
             // std::cout << "tNear: " << tNear << " tFar: " << tFar << std::endl;
 
-            // base case for ray cast test
-            if (smallestTNear == -1.f)
-            {
-                smallestTNear = tNear;
-                hitObject = gameObject;
-                clostestHitSide = hitSide;
-                continue;
-            }
-
             // keep track of closest colliding object
             if (result)
             {
+                // base case for ray cast test
+                if (smallestTNear == -1.f)
+                {
+                    smallestTNear = tNear;
+                    hitObject = gameObject;
+                    clostestHitSide = hitSide;
+                    continue;
+                }
+
                 if (tNear < smallestTNear)
                 {
                     smallestTNear = tNear;
@@ -150,8 +250,17 @@ void Engine::FindSelectedObject()
             }
         }
     }
-    std::cout << "Hit side: " << clostestHitSide << std::endl;
-    mSelected = hitObject;
+    if (hitObject != nullptr)
+    {
+        // std::cout << "Hit side: " << clostestHitSide << std::endl;
+        mSelectedFace = clostestHitSide;
+        mSelected = hitObject;
+    }
+    else
+    {
+        mSelected = nullptr;
+        mSelectedFace = "none";
+    }
 }
 
 void Engine::Update()
@@ -166,6 +275,7 @@ void Engine::Render()
 {
     ShadowPass();
     LightPass();
+    CrosshairPass();
     glUseProgram(0);
 }
 
@@ -219,16 +329,29 @@ void Engine::LightPass()
     {
         glm::mat4 model = gameObject->GetComponent<TransformComponent>()->GetModelMatrix();
         mMainShader.SetUniform("u_ModelMatrix", model);
-        if (gameObject == mSelected)
-        {
-            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-        }
-        else
-        {
-            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-        }
+        // if (mSelected != nullptr && gameObject == mSelected)
+        // {
+        //     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        // }
+        // else
+        // {
+        //     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        // }
         gameObject->Render();
     }
+}
+
+void Engine::CrosshairPass()
+{
+    glDisable(GL_DEPTH_TEST); // Disable depth testing for HUD elements
+
+    // Draw crosshair
+    mCrosshairShader.Use();
+    glBindVertexArray(mCrosshairVAO);
+    glDrawArrays(GL_LINES, 0, 4);
+
+    glBindVertexArray(0);
+    glEnable(GL_DEPTH_TEST); // Re-enable depth testing if there are subsequent rendering operations
 }
 
 void Engine::Shutdown()
@@ -346,7 +469,8 @@ void Engine::CreateGraphicsPipeline()
 
     mMainShader.Init("./shaders/vert.glsl", "./shaders/frag.glsl");
     mShadowShader.Init("./shaders/shadow_v.glsl", "./shaders/shadow_f.glsl");
-    mQuadShader.Init("./shaders/quad_v.glsl", "./shaders/quad_f.glsl");
+    mCrosshairShader.Init("./shaders/crosshair_v.glsl", "./shaders/crosshair_f.glsl");
+    // mQuadShader.Init("./shaders/quad_v.glsl", "./shaders/quad_f.glsl");
 }
 
 void Engine::GetOpenGLVersionInfo()
@@ -357,7 +481,7 @@ void Engine::GetOpenGLVersionInfo()
     std::cout << "Shading Language: " << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
 }
 
-bool Engine::RayCastTest(const glm::vec3 origin, const glm::vec3 direction, const std::array<glm::vec3, 2> &box ,float &tNear, float &tFar, std::string &hitSide)
+bool Engine::RayCastTest(const glm::vec3 origin, const glm::vec3 direction, const std::array<glm::vec3, 2> &box, float &tNear, float &tFar, std::string &hitSide)
 {
     glm::vec3 minCorner = box[0];
     glm::vec3 maxCorner = box[1];
