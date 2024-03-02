@@ -83,6 +83,8 @@ private:
     Shader mShadowShader;
     Shader mQuadShader;
     Shader mCrosshairShader;
+    Shader mHighlightShader;
+
     GLuint mShadowMapFBO;
     glm::mat4 mLightProjection; 
 
@@ -91,6 +93,7 @@ private:
     void ShadowPass();
     void LightPass();
     void CrosshairPass();
+    void HighlightPass();
 
     // opengl settup
     void InitializeGraphicsProgram();

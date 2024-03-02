@@ -273,8 +273,14 @@ void Engine::Update()
 
 void Engine::Render()
 {
+    // glEnable(GL_DEPTH_TEST);
+    // glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
+    glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+
     ShadowPass();
     LightPass();
+    HighlightPass();
     CrosshairPass();
     glUseProgram(0);
 }
@@ -327,17 +333,45 @@ void Engine::LightPass()
 
     for (auto &gameObject : mGameObjects)
     {
+        if (mSelected != nullptr && gameObject == mSelected)
+        {
+            glStencilFunc(GL_ALWAYS, 1, 0xFF);
+            glStencilMask(0xFF);
+        }
+
         glm::mat4 model = gameObject->GetComponent<TransformComponent>()->GetModelMatrix();
         mMainShader.SetUniform("u_ModelMatrix", model);
-        // if (mSelected != nullptr && gameObject == mSelected)
-        // {
-        //     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-        // }
-        // else
-        // {
-        //     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-        // }
         gameObject->Render();
+
+        if (mSelected != nullptr && gameObject == mSelected)
+        {
+            glStencilMask(0x00); // disable writing to the stencil buffer
+        }
+    }
+}
+
+void Engine::HighlightPass()
+{
+    for (auto &gameObject : mGameObjects)
+    {
+
+        if (mSelected != nullptr && gameObject == mSelected)
+        {
+            glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+            glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
+            glDisable(GL_DEPTH_TEST);
+
+            mHighlightShader.Use();
+            glm::mat4 model = gameObject->GetComponent<TransformComponent>()->GetModelMatrix() * glm::scale(glm::vec3(1.1f));
+            mHighlightShader.SetUniform("model", model);
+            mHighlightShader.SetUniform("view", mCamera.GetViewMatrix());
+            mHighlightShader.SetUniform("projection", mCamera.GetProjectionMatrix());
+            gameObject->Render();
+
+            glEnable(GL_DEPTH_TEST);
+            glStencilMask(0x00); // make sure we don't update the stencil buffer
+            // glDisable(GL_STENCIL_TEST);
+        }
     }
 }
 
@@ -433,6 +467,7 @@ void Engine::InitializeGraphicsProgram()
 
     // enable depth testing and culling
     glEnable(GL_DEPTH_TEST);
+    glEnable(GL_STENCIL_TEST);
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
     glViewport(0, 0, mScreenWidth, mScreenHeight);
@@ -470,6 +505,7 @@ void Engine::CreateGraphicsPipeline()
     mMainShader.Init("./shaders/vert.glsl", "./shaders/frag.glsl");
     mShadowShader.Init("./shaders/shadow_v.glsl", "./shaders/shadow_f.glsl");
     mCrosshairShader.Init("./shaders/crosshair_v.glsl", "./shaders/crosshair_f.glsl");
+    mHighlightShader.Init("./shaders/highlight_v.glsl", "./shaders/highlight_f.glsl");
     // mQuadShader.Init("./shaders/quad_v.glsl", "./shaders/quad_f.glsl");
 }
 
