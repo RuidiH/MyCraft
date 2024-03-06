@@ -273,9 +273,7 @@ void Engine::Update()
 
 void Engine::Render()
 {
-    // glEnable(GL_DEPTH_TEST);
-    // glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
-    glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+    glEnable(GL_DEPTH_TEST);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
     ShadowPass();
@@ -335,6 +333,8 @@ void Engine::LightPass()
     {
         if (mSelected != nullptr && gameObject == mSelected)
         {
+            glEnable(GL_STENCIL_TEST);
+            glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
             glStencilFunc(GL_ALWAYS, 1, 0xFF);
             glStencilMask(0xFF);
         }
@@ -346,6 +346,7 @@ void Engine::LightPass()
         if (mSelected != nullptr && gameObject == mSelected)
         {
             glStencilMask(0x00); // disable writing to the stencil buffer
+            glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
         }
     }
 }
@@ -358,19 +359,20 @@ void Engine::HighlightPass()
         if (mSelected != nullptr && gameObject == mSelected)
         {
             glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
-            glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
             glDisable(GL_DEPTH_TEST);
+            glDepthMask(GL_FALSE);
 
             mHighlightShader.Use();
-            glm::mat4 model = gameObject->GetComponent<TransformComponent>()->GetModelMatrix() * glm::scale(glm::vec3(1.1f));
+            glm::mat4 model = gameObject->GetComponent<TransformComponent>()->GetModelMatrix() * glm::scale(glm::vec3(1.05f));
             mHighlightShader.SetUniform("model", model);
             mHighlightShader.SetUniform("view", mCamera.GetViewMatrix());
             mHighlightShader.SetUniform("projection", mCamera.GetProjectionMatrix());
             gameObject->Render();
 
             glEnable(GL_DEPTH_TEST);
+            glDepthMask(GL_TRUE);
             glStencilMask(0x00); // make sure we don't update the stencil buffer
-            // glDisable(GL_STENCIL_TEST);
+            glDisable(GL_STENCIL_TEST);
         }
     }
 }

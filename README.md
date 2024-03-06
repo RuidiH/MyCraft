@@ -28,8 +28,7 @@ MyCraft is built using a combination of powerful tools and libraries, chosen for
 ## TODO Lists
 
 ### In-progress
-
-- [ ] Object creation using ray-caster and cube side normals. 
+- [ ] Use Stencil Buffer for object highlight
 - [ ] Object destruction mechanism
 - [ ] Skybox to the world
 - [ ] More advanced graphics (i.e. water)
@@ -48,6 +47,7 @@ MyCraft is built using a combination of powerful tools and libraries, chosen for
 - [x] Texture Manager for loading and saving pointers to texture
 - [x] Refactored components (i.e. transform, texture, shape)
 - [x] Create and refactored shader program
+- [x] Object creation using ray-caster and cube side normals. 
 
 ## Requirements
 To run MyCraft, you'll need:
