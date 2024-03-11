@@ -125,10 +125,12 @@ void Cube::SetVertexData()
     float radius = mSize / 2.0;
     // float radius = mSize / 1.0;
 
+    // vertex data structure:
     // x, y, z, u, v, nx, ny, nz
 
     // initialize vertex data map
     std::vector<float> vTop{
+
         // Top
         -radius, radius, -radius, 0.0f, 0.0f, 0.f, 1.f, 0.f, // - + -
         -radius, radius, radius, 0.0f, 1.0f, 0.f, 1.f, 0.f,  // - + +

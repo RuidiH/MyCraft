@@ -28,9 +28,9 @@ MyCraft is built using a combination of powerful tools and libraries, chosen for
 ## TODO Lists
 
 ### In-progress
-- [ ] Use Stencil Buffer for object highlight
-- [ ] Object destruction mechanism
-- [ ] Skybox to the world
+- [x] Object highlight with stencil buffer
+- [x] Object destruction 
+- [ ] World Skybox
 - [ ] More advanced graphics (i.e. water)
 - [ ] Hash objects for quick lookup
 - [ ] Add Resource Manager based on Texture Manager
@@ -44,10 +44,10 @@ MyCraft is built using a combination of powerful tools and libraries, chosen for
 - [x] Free Camera
 - [x] Loading and saving world
 - [x] Ray caster that draw an object in wireframe mode
-- [x] Texture Manager for loading and saving pointers to texture
+- [x] Texture Manager 
 - [x] Refactored components (i.e. transform, texture, shape)
 - [x] Create and refactored shader program
-- [x] Object creation using ray-caster and cube side normals. 
+- [x] Object selection/addition using ray-caster and vertex normals. 
 
 ## Requirements
 To run MyCraft, you'll need:
