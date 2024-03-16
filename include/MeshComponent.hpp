@@ -1,5 +1,5 @@
-#ifndef SHAPE_COMPONENT_HPP
-#define SHAPE_COMPONENT_HPP
+#ifndef MESH_COMPONENT_HPP
+#define MESH_COMPONENT_HPP
 
 #include <glad/glad.h>
 #include <glm/glm.hpp>
@@ -11,7 +11,7 @@
 #include "Cube.hpp"
 
 class Cube;
-class ShapeComponent : public Component {
+class MeshComponent : public Component {
     public:
         // Game loop functions
         virtual void Input() override;

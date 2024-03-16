@@ -1,10 +1,10 @@
-#include "ShapeComponent.hpp"
+#include "MeshComponent.hpp"
 
-void ShapeComponent::Input()
+void MeshComponent::Input()
 {
 }
 
-void ShapeComponent::Update()
+void MeshComponent::Update()
 {
     for (auto cube : mCubes)
     {
@@ -12,7 +12,7 @@ void ShapeComponent::Update()
     }
 }
 
-void ShapeComponent::Render()
+void MeshComponent::Render()
 {
     for (auto cube : mCubes)
     {
@@ -20,7 +20,7 @@ void ShapeComponent::Render()
     }
 }
 
-void ShapeComponent::AddCube(std::shared_ptr<Cube> cube)
+void MeshComponent::AddCube(std::shared_ptr<Cube> cube)
 {
     if (cube != nullptr)
     {
@@ -29,14 +29,14 @@ void ShapeComponent::AddCube(std::shared_ptr<Cube> cube)
     }
 }
 
-std::shared_ptr<Cube> ShapeComponent::AddCube() {
+std::shared_ptr<Cube> MeshComponent::AddCube() {
     std::shared_ptr<Cube> cube = std::make_shared<Cube>();
     cube->SetParentComponent(this);
     mCubes.push_back(cube); 
     return cube;
 }
 
-// void ShapeComponent::setCube(Cube *cube)
+// void MeshComponent::setCube(Cube *cube)
 // {
 //     if (cube != nullptr)
 //     {

@@ -11,9 +11,9 @@
 #include <array>
 
 
-#include "ShapeComponent.hpp"
+#include "MeshComponent.hpp"
 
-class ShapeComponent;
+class MeshComponent;
 
 class Cube
 {
@@ -38,7 +38,7 @@ public:
     void SetFaceTexture(std::string face, GLuint *texId) { mTextureIdMap[face] = texId; }
     void SetFaceTexture(const std::map<std::string, GLuint *> &textureIdMap) { mTextureIdMap = textureIdMap; }
 
-    void SetParentComponent(ShapeComponent *parent) { mParent = parent; }
+    void SetParentComponent(MeshComponent *parent) { mParent = parent; }
 
 private:
     std::map<std::string, std::vector<float>> mVertexDataMap;
@@ -50,7 +50,7 @@ private:
     glm::vec3 mMinCorner;
     glm::vec3 mMaxCorner;
 
-    ShapeComponent *mParent;
+    MeshComponent *mParent;
 };
 
 #endif // CUBE_HPP

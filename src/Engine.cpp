@@ -1,5 +1,5 @@
 #include "Engine.hpp"
-#include "ShapeComponent.hpp"
+#include "MeshComponent.hpp"
 #include "TransformComponent.hpp"
 #include "TextureComponent.hpp"
 
@@ -174,7 +174,7 @@ void Engine::AddObject()
 {
     if (mSelected != nullptr && mSelectedFace != "none")
     {
-        glm::vec3 normal = mSelected->GetComponent<ShapeComponent>()->GetCubes()[0]->GetSideNormal(mSelectedFace);
+        glm::vec3 normal = mSelected->GetComponent<MeshComponent>()->GetCubes()[0]->GetSideNormal(mSelectedFace);
         glm::vec3 placementPos = mSelected->GetComponent<TransformComponent>()->GetPosition() + normal;
 
         // make sure the placement position is not occupied
@@ -183,7 +183,7 @@ void Engine::AddObject()
         {
             if (gameObject != mSelected)
             {
-                ShapeComponent *shape = gameObject->GetComponent<ShapeComponent>();
+                MeshComponent *shape = gameObject->GetComponent<MeshComponent>();
                 for (const auto &cube : shape->GetCubes())
                 {
                     if (glm::distance(placementPos, cube->GetMinCorner()) < 0.1f)
@@ -198,7 +198,7 @@ void Engine::AddObject()
         {
             std::shared_ptr<GameObject> newCube = std::make_shared<GameObject>();
             newCube->AddComponent<TransformComponent>()->SetPosition(placementPos);
-            newCube->AddComponent<ShapeComponent>()->AddCube();
+            newCube->AddComponent<MeshComponent>()->AddCube();
             newCube->AddComponent<TextureComponent>()->SetTextureGroupName(mNewObjectTextureGroup);
             newCube->GetComponent<TextureComponent>()->SetTextureGroup(mTextureManager.GetTextureGroup(mNewObjectTextureGroup));
             mGameObjects.push_back(newCube);
@@ -220,7 +220,7 @@ void Engine::FindSelectedObject()
     std::shared_ptr<GameObject> hitObject;
     for (std::shared_ptr<GameObject> gameObject : mGameObjects)
     {
-        ShapeComponent *shape = gameObject->GetComponent<ShapeComponent>();
+        MeshComponent *shape = gameObject->GetComponent<MeshComponent>();
         for (const auto &cube : shape->GetCubes())
         {
             float tNear, tFar = 0.f;

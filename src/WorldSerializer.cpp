@@ -1,6 +1,6 @@
 #include "WorldSerializer.hpp"
 #include "TransformComponent.hpp"
-#include "ShapeComponent.hpp"
+#include "MeshComponent.hpp"
 #include "TextureComponent.hpp"
 #include "Cube.hpp"
 
@@ -114,13 +114,13 @@ void WorldSerializer::SaveWorld(std::string filename, std::vector<std::shared_pt
 
 void WorldSerializer::SaveObjectShape(const std::shared_ptr<GameObject> &gameObject, rapidjson::PrettyWriter<rapidjson::StringBuffer> &writer, TextureManager &textureManager)
 {
-    ShapeComponent *shape = gameObject->GetComponent<ShapeComponent>();
+    MeshComponent *shape = gameObject->GetComponent<MeshComponent>();
     if (shape != nullptr)
     {
         Cube *cube = shape->GetCubes()[0].get();
         std::map<std::string, GLuint *> textureIdMap = cube->GetTextureIdMap();
         writer.StartObject();
-        writer.Key("ShapeComponent");
+        writer.Key("MeshComponent");
         writer.StartArray();
 
         std::vector<std::string> faceNames = {"top", "bottom", "front", "back", "left", "right"};
@@ -252,7 +252,7 @@ void WorldSerializer::LoadWorld(std::string filename, std::vector<std::shared_pt
     for (const auto &obj : objects)
     {
         std::shared_ptr<GameObject> gameObject = std::make_shared<GameObject>();
-        gameObject->AddComponent<ShapeComponent>()->AddCube();
+        gameObject->AddComponent<MeshComponent>()->AddCube();
         gameObject->AddComponent<TransformComponent>();
         const auto &transformArray = obj["transform"].GetArray();
         for (const auto &transformComponent : transformArray)

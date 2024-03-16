@@ -27,7 +27,7 @@
 #include "GameObject.hpp"
 #include "Cube.hpp"
 #include "TextureManager.hpp"
-#include "ShapeComponent.hpp"
+#include "MeshComponent.hpp"
 #include "Shader.hpp"
 
 namespace py = pybind11;
