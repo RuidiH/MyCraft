@@ -112,31 +112,31 @@ void WorldSerializer::SaveWorld(std::string filename, std::vector<std::shared_pt
     file.close();
 }
 
-void WorldSerializer::SaveObjectShape(const std::shared_ptr<GameObject> &gameObject, rapidjson::PrettyWriter<rapidjson::StringBuffer> &writer, TextureManager &textureManager)
-{
-    MeshComponent *shape = gameObject->GetComponent<MeshComponent>();
-    if (shape != nullptr)
-    {
-        Cube *cube = shape->GetCubes()[0].get();
-        std::map<std::string, GLuint *> textureIdMap = cube->GetTextureIdMap();
-        writer.StartObject();
-        writer.Key("MeshComponent");
-        writer.StartArray();
+// void WorldSerializer::SaveObjectShape(const std::shared_ptr<GameObject> &gameObject, rapidjson::PrettyWriter<rapidjson::StringBuffer> &writer, TextureManager &textureManager)
+// {
+//     MeshComponent *shape = gameObject->GetComponent<MeshComponent>();
+//     if (shape != nullptr)
+//     {
+//         Cube *cube = shape->GetCubes()[0].get();
+//         std::map<std::string, GLuint *> textureIdMap = cube->GetTextureIdMap();
+//         writer.StartObject();
+//         writer.Key("MeshComponent");
+//         writer.StartArray();
 
-        std::vector<std::string> faceNames = {"top", "bottom", "front", "back", "left", "right"};
+//         std::vector<std::string> faceNames = {"top", "bottom", "front", "back", "left", "right"};
 
-        for (const auto &face : faceNames)
-        {
-            writer.StartObject();
-            writer.Key(face.c_str());
-            writer.String(textureManager.FindTextureName(textureIdMap[face]).c_str());
-            writer.EndObject();
-        }
+//         for (const auto &face : faceNames)
+//         {
+//             writer.StartObject();
+//             writer.Key(face.c_str());
+//             writer.String(textureManager.FindTextureName(textureIdMap[face]).c_str());
+//             writer.EndObject();
+//         }
 
-        writer.EndArray();
-        writer.EndObject();
-    }
-}
+//         writer.EndArray();
+//         writer.EndObject();
+//     }
+// }
 
 void WorldSerializer::SaveObjectTransform(const std::shared_ptr<GameObject> &gameObject, rapidjson::PrettyWriter<rapidjson::StringBuffer> &writer)
 {

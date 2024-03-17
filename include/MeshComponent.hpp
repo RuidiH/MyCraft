@@ -9,8 +9,10 @@
 
 #include "Component.hpp"
 #include "Cube.hpp"
+#include "CubeMesh.hpp"
 
 class Cube;
+class CubeMesh;
 class MeshComponent : public Component {
     public:
         // Game loop functions
