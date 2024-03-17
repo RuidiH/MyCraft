@@ -3,7 +3,6 @@
 
 #include "Component.hpp"
 #include <glm/glm.hpp>
-#include <Cube.hpp>
 
 class TransformComponent : public Component
 {

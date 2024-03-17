@@ -2,7 +2,6 @@
 #include "TransformComponent.hpp"
 #include "MeshComponent.hpp"
 #include "TextureComponent.hpp"
-#include "Cube.hpp"
 
 #include <fstream>
 #include <array>
@@ -111,32 +110,6 @@ void WorldSerializer::SaveWorld(std::string filename, std::vector<std::shared_pt
     file << s.GetString();
     file.close();
 }
-
-// void WorldSerializer::SaveObjectShape(const std::shared_ptr<GameObject> &gameObject, rapidjson::PrettyWriter<rapidjson::StringBuffer> &writer, TextureManager &textureManager)
-// {
-//     MeshComponent *shape = gameObject->GetComponent<MeshComponent>();
-//     if (shape != nullptr)
-//     {
-//         Cube *cube = shape->GetCubes()[0].get();
-//         std::map<std::string, GLuint *> textureIdMap = cube->GetTextureIdMap();
-//         writer.StartObject();
-//         writer.Key("MeshComponent");
-//         writer.StartArray();
-
-//         std::vector<std::string> faceNames = {"top", "bottom", "front", "back", "left", "right"};
-
-//         for (const auto &face : faceNames)
-//         {
-//             writer.StartObject();
-//             writer.Key(face.c_str());
-//             writer.String(textureManager.FindTextureName(textureIdMap[face]).c_str());
-//             writer.EndObject();
-//         }
-
-//         writer.EndArray();
-//         writer.EndObject();
-//     }
-// }
 
 void WorldSerializer::SaveObjectTransform(const std::shared_ptr<GameObject> &gameObject, rapidjson::PrettyWriter<rapidjson::StringBuffer> &writer)
 {
@@ -252,7 +225,7 @@ void WorldSerializer::LoadWorld(std::string filename, std::vector<std::shared_pt
     for (const auto &obj : objects)
     {
         std::shared_ptr<GameObject> gameObject = std::make_shared<GameObject>();
-        gameObject->AddComponent<MeshComponent>()->AddCube();
+        gameObject->AddComponent<MeshComponent>()->AddMesh(MeshType::CUBE);
         gameObject->AddComponent<TransformComponent>();
         const auto &transformArray = obj["transform"].GetArray();
         for (const auto &transformComponent : transformArray)

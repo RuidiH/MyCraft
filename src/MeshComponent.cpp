@@ -6,34 +6,46 @@ void MeshComponent::Input()
 
 void MeshComponent::Update()
 {
-    for (auto cube : mCubes)
+    std::shared_ptr<Mesh> mesh = mMesh;
+    if (mesh != nullptr)
     {
-        cube->Update();
+        mesh->Update();
     }
 }
 
 void MeshComponent::Render()
 {
-    for (auto cube : mCubes)
+    std::shared_ptr<Mesh> mesh = mMesh;
+    if (mesh != nullptr)
     {
-        cube->Render();
+        mesh->Render();
     }
 }
 
-void MeshComponent::AddCube(std::shared_ptr<Cube> cube)
+// std::shared_ptr<Cube> MeshComponent::AddCube()
+// {
+//     std::shared_ptr<Cube> cube = std::make_shared<Cube>();
+//     cube->SetParentComponent(this);
+//     mCubes.push_back(cube);
+//     return cube;
+// }
+
+std::shared_ptr<Mesh> MeshComponent::AddMesh(MeshType type)
 {
-    if (cube != nullptr)
+    if (type == MeshType::CUBE)
     {
-        mCubes.push_back(cube);
+        std::shared_ptr<CubeMesh> cube = std::make_shared<CubeMesh>();
+        mMesh = cube;
         cube->SetParentComponent(this);
+        mMeshType = type; 
+        return cube;
+    } else if (type == MeshType::WATER)
+    {
+        // TODO: Add water mesh
     }
-}
+    // handle error if type is not recognized
 
-std::shared_ptr<Cube> MeshComponent::AddCube() {
-    std::shared_ptr<Cube> cube = std::make_shared<Cube>();
-    cube->SetParentComponent(this);
-    mCubes.push_back(cube); 
-    return cube;
+    return nullptr;
 }
 
 // void MeshComponent::setCube(Cube *cube)

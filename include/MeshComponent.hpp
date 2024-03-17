@@ -8,11 +8,17 @@
 #include <vector>
 
 #include "Component.hpp"
-#include "Cube.hpp"
 #include "CubeMesh.hpp"
+#include "Mesh.hpp"
+
+enum class MeshType {
+    CUBE,
+    WATER 
+};
 
 class Cube;
 class CubeMesh;
+class Mesh;
 class MeshComponent : public Component {
     public:
         // Game loop functions
@@ -20,13 +26,15 @@ class MeshComponent : public Component {
         virtual void Update() override;
         virtual void Render() override;
 
-        void AddCube(std::shared_ptr<Cube> cube);
-        std::shared_ptr<Cube> AddCube();
-        std::vector<std::shared_ptr<Cube>> GetCubes() {return mCubes;};
+        std::shared_ptr<Mesh> AddMesh(MeshType type);
+        std::shared_ptr<Mesh> GetMesh() {return mMesh;};
+
+        MeshType GetMeshType() {return mMeshType;};
     private:
         // Cube *cube;                
-        std::vector<std::shared_ptr<Cube>> mCubes;
- 
+        // std::vector<std::shared_ptr<Cube>> mCubes;
+        std::shared_ptr<Mesh> mMesh;
+        MeshType mMeshType; 
 };
 
 

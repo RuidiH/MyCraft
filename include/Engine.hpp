@@ -25,7 +25,6 @@
 #endif
 
 #include "GameObject.hpp"
-#include "Cube.hpp"
 #include "TextureManager.hpp"
 #include "Shader.hpp"
 #include "Camera.hpp"

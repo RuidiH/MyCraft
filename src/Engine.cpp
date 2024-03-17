@@ -174,7 +174,8 @@ void Engine::AddObject()
 {
     if (mSelected != nullptr && mSelectedFace != "none")
     {
-        glm::vec3 normal = mSelected->GetComponent<MeshComponent>()->GetCubes()[0]->GetSideNormal(mSelectedFace);
+        MeshComponent *mesh = mSelected->GetComponent<MeshComponent>();
+        glm::vec3 normal = mesh->GetMesh()->GetSideNormal(mSelectedFace);
         glm::vec3 placementPos = mSelected->GetComponent<TransformComponent>()->GetPosition() + normal;
 
         // make sure the placement position is not occupied
@@ -183,25 +184,28 @@ void Engine::AddObject()
         {
             if (gameObject != mSelected)
             {
-                MeshComponent *shape = gameObject->GetComponent<MeshComponent>();
-                for (const auto &cube : shape->GetCubes())
+                MeshComponent *mesh = gameObject->GetComponent<MeshComponent>();
+                if (mesh->GetMeshType() == MeshType::CUBE)
                 {
+                    CubeMesh *cube = static_cast<CubeMesh *>(mesh->GetMesh().get());
                     if (glm::distance(placementPos, cube->GetMinCorner()) < 0.1f)
                     {
                         isOccupied = true;
                         break;
                     }
                 }
+                // TODO: handle other types of mesh
             }
         }
         if (!isOccupied)
         {
-            std::shared_ptr<GameObject> newCube = std::make_shared<GameObject>();
-            newCube->AddComponent<TransformComponent>()->SetPosition(placementPos);
-            newCube->AddComponent<MeshComponent>()->AddCube();
-            newCube->AddComponent<TextureComponent>()->SetTextureGroupName(mNewObjectTextureGroup);
-            newCube->GetComponent<TextureComponent>()->SetTextureGroup(mTextureManager.GetTextureGroup(mNewObjectTextureGroup));
-            mGameObjects.push_back(newCube);
+            std::shared_ptr<GameObject> obj = std::make_shared<GameObject>();
+            obj->AddComponent<TransformComponent>()->SetPosition(placementPos);
+            // newCube->AddComponent<MeshComponent>()->AddCube();
+            obj->AddComponent<MeshComponent>()->AddMesh(MeshType::CUBE);
+            obj->AddComponent<TextureComponent>()->SetTextureGroupName(mNewObjectTextureGroup);
+            obj->GetComponent<TextureComponent>()->SetTextureGroup(mTextureManager.GetTextureGroup(mNewObjectTextureGroup));
+            mGameObjects.push_back(obj);
             std::cout << "New cube placed at " << placementPos.x << " " << placementPos.y << " " << placementPos.z << std::endl;
         }
         else
@@ -220,33 +224,38 @@ void Engine::FindSelectedObject()
     std::shared_ptr<GameObject> hitObject;
     for (std::shared_ptr<GameObject> gameObject : mGameObjects)
     {
-        MeshComponent *shape = gameObject->GetComponent<MeshComponent>();
-        for (const auto &cube : shape->GetCubes())
+        std::shared_ptr<CubeMesh> mesh;
+        if (gameObject->GetComponent<MeshComponent>()->GetMeshType() == MeshType::CUBE)
         {
-            float tNear, tFar = 0.f;
-            std::string hitSide;
-            bool result = RayCastTest(mCamera.GetPosition(), rayDir, cube->GetCorners(), tNear, tFar, hitSide);
+            mesh = std::static_pointer_cast<CubeMesh>(gameObject->GetComponent<MeshComponent>()->GetMesh());
+        } else {
+            std::cout << "Mesh type not recognized by ray caster!" << std::endl;
+            continue;
+        }
 
-            // std::cout << "tNear: " << tNear << " tFar: " << tFar << std::endl;
+        float tNear, tFar = 0.f;
+        std::string hitSide;
+        bool result = RayCastTest(mCamera.GetPosition(), rayDir, mesh->GetCorners(), tNear, tFar, hitSide);
 
-            // keep track of closest colliding object
-            if (result)
+        // std::cout << "tNear: " << tNear << " tFar: " << tFar << std::endl;
+
+        // keep track of closest colliding object
+        if (result)
+        {
+            // base case for ray cast test
+            if (smallestTNear == -1.f)
             {
-                // base case for ray cast test
-                if (smallestTNear == -1.f)
-                {
-                    smallestTNear = tNear;
-                    hitObject = gameObject;
-                    clostestHitSide = hitSide;
-                    continue;
-                }
+                smallestTNear = tNear;
+                hitObject = gameObject;
+                clostestHitSide = hitSide;
+                continue;
+            }
 
-                if (tNear < smallestTNear)
-                {
-                    smallestTNear = tNear;
-                    hitObject = gameObject;
-                    clostestHitSide = hitSide;
-                }
+            if (tNear < smallestTNear)
+            {
+                smallestTNear = tNear;
+                hitObject = gameObject;
+                clostestHitSide = hitSide;
             }
         }
     }
@@ -372,9 +381,8 @@ void Engine::HighlightPass()
             gameObject->Render();
 
             glEnable(GL_DEPTH_TEST);
-            glStencilMask(0xFF);                       // Enable writing to the stencil buffer.
-            glDisable(GL_STENCIL_TEST);                // Disable stencil test.
-            
+            glStencilMask(0xFF);        // Enable writing to the stencil buffer.
+            glDisable(GL_STENCIL_TEST); // Disable stencil test.
         }
     }
 }
