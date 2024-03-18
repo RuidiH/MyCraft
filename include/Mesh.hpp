@@ -1,6 +1,8 @@
 #pragma once
 
 #include "MeshComponent.hpp"
+#include "CubeMesh.hpp"
+#include "WaterMesh.hpp"
 
 #include <glm/glm.hpp>
 
@@ -18,4 +20,3 @@ protected:
     float mSize = 1.0f;
     MeshComponent *mParent;
 };
-

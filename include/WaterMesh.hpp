@@ -1,28 +1,20 @@
 // #pragma once
 
-#ifndef CUBE_MESH_HPP
-#define CUBE_MESH_HPP
+#ifndef WATER_MESH_HPP
+#define WATER_MESH_HPP
 
-// #include <glad/glad.h>
 #include <glm/glm.hpp>
-
-#include <map>
-#include <vector>
-#include <string>
-#include <memory>
-#include <array>
-#include <iostream>
 
 #include "Mesh.hpp"
 #include "MeshComponent.hpp"
 
 class MeshComponent;
 
-class CubeMesh : public Mesh
+class WaterMesh : public Mesh
 {
 public:
-    CubeMesh();
-    ~CubeMesh(){};
+    WaterMesh();
+    ~WaterMesh(){};
 
     void Update() override;
     void Render() override;
@@ -32,7 +24,6 @@ public:
     std::array<glm::vec3, 2> GetCorners() { return {mMinCorner, mMaxCorner}; };
     glm::vec3 GetSideNormal(std::string side) override;
 
-
 private:
     void SetVertexData();
 
@@ -41,5 +32,4 @@ private:
     glm::vec3 mMinCorner;
     glm::vec3 mMaxCorner;
 };
-
 #endif
