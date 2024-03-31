@@ -8,17 +8,17 @@
 #include <vector>
 
 #include "Component.hpp"
-#include "CubeMesh.hpp"
 #include "Mesh.hpp"
+
+class Mesh;
+class CubeMesh;
+// class WaterMesh;
 
 enum class MeshType {
     CUBE,
     WATER 
 };
 
-class Cube;
-class CubeMesh;
-class Mesh;
 class MeshComponent : public Component {
     public:
         // Game loop functions

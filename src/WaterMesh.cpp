@@ -1,6 +1,7 @@
 #include "WaterMesh.hpp"
-
 #include "TransformComponent.hpp"
+
+#include <iostream>
 
 WaterMesh::WaterMesh()
 {

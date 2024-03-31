@@ -1,0 +1,59 @@
+{
+  "path": [
+    {
+      "name": "snow",
+      "path": "./assets/texture/snow.png"
+    },
+    {
+      "name ": "dirt",
+      "path": "./assets/texture/dirt.png"
+    },
+    {
+      "name": "grass",
+      "path": "./assets/texture/grass.png"
+    },
+    {
+      "name": "grass_side_snowed",
+      "path": "./assets/texture/grass_side_snowed.png"
+    },
+    {
+      "name": "grass_side_carried",
+      "path": "./assets/texture/grass_side_carried.png"
+    }
+  ],
+  "groups": [
+    {
+      "name": "snow",
+      "sides": [
+        "snow",
+        "dirt",
+        "grass_side_snowed",
+        "grass_side_snowed",
+        "grass_side_snowed",
+        "grass_side_snowed"
+      ]
+    },
+    {
+      "name": "dirt",
+      "sides": [
+        "dirt",
+        "dirt",
+        "dirt",
+        "dirt",
+        "dirt",
+        "dirt"
+      ]
+    },
+    {
+      "name": "grass",
+      "sides": [
+        "grass",
+        "dirt",
+        "grass_side_carried",
+        "grass_side_carried",
+        "grass_side_carried",
+        "grass_side_carried"
+      ]
+    }
+  ]
+}

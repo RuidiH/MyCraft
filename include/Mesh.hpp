@@ -1,10 +1,8 @@
 #pragma once
 
-#include "MeshComponent.hpp"
-#include "CubeMesh.hpp"
-#include "WaterMesh.hpp"
-
 #include <glm/glm.hpp>
+
+#include "MeshComponent.hpp"
 
 class MeshComponent;
 

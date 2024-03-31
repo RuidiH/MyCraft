@@ -2,6 +2,8 @@
 #include "MeshComponent.hpp"
 #include "TransformComponent.hpp"
 #include "TextureComponent.hpp"
+#include "Mesh.hpp"
+#include "CubeMesh.hpp"
 
 #include <glm/gtx/rotate_vector.hpp>
 #include <glm/gtx/transform.hpp>
@@ -53,8 +55,10 @@ Engine::~Engine()
 
 void Engine::SetupObject()
 {
-
-    mWorldSerializer.LoadWorld("./world.json", mGameObjects, mTextureManager);
+    mTextureManager = std::make_shared<TextureManager>();
+    mWorldSerializer.ReadBlockTypes("./config/blockTypes.json");
+    mWorldSerializer.LoadTextureConfig("./config/textureConfig.json");
+    mWorldSerializer.CreateBlocks("./config/worldData.json");
 }
 
 void Engine::MainLoop()
@@ -99,7 +103,7 @@ void Engine::Input()
                 if (state[SDL_SCANCODE_LCTRL] || state[SDL_SCANCODE_RCTRL])
                 {
                     // Save world
-                    mWorldSerializer.SaveWorld("./world.json", mGameObjects, mTextureManager);
+                    // mWorldSerializer.SaveWorld("./world.json", mGameObjects, mTextureManager);
                     std::cout << "World saved to ./world.json" << std::endl;
                 }
             }
@@ -204,7 +208,7 @@ void Engine::AddObject()
             // newCube->AddComponent<MeshComponent>()->AddCube();
             obj->AddComponent<MeshComponent>()->AddMesh(MeshType::CUBE);
             obj->AddComponent<TextureComponent>()->SetTextureGroupName(mNewObjectTextureGroup);
-            obj->GetComponent<TextureComponent>()->SetTextureGroup(mTextureManager.GetTextureGroup(mNewObjectTextureGroup));
+            obj->GetComponent<TextureComponent>()->SetTextureGroup(mTextureManager->GetTextureGroup(mNewObjectTextureGroup));
             mGameObjects.push_back(obj);
             std::cout << "New cube placed at " << placementPos.x << " " << placementPos.y << " " << placementPos.z << std::endl;
         }

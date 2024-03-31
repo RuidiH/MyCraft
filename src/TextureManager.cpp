@@ -6,12 +6,6 @@ TextureManager::TextureManager()
 
 TextureManager::~TextureManager()
 {
-    // TODO: verify copilot isn't lying to me
-    for (auto &texture : mTextureMap)
-    {
-        glDeleteTextures(1, texture.second);
-        delete texture.second;
-    }
 }
 
 void TextureManager::LoadTexture(const std::string &filePath)
@@ -59,18 +53,6 @@ GLuint* TextureManager::GetTexture(const std::string &textureName)
     {
         return nullptr;
     }
-}
-
-std::string TextureManager::FindTextureName(GLuint *textureId)
-{
-    for (auto &texture : mTextureMap)
-    {
-        if (texture.second == textureId)
-        {
-            return texture.first;
-        }
-    }
-    return "";
 }
 
 void TextureManager::LoadTextureGroup(const std::string &textureGroupName, std::array<std::string, 6> groupPaths)

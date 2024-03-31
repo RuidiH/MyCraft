@@ -17,6 +17,7 @@
 #include "MeshComponent.hpp"
 
 class MeshComponent;
+class Mesh;
 
 class CubeMesh : public Mesh
 {

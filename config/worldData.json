@@ -1,0 +1,12 @@
+{
+  "world": {
+    "blocks": [
+      {
+        "id": "dirt",
+        "transform": {
+          "position": [0.0, 0.0, 0.0]
+        }
+      }
+    ]
+  }
+}

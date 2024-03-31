@@ -20,9 +20,9 @@
 #include <memory>
 #include <unordered_map>
 
-#ifndef M_PI
-    #define M_PI 3.14159265358979323846
-#endif
+// #ifndef M_PI
+//     #define M_PI 3.14159265358979323846
+// #endif
 
 #include "GameObject.hpp"
 #include "TextureManager.hpp"
@@ -48,7 +48,7 @@ public:
 private:
     int mScreenWidth;
     int mScreenHeight;
-    TextureManager mTextureManager;
+    std::shared_ptr<TextureManager> mTextureManager;
     std::vector<std::shared_ptr<GameObject>> mGameObjects;
 
     Camera mCamera;

@@ -1,0 +1,44 @@
+{
+  "blockTypes": [
+    {
+      "id": "grass_block",
+      "components": {
+        "mesh": {
+          "type": "cube"
+        },
+        "texture": {
+          "group": "grass"
+        }
+      },
+      "properties": {
+      }
+    },
+    {
+      "id": "snow_block",
+      "components": {
+        "mesh": {
+          "type": "cube"
+        },
+        "texture": {
+          "group": "snow"
+        }
+      },
+      "properties": {
+      }
+    },
+    {
+      "id": "dirt_block",
+      "components": {
+        "mesh": {
+          "type": "cube"
+        },
+        "texture": {
+          "group": "dirt"
+        }
+      },
+      "properties": {
+      }
+    }
+
+  ]
+}

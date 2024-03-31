@@ -1,4 +1,6 @@
 #include "MeshComponent.hpp"
+#include "CubeMesh.hpp"
+#include "WaterMesh.hpp"
 
 void MeshComponent::Input()
 {

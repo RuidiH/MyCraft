@@ -5,6 +5,7 @@
 #include <vector>
 #include <memory>
 #include <map>
+#include <unordered_map>
 
 #include "rapidjson/writer.h"
 #include "rapidjson/stringbuffer.h"
@@ -12,18 +13,30 @@
 #include "GameObject.hpp"
 #include "TextureManager.hpp"
 
+struct BlockType {
+    std::string id;
+    std::unordered_map<std::string, std::unordered_map<std::string, std::string>> components;
+    std::unordered_map<std::string, float> properties; 
+};
+
 class WorldSerializer
 {
 public:
     WorldSerializer();
+    WorldSerializer(std::shared_ptr<TextureManager> textureManager, std::vector<std::shared_ptr<GameObject>>& objects);
     ~WorldSerializer();
 
-    void SaveWorld(std::string filename, std::vector<std::shared_ptr<GameObject>> gameObjects, TextureManager &textureManager);
-    void LoadWorld(std::string filename, std::vector<std::shared_ptr<GameObject>> &gameObjects, TextureManager &textureManager);
+    void ReadBlockTypes(const std::string &filename);
+    void LoadTextureConfig(const std::string &filename);
+    void CreateBlocks(const std::string& filename);
+
+    // void SaveWorld(std::string filename, std::vector<std::shared_ptr<GameObject>> gameObjects, TextureManager &textureManager);
+    // void LoadWorld(std::string filename, std::vector<std::shared_ptr<GameObject>> &gameObjects, TextureManager &textureManager);
 
 private:
-    void SaveTexture(rapidjson::PrettyWriter<rapidjson::StringBuffer> &writer, std::map<std::string, std::string> &textureMappings);
-    void SaveObjectTransform(const std::shared_ptr<GameObject> &gameObject, rapidjson::PrettyWriter<rapidjson::StringBuffer> &writer);
+    std::unordered_map<std::string, BlockType> mblockTypes;
+    std::shared_ptr<TextureManager> mTextureManager;
+    std::shared_ptr<std::vector<std::shared_ptr<GameObject>>> mGameObjects;
 };
 
 #endif
