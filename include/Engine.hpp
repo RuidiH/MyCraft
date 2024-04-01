@@ -49,7 +49,7 @@ private:
     int mScreenWidth;
     int mScreenHeight;
     std::shared_ptr<TextureManager> mTextureManager;
-    std::vector<std::shared_ptr<GameObject>> mGameObjects;
+    std::shared_ptr<std::vector<std::shared_ptr<GameObject>>> mGameObjects;
 
     Camera mCamera;
     glm::vec2 mShadowResolution = glm::vec2(4096, 4096);
@@ -64,7 +64,7 @@ private:
     GLuint mShadowMapTexture;
 
     // World Serializer
-    WorldSerializer mWorldSerializer;
+    std::shared_ptr<WorldSerializer> mWorldSerializer;
 
     // for framecap
     uint32_t prevTime = 0;
@@ -112,6 +112,7 @@ private:
     std::shared_ptr<GameObject> mSelected;
     std::string mSelectedFace = "none";
     std::string mNewObjectTextureGroup = "dirt";
+    std::string mNewObjectID = "dirt_block";
     bool RayCastTest(const glm::vec3 origin, const glm::vec3 direction, const std::array<glm::vec3, 2> &box, float &tNear, float &tFar, std::string &hitSide);
 
     // Crosshair logic

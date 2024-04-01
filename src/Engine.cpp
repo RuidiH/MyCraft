@@ -17,11 +17,14 @@ Uint32 Engine::deltaTime;
 
 Engine::Engine(int width, int height) : mScreenWidth(width), mScreenHeight(height)
 {
+    std::cout << "<<<<<<<<<<<<<<<<<<<<<<< Initializing Engine >>>>>>>>>>>>>>>>>>>>>>>>>\n";
     InitializeGraphicsProgram();
 
     CreateGraphicsPipeline();
 
     InitializeShadowMap();
+
+    mGameObjects = std::make_shared<std::vector<std::shared_ptr<GameObject>>>();
 
     // hard-coded ortho light
     glm::mat4 orthoProjection = glm::ortho(-15.f, 15.f, -15.f, 15.f, 1.f, 35.f);
@@ -46,6 +49,8 @@ Engine::Engine(int width, int height) : mScreenWidth(width), mScreenHeight(heigh
     glEnableVertexAttribArray(0);
 
     glBindVertexArray(0);
+    
+    std::cout << "<<<<<<<<<<<<<<<<<<<<<<< Engine initialized >>>>>>>>>>>>>>>>>>>>>>>>>\n\n\n";
 }
 
 Engine::~Engine()
@@ -55,10 +60,13 @@ Engine::~Engine()
 
 void Engine::SetupObject()
 {
+    std::cout << "<<<<<<<<<<<<<<<<<<<<<<< Setting up objects >>>>>>>>>>>>>>>>>>>>>>>>>\n";
     mTextureManager = std::make_shared<TextureManager>();
-    mWorldSerializer.ReadBlockTypes("./config/blockTypes.json");
-    mWorldSerializer.LoadTextureConfig("./config/textureConfig.json");
-    mWorldSerializer.CreateBlocks("./config/worldData.json");
+    mWorldSerializer = std::make_shared<WorldSerializer>(mTextureManager, mGameObjects);
+    mWorldSerializer->ReadBlockTypes("./config/blockTypes.json");
+    mWorldSerializer->LoadTextureConfig("./config/textureConfig.json");
+    mWorldSerializer->CreateBlocks("./config/worldData.json");
+    std::cout << "<<<<<<<<<<<<<<<<<<<<<<< Objects setup complete >>>>>>>>>>>>>>>>>>>>>>>>>\n\n\n";
 }
 
 void Engine::MainLoop()
@@ -103,8 +111,7 @@ void Engine::Input()
                 if (state[SDL_SCANCODE_LCTRL] || state[SDL_SCANCODE_RCTRL])
                 {
                     // Save world
-                    // mWorldSerializer.SaveWorld("./world.json", mGameObjects, mTextureManager);
-                    std::cout << "World saved to ./world.json" << std::endl;
+                    mWorldSerializer->SaveWorldData("./config/worldData.json");
                 }
             }
         }
@@ -151,14 +158,17 @@ void Engine::Input()
     if (state[SDL_SCANCODE_1])
     {
         mNewObjectTextureGroup = "dirt";
+        mNewObjectID = "dirt_block";
     }
     else if (state[SDL_SCANCODE_2])
     {
         mNewObjectTextureGroup = "grass";
+        mNewObjectID = "grass_block";
     }
     else if (state[SDL_SCANCODE_3])
     {
         mNewObjectTextureGroup = "snow";
+        mNewObjectID = "snow_block";
     }
 }
 
@@ -168,7 +178,7 @@ void Engine::RemoveObject()
     if (mSelected != nullptr)
     {
 
-        mGameObjects.erase(std::remove(mGameObjects.begin(), mGameObjects.end(), mSelected), mGameObjects.end());
+        mGameObjects->erase(std::remove(mGameObjects->begin(), mGameObjects->end(), mSelected), mGameObjects->end());
         mSelected = nullptr;
         mSelectedFace = "none";
     }
@@ -184,7 +194,7 @@ void Engine::AddObject()
 
         // make sure the placement position is not occupied
         bool isOccupied = false;
-        for (auto gameObject : mGameObjects)
+        for (auto gameObject : *mGameObjects)
         {
             if (gameObject != mSelected)
             {
@@ -203,13 +213,13 @@ void Engine::AddObject()
         }
         if (!isOccupied)
         {
-            std::shared_ptr<GameObject> obj = std::make_shared<GameObject>();
+            std::shared_ptr<GameObject> obj = std::make_shared<GameObject>(mNewObjectID);
             obj->AddComponent<TransformComponent>()->SetPosition(placementPos);
             // newCube->AddComponent<MeshComponent>()->AddCube();
             obj->AddComponent<MeshComponent>()->AddMesh(MeshType::CUBE);
             obj->AddComponent<TextureComponent>()->SetTextureGroupName(mNewObjectTextureGroup);
             obj->GetComponent<TextureComponent>()->SetTextureGroup(mTextureManager->GetTextureGroup(mNewObjectTextureGroup));
-            mGameObjects.push_back(obj);
+            mGameObjects->push_back(obj);
             std::cout << "New cube placed at " << placementPos.x << " " << placementPos.y << " " << placementPos.z << std::endl;
         }
         else
@@ -226,7 +236,7 @@ void Engine::FindSelectedObject()
     float smallestTNear = -1.f;
     std::string clostestHitSide;
     std::shared_ptr<GameObject> hitObject;
-    for (std::shared_ptr<GameObject> gameObject : mGameObjects)
+    for (std::shared_ptr<GameObject> gameObject : *mGameObjects)
     {
         std::shared_ptr<CubeMesh> mesh;
         if (gameObject->GetComponent<MeshComponent>()->GetMeshType() == MeshType::CUBE)
@@ -278,7 +288,7 @@ void Engine::FindSelectedObject()
 
 void Engine::Update()
 {
-    for (auto gameObject : mGameObjects)
+    for (auto gameObject : *mGameObjects)
     {
         gameObject->Update();
     }
@@ -309,7 +319,7 @@ void Engine::ShadowPass()
     mShadowShader.SetUniform("lightProjection", mLightProjection);
 
     // render
-    for (auto gameObject : mGameObjects)
+    for (auto gameObject : *mGameObjects)
     {
         glm::mat4 model = gameObject->GetComponent<TransformComponent>()->GetModelMatrix();
         mShadowShader.SetUniform("model", model);
@@ -344,7 +354,7 @@ void Engine::LightPass()
     mMainShader.SetUniform("viewPos", mCamera.GetPosition());
     mMainShader.SetUniform("u_LightProjection", mLightProjection);
 
-    for (auto &gameObject : mGameObjects)
+    for (auto &gameObject : *mGameObjects)
     {
         glm::mat4 model = gameObject->GetComponent<TransformComponent>()->GetModelMatrix();
         mMainShader.SetUniform("u_ModelMatrix", model);
@@ -367,7 +377,7 @@ void Engine::LightPass()
 
 void Engine::HighlightPass()
 {
-    for (auto &gameObject : mGameObjects)
+    for (auto &gameObject : *mGameObjects)
     {
         if (mSelected != nullptr && gameObject == mSelected)
         {
@@ -406,13 +416,6 @@ void Engine::CrosshairPass()
 
 void Engine::Shutdown()
 {
-    // clear all game objects
-    // for (auto gameObject : mGameObjects)
-    // {
-    //     delete gameObject;
-    // }
-    mGameObjects.clear();
-
     SDL_StopTextInput();
     SDL_DestroyWindow(gGraphicsApplicationWindow);
     SDL_Quit();

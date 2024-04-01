@@ -1,9 +1,5 @@
 #include "GameObject.hpp"
 
-GameObject::GameObject()
-{
-}
-
 GameObject::~GameObject()
 {
     // for (auto component : mComponents)

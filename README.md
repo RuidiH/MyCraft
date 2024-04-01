@@ -30,14 +30,17 @@ MyCraft is built using a combination of powerful tools and libraries, chosen for
 ### In-progress
 - [x] Object highlight with stencil buffer
 - [x] Object destruction 
+- [x] configuration-oriented and data-oriented design
+- [ ] Basic Water
+- [ ] Advance Water
+- [ ] Terrain Generation
 - [ ] World Skybox
-- [ ] More advanced graphics (i.e. water)
 - [ ] Hash objects for quick lookup
 - [ ] Add Resource Manager based on Texture Manager
 - [ ] Use Python UI for creating new objects
 
 ### Completed
-- [x] Implement Entity-Component System
+- [x] Entity-Component System
 - [x] Phong Lighting
 - [x] Shadow 
 - [x] Render cube with textures

@@ -5,12 +5,12 @@
       "path": "./assets/texture/snow.png"
     },
     {
-      "name ": "dirt",
+      "name": "dirt",
       "path": "./assets/texture/dirt.png"
     },
     {
       "name": "grass",
-      "path": "./assets/texture/grass.png"
+      "path": "./assets/texture/grass_carried.png"
     },
     {
       "name": "grass_side_snowed",

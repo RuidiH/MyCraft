@@ -10,7 +10,7 @@ class Component;
 class GameObject
 {
 public:
-    GameObject();
+    GameObject(std::string id) : mID(id) {};
     ~GameObject();
 
     // Game loop functions
@@ -47,7 +47,11 @@ public:
         return nullptr; // Return nullptr if the component of type T is not found
     }
 
+    // Getters and setters
+    std::string GetID() const { return mID; }
+
 private:
+    std::string mID;
     std::vector<std::shared_ptr<Component>> mComponents;
 };
 

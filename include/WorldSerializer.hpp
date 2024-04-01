@@ -22,14 +22,13 @@ struct BlockType {
 class WorldSerializer
 {
 public:
-    WorldSerializer();
-    WorldSerializer(std::shared_ptr<TextureManager> textureManager, std::vector<std::shared_ptr<GameObject>>& objects);
+    WorldSerializer(std::shared_ptr<TextureManager> textureManager, std::shared_ptr<std::vector<std::shared_ptr<GameObject>>> objects);
     ~WorldSerializer();
 
     void ReadBlockTypes(const std::string &filename);
     void LoadTextureConfig(const std::string &filename);
     void CreateBlocks(const std::string& filename);
-
+    void SaveWorldData(const std::string& filename);
     // void SaveWorld(std::string filename, std::vector<std::shared_ptr<GameObject>> gameObjects, TextureManager &textureManager);
     // void LoadWorld(std::string filename, std::vector<std::shared_ptr<GameObject>> &gameObjects, TextureManager &textureManager);
 
