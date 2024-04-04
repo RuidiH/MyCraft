@@ -83,6 +83,7 @@ private:
     Shader mQuadShader;
     Shader mCrosshairShader;
     Shader mHighlightShader;
+    Shader mWaterShader;
 
     GLuint mShadowMapFBO;
     glm::mat4 mLightProjection; 

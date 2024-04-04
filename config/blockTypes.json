@@ -38,6 +38,16 @@
       },
       "properties": {
       }
+    },
+    {
+      "id": "water_block",
+      "components": {
+        "mesh": {
+          "type": "cube"
+        }
+      },
+      "properties": {
+      }
     }
 
   ]

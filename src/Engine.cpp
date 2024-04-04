@@ -49,7 +49,7 @@ Engine::Engine(int width, int height) : mScreenWidth(width), mScreenHeight(heigh
     glEnableVertexAttribArray(0);
 
     glBindVertexArray(0);
-    
+
     std::cout << "<<<<<<<<<<<<<<<<<<<<<<< Engine initialized >>>>>>>>>>>>>>>>>>>>>>>>>\n\n\n";
 }
 
@@ -170,6 +170,11 @@ void Engine::Input()
         mNewObjectTextureGroup = "snow";
         mNewObjectID = "snow_block";
     }
+    else if (state[SDL_SCANCODE_4])
+    {
+        mNewObjectTextureGroup = "none";
+        mNewObjectID = "water_block";
+    }
 }
 
 void Engine::RemoveObject()
@@ -214,13 +219,23 @@ void Engine::AddObject()
         if (!isOccupied)
         {
             std::shared_ptr<GameObject> obj = std::make_shared<GameObject>(mNewObjectID);
+
+            if (mNewObjectID == "water")
+            {
+                // obj->AddComponent<TransformComponent>()->SetPosition(placementPos);
+                // obj->AddComponent<MeshComponent>()->AddMesh(MeshType::WATER);
+                // mGameObjects->push_back(obj);
+                // std::cout << "New water placed at " << placementPos.x << " " << placementPos.y << " " << placementPos.z << std::endl;
+                return;
+            }
+
             obj->AddComponent<TransformComponent>()->SetPosition(placementPos);
-            // newCube->AddComponent<MeshComponent>()->AddCube();
             obj->AddComponent<MeshComponent>()->AddMesh(MeshType::CUBE);
             obj->AddComponent<TextureComponent>()->SetTextureGroupName(mNewObjectTextureGroup);
             obj->GetComponent<TextureComponent>()->SetTextureGroup(mTextureManager->GetTextureGroup(mNewObjectTextureGroup));
             mGameObjects->push_back(obj);
             std::cout << "New cube placed at " << placementPos.x << " " << placementPos.y << " " << placementPos.z << std::endl;
+            return;
         }
         else
         {
@@ -242,7 +257,9 @@ void Engine::FindSelectedObject()
         if (gameObject->GetComponent<MeshComponent>()->GetMeshType() == MeshType::CUBE)
         {
             mesh = std::static_pointer_cast<CubeMesh>(gameObject->GetComponent<MeshComponent>()->GetMesh());
-        } else {
+        }
+        else
+        {
             std::cout << "Mesh type not recognized by ray caster!" << std::endl;
             continue;
         }
@@ -330,34 +347,91 @@ void Engine::ShadowPass()
 
 void Engine::LightPass()
 {
+    // glViewport(0, 0, mScreenWidth, mScreenHeight);
+
+    // glClearColor(0.1f, 0.1f, 0.1f, 1.f);
+    // glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+
+    // mMainShader.Use();
+
+    // glActiveTexture(GL_TEXTURE0 + 1);
+    // glBindTexture(GL_TEXTURE_2D, mShadowMapTexture);
+
+    // mMainShader.SetUniform("shadowMap", 1);
+
+    // mMainShader.SetUniform("u_Projection", mCamera.GetProjectionMatrix());
+
+    // // set view matrix
+    // mCamera.UpdateViewMatrix();
+    // mMainShader.SetUniform("u_View", mCamera.GetViewMatrix());
+
+    // // set lightings
+    // mMainShader.SetUniform("lightPos", glm::vec3(3.0f, 3.0f, 3.0f));
+    // mMainShader.SetUniform("lightColor", glm::vec3(1.0f, 1.0f, 1.0f));
+    // mMainShader.SetUniform("viewPos", mCamera.GetPosition());
+    // mMainShader.SetUniform("u_LightProjection", mLightProjection);
+
+    // for (auto &gameObject : *mGameObjects)
+    // {
+    //     glm::mat4 model = gameObject->GetComponent<TransformComponent>()->GetModelMatrix();
+    //     mMainShader.SetUniform("u_ModelMatrix", model);
+
+    //     if (gameObject == mSelected)
+    //     {
+    //         glEnable(GL_STENCIL_TEST);
+    //         glStencilMask(0xFF);                       // Enable writing to the stencil buffer.
+    //         glStencilFunc(GL_ALWAYS, 1, 0xFF);         // Always pass stencil test, write 1 to stencil buffer.
+    //         glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE); // Replace stencil buffer value on depth pass.
+    //     }
+    //     else
+    //     {
+    //         glStencilMask(0x00); // Disable writing to the stencil buffer.
+    //     }
+
+    //     gameObject->Render();
+    // }
+
     glViewport(0, 0, mScreenWidth, mScreenHeight);
 
     glClearColor(0.1f, 0.1f, 0.1f, 1.f);
     glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
-    mMainShader.Use();
-
     glActiveTexture(GL_TEXTURE0 + 1);
     glBindTexture(GL_TEXTURE_2D, mShadowMapTexture);
 
-    mMainShader.SetUniform("shadowMap", 1);
-
-    mMainShader.SetUniform("u_Projection", mCamera.GetProjectionMatrix());
-
-    // set view matrix
-    mCamera.UpdateViewMatrix();
-    mMainShader.SetUniform("u_View", mCamera.GetViewMatrix());
-
-    // set lightings
-    mMainShader.SetUniform("lightPos", glm::vec3(3.0f, 3.0f, 3.0f));
-    mMainShader.SetUniform("lightColor", glm::vec3(1.0f, 1.0f, 1.0f));
-    mMainShader.SetUniform("viewPos", mCamera.GetPosition());
-    mMainShader.SetUniform("u_LightProjection", mLightProjection);
-
     for (auto &gameObject : *mGameObjects)
     {
+        Shader *activeShader = nullptr;
+
+        if (gameObject->GetComponent<MeshComponent>()->GetMeshType() == MeshType::CUBE)
+        {
+            activeShader = &mMainShader;
+        }
+        else if (gameObject->GetComponent<MeshComponent>()->GetMeshType() == MeshType::WATER)
+        {
+            // std::cout << "Water shader" << std::endl;
+            continue;
+            activeShader = &mWaterShader;
+        }
+
+        activeShader->Use();
+
+        activeShader->SetUniform("shadowMap", 1);
+
+        activeShader->SetUniform("u_Projection", mCamera.GetProjectionMatrix());
+
+        // set view matrix
+        mCamera.UpdateViewMatrix();
+        activeShader->SetUniform("u_View", mCamera.GetViewMatrix());
+
+        // set lightings
+        activeShader->SetUniform("lightPos", glm::vec3(3.0f, 3.0f, 3.0f));
+        activeShader->SetUniform("lightColor", glm::vec3(1.0f, 1.0f, 1.0f));
+        activeShader->SetUniform("viewPos", mCamera.GetPosition());
+        activeShader->SetUniform("u_LightProjection", mLightProjection);
+
         glm::mat4 model = gameObject->GetComponent<TransformComponent>()->GetModelMatrix();
-        mMainShader.SetUniform("u_ModelMatrix", model);
+        activeShader->SetUniform("u_ModelMatrix", model);
 
         if (gameObject == mSelected)
         {
@@ -526,6 +600,7 @@ void Engine::CreateGraphicsPipeline()
     mShadowShader.Init("./shaders/shadow_v.glsl", "./shaders/shadow_f.glsl");
     mCrosshairShader.Init("./shaders/crosshair_v.glsl", "./shaders/crosshair_f.glsl");
     mHighlightShader.Init("./shaders/highlight_v.glsl", "./shaders/highlight_f.glsl");
+    mWaterShader.Init("./shaders/vert_water.glsl", "./shaders/frag_water.glsl");
     // mQuadShader.Init("./shaders/quad_v.glsl", "./shaders/quad_f.glsl");
 }
 
