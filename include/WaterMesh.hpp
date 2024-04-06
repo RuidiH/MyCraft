@@ -22,7 +22,7 @@ public:
 
     glm::vec3 GetMinCorner() { return this->mMinCorner; };
     glm::vec3 GetMaxCorner() { return this->mMaxCorner; };
-    std::array<glm::vec3, 2> GetCorners() { return {mMinCorner, mMaxCorner}; };
+    std::array<glm::vec3, 2> GetCorners() override { return {mMinCorner, mMaxCorner}; };
     glm::vec3 GetSideNormal(std::string side) override;
 
 private:

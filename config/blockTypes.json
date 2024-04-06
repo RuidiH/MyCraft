@@ -43,7 +43,7 @@
       "id": "water_block",
       "components": {
         "mesh": {
-          "type": "cube"
+          "type": "water"
         }
       },
       "properties": {

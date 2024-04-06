@@ -103,49 +103,49 @@ void CubeMesh::SetVertexData()
 
         // Top
         -radius, radius, -radius, 0.0f, 0.0f, 0.f, 1.f, 0.f, // - + -
-        -radius, radius, radius, 0.0f, 1.0f, 0.f, 1.f, 0.f,  // - + +
-        radius, radius, radius, 1.0f, 1.0f, 0.f, 1.f, 0.f,   // + + +
-        radius, radius, -radius, 1.0f, 0.0f, 0.f, 1.f, 0.f   // + + -
+        -radius, radius,  radius, 0.0f, 1.0f, 0.f, 1.f, 0.f,  // - + +
+         radius, radius,  radius, 1.0f, 1.0f, 0.f, 1.f, 0.f,   // + + +
+         radius, radius, -radius, 1.0f, 0.0f, 0.f, 1.f, 0.f   // + + -
     };
 
     std::vector<float> vBottom{
         // Bottom
-        -radius, -radius, radius, 0.0f, 1.0f, 0.f, -1.f, 0.f,  // - - +
+        -radius, -radius,  radius, 0.0f, 1.0f, 0.f, -1.f, 0.f,  // - - +
         -radius, -radius, -radius, 0.0f, 0.0f, 0.f, -1.f, 0.f, // - - -
-        radius, -radius, -radius, 1.0f, 0.0f, 0.f, -1.f, 0.f,  // + - -
-        radius, -radius, radius, 1.0f, 1.0f, 0.f, -1.f, 0.f    // + - +
+         radius, -radius, -radius, 1.0f, 0.0f, 0.f, -1.f, 0.f,  // + - -
+         radius, -radius,  radius, 1.0f, 1.0f, 0.f, -1.f, 0.f    // + - +
     };
 
     std::vector<float> vLeft{
         // Left
-        -radius, radius, -radius, 0.0f, 0.0f, -1.f, 0.f, 0.f,  // - + -
+        -radius,  radius, -radius, 0.0f, 0.0f, -1.f, 0.f, 0.f,  // - + -
         -radius, -radius, -radius, 0.0f, 1.0f, -1.f, 0.f, 0.f, // - - -
-        -radius, -radius, radius, 1.0f, 1.0f, -1.f, 0.f, 0.f,  // - - +
-        -radius, radius, radius, 1.0f, 0.0f, -1.f, 0.f, 0.f    // - + +
+        -radius, -radius,  radius, 1.0f, 1.0f, -1.f, 0.f, 0.f,  // - - +
+        -radius,  radius,  radius, 1.0f, 0.0f, -1.f, 0.f, 0.f    // - + +
     };
 
     std::vector<float> vRight{
         // Right
-        radius, radius, radius, 0.0f, 0.0f, 1.f, 0.f, 0.f,   // + + +
-        radius, -radius, radius, 0.0f, 1.0f, 1.f, 0.f, 0.f,  // + - +
+        radius,  radius,  radius, 0.0f, 0.0f, 1.f, 0.f, 0.f,   // + + +
+        radius, -radius,  radius, 0.0f, 1.0f, 1.f, 0.f, 0.f,  // + - +
         radius, -radius, -radius, 1.0f, 1.0f, 1.f, 0.f, 0.f, // + - -
-        radius, radius, -radius, 1.0f, 0.0f, 1.f, 0.f, 0.f   // + + -
+        radius,  radius, -radius, 1.0f, 0.0f, 1.f, 0.f, 0.f   // + + -
     };
 
     std::vector<float> vFront{
         // Front
-        -radius, radius, radius, 0.0f, 0.0f, 0.f, 0.f, 1.f,  // - + +
+        -radius,  radius, radius, 0.0f, 0.0f, 0.f, 0.f, 1.f,  // - + +
         -radius, -radius, radius, 0.0f, 1.0f, 0.f, 0.f, 1.f, // - - +
-        radius, -radius, radius, 1.0f, 1.0f, 0.f, 0.f, 1.f,  // + - +
-        radius, radius, radius, 1.0f, 0.0f, 0.f, 0.f, 1.f    // + + +
+         radius, -radius, radius, 1.0f, 1.0f, 0.f, 0.f, 1.f,  // + - +
+         radius,  radius, radius, 1.0f, 0.0f, 0.f, 0.f, 1.f    // + + +
     };
 
     std::vector<float> vBack{
         // Back
         -radius, -radius, -radius, 1.0f, 1.0f, 0.f, 0.f, -1.f, // - - -
-        -radius, radius, -radius, 1.0f, 0.0f, 0.f, 0.f, -1.f,  // - + -
-        radius, radius, -radius, 0.0f, 0.0f, 0.f, 0.f, -1.f,   // + + -
-        radius, -radius, -radius, 0.0f, 1.0f, 0.f, 0.f, -1.f   // + - -
+        -radius,  radius, -radius, 1.0f, 0.0f, 0.f, 0.f, -1.f,  // - + -
+         radius,  radius, -radius, 0.0f, 0.0f, 0.f, 0.f, -1.f,   // + + -
+         radius, -radius, -radius, 0.0f, 1.0f, 0.f, 0.f, -1.f   // + - -
     };
 
     mVertexDataMap["top"] = vTop;

@@ -12,6 +12,7 @@
 
 #include <array>
 #include <algorithm>
+#include <WaterMesh.hpp>
 
 Uint32 Engine::deltaTime;
 
@@ -220,12 +221,12 @@ void Engine::AddObject()
         {
             std::shared_ptr<GameObject> obj = std::make_shared<GameObject>(mNewObjectID);
 
-            if (mNewObjectID == "water")
+            if (mNewObjectID == "water_block")
             {
-                // obj->AddComponent<TransformComponent>()->SetPosition(placementPos);
-                // obj->AddComponent<MeshComponent>()->AddMesh(MeshType::WATER);
-                // mGameObjects->push_back(obj);
-                // std::cout << "New water placed at " << placementPos.x << " " << placementPos.y << " " << placementPos.z << std::endl;
+                obj->AddComponent<TransformComponent>()->SetPosition(placementPos);
+                obj->AddComponent<MeshComponent>()->AddMesh(MeshType::WATER);
+                mGameObjects->push_back(obj);
+                std::cout << "New water placed at " << placementPos.x << " " << placementPos.y << " " << placementPos.z << std::endl;
                 return;
             }
 
@@ -253,15 +254,25 @@ void Engine::FindSelectedObject()
     std::shared_ptr<GameObject> hitObject;
     for (std::shared_ptr<GameObject> gameObject : *mGameObjects)
     {
-        std::shared_ptr<CubeMesh> mesh;
+        std::shared_ptr<Mesh> mesh;
         if (gameObject->GetComponent<MeshComponent>()->GetMeshType() == MeshType::CUBE)
         {
             mesh = std::static_pointer_cast<CubeMesh>(gameObject->GetComponent<MeshComponent>()->GetMesh());
+        }
+        else if (gameObject->GetComponent<MeshComponent>()->GetMeshType() == MeshType::WATER)
+        {
+            mesh = std::static_pointer_cast<WaterMesh>(gameObject->GetComponent<MeshComponent>()->GetMesh());
         }
         else
         {
             std::cout << "Mesh type not recognized by ray caster!" << std::endl;
             continue;
+        }
+
+        if (mesh == nullptr)
+        {
+            std::cout << "Mesh is null" << std::endl;
+            return;
         }
 
         float tNear, tFar = 0.f;
@@ -347,50 +358,6 @@ void Engine::ShadowPass()
 
 void Engine::LightPass()
 {
-    // glViewport(0, 0, mScreenWidth, mScreenHeight);
-
-    // glClearColor(0.1f, 0.1f, 0.1f, 1.f);
-    // glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
-
-    // mMainShader.Use();
-
-    // glActiveTexture(GL_TEXTURE0 + 1);
-    // glBindTexture(GL_TEXTURE_2D, mShadowMapTexture);
-
-    // mMainShader.SetUniform("shadowMap", 1);
-
-    // mMainShader.SetUniform("u_Projection", mCamera.GetProjectionMatrix());
-
-    // // set view matrix
-    // mCamera.UpdateViewMatrix();
-    // mMainShader.SetUniform("u_View", mCamera.GetViewMatrix());
-
-    // // set lightings
-    // mMainShader.SetUniform("lightPos", glm::vec3(3.0f, 3.0f, 3.0f));
-    // mMainShader.SetUniform("lightColor", glm::vec3(1.0f, 1.0f, 1.0f));
-    // mMainShader.SetUniform("viewPos", mCamera.GetPosition());
-    // mMainShader.SetUniform("u_LightProjection", mLightProjection);
-
-    // for (auto &gameObject : *mGameObjects)
-    // {
-    //     glm::mat4 model = gameObject->GetComponent<TransformComponent>()->GetModelMatrix();
-    //     mMainShader.SetUniform("u_ModelMatrix", model);
-
-    //     if (gameObject == mSelected)
-    //     {
-    //         glEnable(GL_STENCIL_TEST);
-    //         glStencilMask(0xFF);                       // Enable writing to the stencil buffer.
-    //         glStencilFunc(GL_ALWAYS, 1, 0xFF);         // Always pass stencil test, write 1 to stencil buffer.
-    //         glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE); // Replace stencil buffer value on depth pass.
-    //     }
-    //     else
-    //     {
-    //         glStencilMask(0x00); // Disable writing to the stencil buffer.
-    //     }
-
-    //     gameObject->Render();
-    // }
-
     glViewport(0, 0, mScreenWidth, mScreenHeight);
 
     glClearColor(0.1f, 0.1f, 0.1f, 1.f);
@@ -409,8 +376,6 @@ void Engine::LightPass()
         }
         else if (gameObject->GetComponent<MeshComponent>()->GetMeshType() == MeshType::WATER)
         {
-            // std::cout << "Water shader" << std::endl;
-            continue;
             activeShader = &mWaterShader;
         }
 

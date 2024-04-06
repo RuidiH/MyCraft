@@ -34,20 +34,22 @@ void MeshComponent::Render()
 
 std::shared_ptr<Mesh> MeshComponent::AddMesh(MeshType type)
 {
+    std::shared_ptr<Mesh> cube;
     if (type == MeshType::CUBE)
     {
-        std::shared_ptr<CubeMesh> cube = std::make_shared<CubeMesh>();
-        mMesh = cube;
-        cube->SetParentComponent(this);
-        mMeshType = type; 
-        return cube;
-    } else if (type == MeshType::WATER)
-    {
-        // TODO: Add water mesh
+        cube = std::make_shared<CubeMesh>();
     }
-    // handle error if type is not recognized
+    else if (type == MeshType::WATER)
+    {
+        cube = std::make_shared<WaterMesh>();
+    } else {
+        return nullptr;
+    }
 
-    return nullptr;
+    mMesh = cube;
+    cube->SetParentComponent(this);
+    mMeshType = type;
+    return cube;
 }
 
 // void MeshComponent::setCube(Cube *cube)

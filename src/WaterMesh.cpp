@@ -7,18 +7,21 @@ WaterMesh::WaterMesh()
 {
     mSize = 1.0f;
     SetVertexData();
+
 }
 
 void WaterMesh::Update()
 {
-    // water cannot be moved!
+    // water cannot be moved!    
+    glm::vec3 position = mParent->GetParent()->GetComponent<TransformComponent>()->GetPosition();
+    mMinCorner = position - glm::vec3(mSize / 2.0);
+    mMaxCorner = position + glm::vec3(mSize / 2.0);
 }
 
 void WaterMesh::Render()
 {
-    for (auto &pair : mVertexDataMap)
+    for (const auto &pair : mVertexDataMap)
     {
-
         // render only the top surface of the water
         GLuint vao;
         GLuint vbo;
@@ -56,7 +59,7 @@ void WaterMesh::Render()
 
         glEnableVertexAttribArray(1);
         glVertexAttribPointer(1,
-                              3, // u, v
+                              3, // r, g, b
                               GL_FLOAT,
                               GL_FALSE,
                               sizeof(GL_FLOAT) * 9,
@@ -96,49 +99,49 @@ void WaterMesh::SetVertexData()
     std::vector<float> vTop{
         // Top
         -halfSize, halfSize, -halfSize, r, g, b, 0.f, 1.f, 0.f, // - + -
-        -halfSize, halfSize, halfSize, r, g, b, 0.f, 1.f, 0.f,  // - + +
-        halfSize, halfSize, halfSize, r, g, b, 0.f, 1.f, 0.f,   // + + +
-        halfSize, halfSize, -halfSize, r, g, b, 0.f, 1.f, 0.f   // + + -
+        -halfSize, halfSize,  halfSize, r, g, b, 0.f, 1.f, 0.f,  // - + +
+         halfSize, halfSize,  halfSize, r, g, b, 0.f, 1.f, 0.f,   // + + +
+         halfSize, halfSize, -halfSize, r, g, b, 0.f, 1.f, 0.f   // + + -
     };
 
     std::vector<float> vBottom{
         // Bottom
-        -halfSize, -halfSize, halfSize, r, g, b, 0.f, -1.f, 0.f,  // - - +
+        -halfSize, -halfSize,  halfSize, r, g, b, 0.f, -1.f, 0.f,  // - - +
         -halfSize, -halfSize, -halfSize, r, g, b, 0.f, -1.f, 0.f, // - - -
-        halfSize, -halfSize, -halfSize, r, g, b, 0.f, -1.f, 0.f,  // + - -
-        halfSize, -halfSize, halfSize, r, g, b, 0.f, -1.f, 0.f    // + - +
+         halfSize, -halfSize, -halfSize, r, g, b, 0.f, -1.f, 0.f,  // + - -
+         halfSize, -halfSize,  halfSize, r, g, b, 0.f, -1.f, 0.f    // + - +
     };
 
     std::vector<float> vLeft{
         // Left
-        -halfSize, halfSize, -halfSize, r, g, b, -1.f, 0.f, 0.f,  // - + -
+        -halfSize,  halfSize, -halfSize, r, g, b, -1.f, 0.f, 0.f,  // - + -
         -halfSize, -halfSize, -halfSize, r, g, b, -1.f, 0.f, 0.f, // - - -
-        -halfSize, -halfSize, halfSize, r, g, b, -1.f, 0.f, 0.f,  // - - +
-        -halfSize, halfSize, halfSize, r, g, b, -1.f, 0.f, 0.f    // - + +
+        -halfSize, -halfSize,  halfSize, r, g, b, -1.f, 0.f, 0.f,  // - - +
+        -halfSize,  halfSize,  halfSize, r, g, b, -1.f, 0.f, 0.f    // - + +
     };
 
     std::vector<float> vRight{
         // Right
-        halfSize, halfSize, halfSize, r, g, b, 1.f, 0.f, 0.f,   // + + +
-        halfSize, -halfSize, halfSize, r, g, b, 1.f, 0.f, 0.f,  // + - +
+        halfSize,  halfSize,  halfSize, r, g, b, 1.f, 0.f, 0.f,   // + + +
+        halfSize, -halfSize,  halfSize, r, g, b, 1.f, 0.f, 0.f,  // + - +
         halfSize, -halfSize, -halfSize, r, g, b, 1.f, 0.f, 0.f, // + - -
-        halfSize, halfSize, -halfSize, r, g, b, 1.f, 0.f, 0.f   // + + -
+        halfSize,  halfSize, -halfSize, r, g, b, 1.f, 0.f, 0.f   // + + -
     };
 
     std::vector<float> vFront{
         // Front
-        -halfSize, halfSize, halfSize, r, g, b, 0.f, 0.f, 1.f,  // - + +
+        -halfSize,  halfSize, halfSize, r, g, b, 0.f, 0.f, 1.f,  // - + +
         -halfSize, -halfSize, halfSize, r, g, b, 0.f, 0.f, 1.f, // - - +
-        halfSize, -halfSize, halfSize, r, g, b, 0.f, 0.f, 1.f,  // + - +
-        halfSize, halfSize, halfSize, r, g, b, 0.f, 0.f, 1.f    // + + +
+         halfSize, -halfSize, halfSize, r, g, b, 0.f, 0.f, 1.f,  // + - +
+         halfSize,  halfSize, halfSize, r, g, b, 0.f, 0.f, 1.f    // + + +
     };
 
     std::vector<float> vBack{
         // Back
         -halfSize, -halfSize, -halfSize, r, g, b, 0.f, 0.f, -1.f, // - - -
-        -halfSize, halfSize, -halfSize, r, g, b, 0.f, 0.f, -1.f,  // - + -
-        halfSize, halfSize, -halfSize, r, g, b, 0.f, 0.f, -1.f,   // + + -
-        halfSize, -halfSize, -halfSize, r, g, b, 0.f, 0.f, -1.f   // + - -
+        -halfSize,  halfSize, -halfSize, r, g, b, 0.f, 0.f, -1.f,  // - + -
+         halfSize,  halfSize, -halfSize, r, g, b, 0.f, 0.f, -1.f,   // + + -
+         halfSize, -halfSize, -halfSize, r, g, b, 0.f, 0.f, -1.f   // + - -
     };
 
     mVertexDataMap["top"] = vTop;
