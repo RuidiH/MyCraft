@@ -17,7 +17,7 @@ WorldSerializer::~WorldSerializer()
 {
 }
 
-WorldSerializer::WorldSerializer(std::shared_ptr<TextureManager> textureManager, std::shared_ptr<std::vector<std::shared_ptr<GameObject>>> objects) : mTextureManager(textureManager), mGameObjects(objects)
+WorldSerializer::WorldSerializer(std::shared_ptr<TextureManager> textureManager, std::shared_ptr<ObjectManager> objManager) : mTextureManager(textureManager), mObjectManager(objManager)
 {
 }
 
@@ -91,7 +91,8 @@ void WorldSerializer::CreateBlocks(const std::string &filename)
 
         block->AddComponent<TransformComponent>()->SetPosition(position);
 
-        mGameObjects->push_back(block);
+        mObjectManager->AddObject(block);
+        // mGameObjects->push_back(block);
     }
     std::cout << "Blocks created successfully!" << std::endl;
 }
@@ -253,7 +254,7 @@ void WorldSerializer::SaveWorldData(const std::string& filename) {
     rapidjson::Value worldObj(rapidjson::kObjectType);
     rapidjson::Value blocksArray(rapidjson::kArrayType);
 
-    for (const auto& gameObject : *mGameObjects) {
+    for (const auto& gameObject : *mObjectManager->GetObjects()) {
         rapidjson::Value blockObj(rapidjson::kObjectType);
         // Assuming `GetID()` method exists
         blockObj.AddMember("id", rapidjson::Value(gameObject->GetID().c_str(), allocator), allocator);

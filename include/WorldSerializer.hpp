@@ -12,6 +12,7 @@
 #include "rapidjson/prettywriter.h"
 #include "GameObject.hpp"
 #include "TextureManager.hpp"
+#include "ObjectManager.hpp"
 
 struct BlockType {
     std::string id;
@@ -22,7 +23,7 @@ struct BlockType {
 class WorldSerializer
 {
 public:
-    WorldSerializer(std::shared_ptr<TextureManager> textureManager, std::shared_ptr<std::vector<std::shared_ptr<GameObject>>> objects);
+    WorldSerializer(std::shared_ptr<TextureManager> textureManager, std::shared_ptr<ObjectManager> objectManager);
     ~WorldSerializer();
 
     void ReadBlockTypes(const std::string &filename);
@@ -35,7 +36,7 @@ public:
 private:
     std::unordered_map<std::string, BlockType> mblockTypes;
     std::shared_ptr<TextureManager> mTextureManager;
-    std::shared_ptr<std::vector<std::shared_ptr<GameObject>>> mGameObjects;
+    std::shared_ptr<ObjectManager> mObjectManager;
 };
 
 #endif

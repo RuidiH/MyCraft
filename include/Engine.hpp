@@ -29,7 +29,7 @@
 #include "Shader.hpp"
 #include "Camera.hpp"
 #include "WorldSerializer.hpp"
-
+#include "ObjectManager.hpp"
 
 class Engine
 {
@@ -51,8 +51,10 @@ private:
     std::shared_ptr<TextureManager> mTextureManager;
     std::shared_ptr<std::vector<std::shared_ptr<GameObject>>> mGameObjects;
 
-    Camera mCamera;
+    std::shared_ptr<Camera> mCamera;
     glm::vec2 mShadowResolution = glm::vec2(4096, 4096);
+
+    std::shared_ptr<ObjectManager> mObjectManager;
 
     // game state
     bool mQuit = false;

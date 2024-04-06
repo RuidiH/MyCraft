@@ -19,13 +19,21 @@ Uint32 Engine::deltaTime;
 Engine::Engine(int width, int height) : mScreenWidth(width), mScreenHeight(height)
 {
     std::cout << "<<<<<<<<<<<<<<<<<<<<<<< Initializing Engine >>>>>>>>>>>>>>>>>>>>>>>>>\n";
+
+    mCamera = std::make_shared<Camera>();
+    mCamera->SetPosition(glm::vec3(0.f, 5.f, 5.f));
+    mCamera->SetUpVector(glm::vec3(0.f, 1.f, 0.f));
+    mCamera->SetDirection(glm::normalize(glm::vec3(0.f, 0.f, 0.f) - mCamera->GetPosition()));
+    mCamera->SetProjectionMatrix(45.0f, (float)mScreenWidth / (float)mScreenHeight, 0.1f, 50.0f);
+
+    mObjectManager = std::make_shared<ObjectManager>(mCamera);
+    mGameObjects = std::make_shared<std::vector<std::shared_ptr<GameObject>>>();
+
     InitializeGraphicsProgram();
 
     CreateGraphicsPipeline();
 
-    InitializeShadowMap();
-
-    mGameObjects = std::make_shared<std::vector<std::shared_ptr<GameObject>>>();
+    InitializeShadowMap();    
 
     // hard-coded ortho light
     glm::mat4 orthoProjection = glm::ortho(-15.f, 15.f, -15.f, 15.f, 1.f, 35.f);
@@ -63,7 +71,7 @@ void Engine::SetupObject()
 {
     std::cout << "<<<<<<<<<<<<<<<<<<<<<<< Setting up objects >>>>>>>>>>>>>>>>>>>>>>>>>\n";
     mTextureManager = std::make_shared<TextureManager>();
-    mWorldSerializer = std::make_shared<WorldSerializer>(mTextureManager, mGameObjects);
+    mWorldSerializer = std::make_shared<WorldSerializer>(mTextureManager, mObjectManager);
     mWorldSerializer->ReadBlockTypes("./config/blockTypes.json");
     mWorldSerializer->LoadTextureConfig("./config/textureConfig.json");
     mWorldSerializer->CreateBlocks("./config/worldData.json");
@@ -100,7 +108,7 @@ void Engine::Input()
         }
         if (e.type == SDL_MOUSEMOTION)
         {
-            mCamera.RotateCamera(e.motion.xrel, e.motion.yrel);
+            mCamera->RotateCamera(e.motion.xrel, e.motion.yrel);
         }
 
         if (e.type == SDL_KEYDOWN && e.key.repeat == 0)
@@ -136,20 +144,20 @@ void Engine::Input()
     // camera controls
     if (state[SDL_SCANCODE_W])
     {
-        mCamera.MoveForward(0.1f);
+        mCamera->MoveForward(0.1f);
     }
     else if (state[SDL_SCANCODE_S] && !state[SDL_SCANCODE_LCTRL])
     {
-        mCamera.MoveBackward(0.1f);
+        mCamera->MoveBackward(0.1f);
     }
 
     if (state[SDL_SCANCODE_A])
     {
-        mCamera.MoveLeft(0.1f);
+        mCamera->MoveLeft(0.1f);
     }
     else if (state[SDL_SCANCODE_D])
     {
-        mCamera.MoveRight(0.1f);
+        mCamera->MoveRight(0.1f);
     }
 
     // ray casting test
@@ -184,7 +192,8 @@ void Engine::RemoveObject()
     if (mSelected != nullptr)
     {
 
-        mGameObjects->erase(std::remove(mGameObjects->begin(), mGameObjects->end(), mSelected), mGameObjects->end());
+        // mGameObjects->erase(std::remove(mGameObjects->begin(), mGameObjects->end(), mSelected), mGameObjects->end());
+        mObjectManager->RemoveObject(mSelected);
         mSelected = nullptr;
         mSelectedFace = "none";
     }
@@ -200,7 +209,7 @@ void Engine::AddObject()
 
         // make sure the placement position is not occupied
         bool isOccupied = false;
-        for (auto gameObject : *mGameObjects)
+        for (auto gameObject : *mObjectManager->GetObjects())
         {
             if (gameObject != mSelected)
             {
@@ -225,7 +234,10 @@ void Engine::AddObject()
             {
                 obj->AddComponent<TransformComponent>()->SetPosition(placementPos);
                 obj->AddComponent<MeshComponent>()->AddMesh(MeshType::WATER);
-                mGameObjects->push_back(obj);
+                
+                mObjectManager->AddObject(obj);
+                // mGameObjects->push_back(obj);
+
                 std::cout << "New water placed at " << placementPos.x << " " << placementPos.y << " " << placementPos.z << std::endl;
                 return;
             }
@@ -234,7 +246,8 @@ void Engine::AddObject()
             obj->AddComponent<MeshComponent>()->AddMesh(MeshType::CUBE);
             obj->AddComponent<TextureComponent>()->SetTextureGroupName(mNewObjectTextureGroup);
             obj->GetComponent<TextureComponent>()->SetTextureGroup(mTextureManager->GetTextureGroup(mNewObjectTextureGroup));
-            mGameObjects->push_back(obj);
+            // mGameObjects->push_back(obj);
+            mObjectManager->AddObject(obj);
             std::cout << "New cube placed at " << placementPos.x << " " << placementPos.y << " " << placementPos.z << std::endl;
             return;
         }
@@ -247,12 +260,12 @@ void Engine::AddObject()
 
 void Engine::FindSelectedObject()
 {
-    glm::vec3 rayDir = mCamera.GetRayDirection(mScreenWidth, mScreenHeight, glm::vec2(mScreenWidth / 2, mScreenHeight / 2));
+    glm::vec3 rayDir = mCamera->GetRayDirection(mScreenWidth, mScreenHeight, glm::vec2(mScreenWidth / 2, mScreenHeight / 2));
     // std::cout << "Ray direction: " << rayDir.x << " " << rayDir.y << " " << rayDir.z << std::endl;
     float smallestTNear = -1.f;
     std::string clostestHitSide;
     std::shared_ptr<GameObject> hitObject;
-    for (std::shared_ptr<GameObject> gameObject : *mGameObjects)
+    for (std::shared_ptr<GameObject> gameObject : *mObjectManager->GetObjects())
     {
         std::shared_ptr<Mesh> mesh;
         if (gameObject->GetComponent<MeshComponent>()->GetMeshType() == MeshType::CUBE)
@@ -277,7 +290,7 @@ void Engine::FindSelectedObject()
 
         float tNear, tFar = 0.f;
         std::string hitSide;
-        bool result = RayCastTest(mCamera.GetPosition(), rayDir, mesh->GetCorners(), tNear, tFar, hitSide);
+        bool result = RayCastTest(mCamera->GetPosition(), rayDir, mesh->GetCorners(), tNear, tFar, hitSide);
 
         // std::cout << "tNear: " << tNear << " tFar: " << tFar << std::endl;
 
@@ -316,7 +329,7 @@ void Engine::FindSelectedObject()
 
 void Engine::Update()
 {
-    for (auto gameObject : *mGameObjects)
+    for (auto gameObject : *mObjectManager->GetObjects())
     {
         gameObject->Update();
     }
@@ -347,7 +360,7 @@ void Engine::ShadowPass()
     mShadowShader.SetUniform("lightProjection", mLightProjection);
 
     // render
-    for (auto gameObject : *mGameObjects)
+    for (auto gameObject : *mObjectManager->GetObjects())
     {
         glm::mat4 model = gameObject->GetComponent<TransformComponent>()->GetModelMatrix();
         mShadowShader.SetUniform("model", model);
@@ -366,7 +379,7 @@ void Engine::LightPass()
     glActiveTexture(GL_TEXTURE0 + 1);
     glBindTexture(GL_TEXTURE_2D, mShadowMapTexture);
 
-    for (auto &gameObject : *mGameObjects)
+    for (auto &gameObject : *mObjectManager->GetObjects())
     {
         Shader *activeShader = nullptr;
 
@@ -383,16 +396,16 @@ void Engine::LightPass()
 
         activeShader->SetUniform("shadowMap", 1);
 
-        activeShader->SetUniform("u_Projection", mCamera.GetProjectionMatrix());
+        activeShader->SetUniform("u_Projection", mCamera->GetProjectionMatrix());
 
         // set view matrix
-        mCamera.UpdateViewMatrix();
-        activeShader->SetUniform("u_View", mCamera.GetViewMatrix());
+        mCamera->UpdateViewMatrix();
+        activeShader->SetUniform("u_View", mCamera->GetViewMatrix());
 
         // set lightings
         activeShader->SetUniform("lightPos", glm::vec3(3.0f, 3.0f, 3.0f));
         activeShader->SetUniform("lightColor", glm::vec3(1.0f, 1.0f, 1.0f));
-        activeShader->SetUniform("viewPos", mCamera.GetPosition());
+        activeShader->SetUniform("viewPos", mCamera->GetPosition());
         activeShader->SetUniform("u_LightProjection", mLightProjection);
 
         glm::mat4 model = gameObject->GetComponent<TransformComponent>()->GetModelMatrix();
@@ -416,7 +429,7 @@ void Engine::LightPass()
 
 void Engine::HighlightPass()
 {
-    for (auto &gameObject : *mGameObjects)
+    for (const auto &gameObject : *mObjectManager->GetObjects())
     {
         if (mSelected != nullptr && gameObject == mSelected)
         {
@@ -425,9 +438,9 @@ void Engine::HighlightPass()
             glDisable(GL_DEPTH_TEST);
 
             mHighlightShader.Use();
-            mHighlightShader.SetUniform("projection", mCamera.GetProjectionMatrix());
-            mCamera.UpdateViewMatrix();
-            mHighlightShader.SetUniform("view", mCamera.GetViewMatrix());
+            mHighlightShader.SetUniform("projection", mCamera->GetProjectionMatrix());
+            mCamera->UpdateViewMatrix();
+            mHighlightShader.SetUniform("view", mCamera->GetViewMatrix());
             glm::mat4 model = gameObject->GetComponent<TransformComponent>()->GetModelMatrix();
             model = glm::scale(model, glm::vec3(1.05f, 1.05f, 1.05f));
             mHighlightShader.SetUniform("model", model);
@@ -516,11 +529,6 @@ void Engine::InitializeGraphicsProgram()
     }
 
     GetOpenGLVersionInfo();
-
-    mCamera.SetPosition(glm::vec3(0.f, 5.f, 5.f));
-    mCamera.SetUpVector(glm::vec3(0.f, 1.f, 0.f));
-    mCamera.SetDirection(glm::normalize(glm::vec3(0.f, 0.f, 0.f) - mCamera.GetPosition()));
-    mCamera.SetProjectionMatrix(45.0f, (float)mScreenWidth / (float)mScreenHeight, 0.1f, 50.0f);
 
     SDL_SetRelativeMouseMode(SDL_TRUE);
 

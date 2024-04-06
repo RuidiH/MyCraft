@@ -98,6 +98,7 @@ glm::mat4 Camera::GetViewMatrix() {
 glm::mat4 Camera::GetProjectionMatrix() {
     return projectionMatrix;
 }
+
 glm::vec3 Camera::GetRayDirection(int screenWidth, int screenHeight, glm::vec2 rayStart) {
     float x = (2.0f * rayStart.x / screenWidth) - 1.0f;
     float y = 1.0f - (2.0f * rayStart.y / screenHeight);
@@ -110,4 +111,8 @@ glm::vec3 Camera::GetRayDirection(int screenWidth, int screenHeight, glm::vec2 r
     rayWorld = glm::normalize(rayWorld);
 
     return rayWorld;
+}
+
+float Camera::DistanceTo(glm::vec3 position) {
+    return glm::distance(this->position, position);
 }

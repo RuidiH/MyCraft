@@ -5,36 +5,6 @@
                 "id": "dirt_block",
                 "transform": {
                     "position": [
-                        0.0,
-                        0.0,
-                        0.0
-                    ]
-                }
-            },
-            {
-                "id": "dirt_block",
-                "transform": {
-                    "position": [
-                        0.0,
-                        0.0,
-                        1.0
-                    ]
-                }
-            },
-            {
-                "id": "dirt_block",
-                "transform": {
-                    "position": [
-                        1.0,
-                        0.0,
-                        0.0
-                    ]
-                }
-            },
-            {
-                "id": "dirt_block",
-                "transform": {
-                    "position": [
                         -1.0,
                         0.0,
                         0.0
@@ -66,16 +36,6 @@
                 "transform": {
                     "position": [
                         -1.0,
-                        0.0,
-                        1.0
-                    ]
-                }
-            },
-            {
-                "id": "dirt_block",
-                "transform": {
-                    "position": [
-                        1.0,
                         0.0,
                         1.0
                     ]
@@ -98,46 +58,6 @@
                         -1.0,
                         1.0,
                         -1.0
-                    ]
-                }
-            },
-            {
-                "id": "snow_block",
-                "transform": {
-                    "position": [
-                        1.0,
-                        1.0,
-                        1.0
-                    ]
-                }
-            },
-            {
-                "id": "snow_block",
-                "transform": {
-                    "position": [
-                        0.0,
-                        1.0,
-                        1.0
-                    ]
-                }
-            },
-            {
-                "id": "snow_block",
-                "transform": {
-                    "position": [
-                        -1.0,
-                        1.0,
-                        1.0
-                    ]
-                }
-            },
-            {
-                "id": "snow_block",
-                "transform": {
-                    "position": [
-                        1.0,
-                        1.0,
-                        0.0
                     ]
                 }
             },
@@ -176,7 +96,167 @@
                 "transform": {
                     "position": [
                         0.0,
+                        0.0,
+                        0.0
+                    ]
+                }
+            },
+            {
+                "id": "water_block",
+                "transform": {
+                    "position": [
                         1.0,
+                        0.0,
+                        0.0
+                    ]
+                }
+            },
+            {
+                "id": "water_block",
+                "transform": {
+                    "position": [
+                        0.0,
+                        0.0,
+                        1.0
+                    ]
+                }
+            },
+            {
+                "id": "water_block",
+                "transform": {
+                    "position": [
+                        1.0,
+                        0.0,
+                        1.0
+                    ]
+                }
+            },
+            {
+                "id": "dirt_block",
+                "transform": {
+                    "position": [
+                        2.0,
+                        0.0,
+                        -1.0
+                    ]
+                }
+            },
+            {
+                "id": "dirt_block",
+                "transform": {
+                    "position": [
+                        2.0,
+                        0.0,
+                        0.0
+                    ]
+                }
+            },
+            {
+                "id": "dirt_block",
+                "transform": {
+                    "position": [
+                        2.0,
+                        0.0,
+                        1.0
+                    ]
+                }
+            },
+            {
+                "id": "dirt_block",
+                "transform": {
+                    "position": [
+                        2.0,
+                        0.0,
+                        2.0
+                    ]
+                }
+            },
+            {
+                "id": "dirt_block",
+                "transform": {
+                    "position": [
+                        1.0,
+                        0.0,
+                        2.0
+                    ]
+                }
+            },
+            {
+                "id": "dirt_block",
+                "transform": {
+                    "position": [
+                        -1.0,
+                        0.0,
+                        2.0
+                    ]
+                }
+            },
+            {
+                "id": "dirt_block",
+                "transform": {
+                    "position": [
+                        0.0,
+                        0.0,
+                        2.0
+                    ]
+                }
+            },
+            {
+                "id": "grass_block",
+                "transform": {
+                    "position": [
+                        2.0,
+                        1.0,
+                        -1.0
+                    ]
+                }
+            },
+            {
+                "id": "grass_block",
+                "transform": {
+                    "position": [
+                        2.0,
+                        1.0,
+                        0.0
+                    ]
+                }
+            },
+            {
+                "id": "grass_block",
+                "transform": {
+                    "position": [
+                        0.0,
+                        1.0,
+                        2.0
+                    ]
+                }
+            },
+            {
+                "id": "grass_block",
+                "transform": {
+                    "position": [
+                        -1.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            },
+            {
+                "id": "grass_block",
+                "transform": {
+                    "position": [
+                        -1.0,
+                        1.0,
+                        2.0
+                    ]
+                }
+            },
+            {
+                "id": "snow_block",
+                "transform": {
+                    "position": [
+                        -1.0,
+                        2.0,
                         0.0
                     ]
                 }
