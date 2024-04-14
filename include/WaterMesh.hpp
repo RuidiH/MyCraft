@@ -5,6 +5,7 @@
 
 #include <glm/glm.hpp>
 #include <map>
+#include <array>
 
 #include "Mesh.hpp"
 #include "MeshComponent.hpp"

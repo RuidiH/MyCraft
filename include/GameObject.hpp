@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <memory>
+#include <string>
 
 #include "Component.hpp"
 class Component;
@@ -45,6 +46,13 @@ public:
             }
         }
         return nullptr; // Return nullptr if the component of type T is not found
+    }
+
+    // Template for checking if one compoenent exists
+    template <typename T>
+    bool HasComponent() const
+    {
+        return GetComponent<T>() != nullptr;
     }
 
     // Getters and setters

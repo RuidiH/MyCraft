@@ -4,113 +4,148 @@
 #include <algorithm>
 #include <iostream>
 
-ObjectManager::ObjectManager(std::shared_ptr<Camera> camera) : mCamera(camera)
+ObjectManager::ObjectManager(const Camera &camera) : mCamera(camera), mSortedTransparentObjects(TransparentObjectComparator(camera))
 {
-    mSolidObjects = std::make_shared<std::vector<std::shared_ptr<GameObject>>>();
-    mTransparentObjects = std::make_shared<std::vector<std::shared_ptr<GameObject>>>();
-    mObjects = std::make_shared<std::vector<std::shared_ptr<GameObject>>>();
+    // mSolidObjects = std::make_shared<std::vector<std::shared_ptr<GameObject>>>();
+    // mTransparentObjects = std::make_shared<std::vector<std::shared_ptr<GameObject>>>();
+    // mObjects = std::make_shared<std::vector<std::shared_ptr<GameObject>>>();
 }
 
 ObjectManager::~ObjectManager()
 {
-    mSolidObjects->clear();
-    mTransparentObjects->clear();
 }
 
-void ObjectManager::AddSolidObject(std::shared_ptr<GameObject> object)
+void ObjectManager::AddObject(const std::shared_ptr<GameObject> &object)
 {
-    mSolidObjects->push_back(object);
-    mObjects->push_back(object);
-}
+    MeshComponent *meshComponent = object->GetComponent<MeshComponent>();
 
-void ObjectManager::AddTransparentObject(std::shared_ptr<GameObject> object)
-{
-    mTransparentObjects->push_back(object);
-    mObjects->push_back(object);
-}
-
-void ObjectManager::AddObject(std::shared_ptr<GameObject> object)
-{
-    MeshComponent *meshComponent = object->GetComponent<MeshComponent>(); 
-
-    if (meshComponent == nullptr) {
+    if (meshComponent == nullptr)
+    {
         std::cout << "Object does not have a mesh component\n";
         return;
     }
 
-    if (meshComponent->GetMeshType() == MeshType::CUBE)
+    mObjects.push_back(object);
+    if (meshComponent->GetMeshType() == MeshType::WATER)
     {
-        mSolidObjects->push_back(object);
+        mSortedTransparentObjects.insert(object);
     }
-    else if (meshComponent->GetMeshType() == MeshType::WATER)
-    {
-        mTransparentObjects->push_back(object);
-    } else {
-        std::cout << "Mesh type not supported\n";
-    }  
-    mObjects->push_back(object);
 }
 
-void ObjectManager::RemoveSolidObject(std::shared_ptr<GameObject> object)
+void ObjectManager::RemoveObject(const std::shared_ptr<GameObject> &object)
 {
-    auto it = std::find(mSolidObjects->begin(), mSolidObjects->end(), object);
-    if (it != mSolidObjects->end())
+    mObjects.erase(std::remove(mObjects.begin(), mObjects.end(), object), mObjects.end());
+
+    MeshComponent *meshComponent = object->GetComponent<MeshComponent>();
+
+    if (meshComponent->GetMeshType() == MeshType::WATER)
     {
-        mSolidObjects->erase(it);
-    }
-    it = std::find(mObjects->begin(), mObjects->end(), object);
-    if (it != mObjects->end())
-    {
-        mObjects->erase(it);
+        mSortedTransparentObjects.erase(object);
     }
 }
 
-void ObjectManager::RemoveTransparentObject(std::shared_ptr<GameObject> object)
+void ObjectManager::UpdateSortedTransparentObjects()
 {
-    auto it = std::find(mTransparentObjects->begin(), mTransparentObjects->end(), object);
-    if (it != mTransparentObjects->end())
+    mSortedTransparentObjects.clear();
+    for (auto object : mObjects)
     {
-        mTransparentObjects->erase(it);
-    }
-    it = std::find(mObjects->begin(), mObjects->end(), object);
-    if (it != mObjects->end())
-    {
-        mObjects->erase(it);
+        MeshComponent *meshComponent = object->GetComponent<MeshComponent>();
+        if (meshComponent->GetMeshType() == MeshType::WATER)
+        {
+            mSortedTransparentObjects.insert(object);
+        }
     }
 }
 
-void ObjectManager::RemoveObject(std::shared_ptr<GameObject> object)
+// void ObjectManager::AddSolidObject(std::shared_ptr<GameObject> object)
+// {
+//     mSolidObjects->push_back(object);
+//     mObjects->push_back(object);
+// }
+
+// void ObjectManager::AddTransparentObject(std::shared_ptr<GameObject> object)
+// {
+//     mTransparentObjects->push_back(object);
+//     mObjects->push_back(object);
+// }
+
+// void ObjectManager::AddObject(std::shared_ptr<GameObject> object)
+// {
+//     MeshComponent *meshComponent = object->GetComponent<MeshComponent>();
+
+//     if (meshComponent == nullptr) {
+//         std::cout << "Object does not have a mesh component\n";
+//         return;
+//     }
+
+//     if (meshComponent->GetMeshType() == MeshType::CUBE)
+//     {
+//         mSolidObjects->push_back(object);
+//     }
+//     else if (meshComponent->GetMeshType() == MeshType::WATER)
+//     {
+//         mTransparentObjects->push_back(object);
+//     } else {
+//         std::cout << "Mesh type not supported\n";
+//     }
+//     mObjects->push_back(object);
+// }
+
+// void ObjectManager::RemoveSolidObject(std::shared_ptr<GameObject> object)
+// {
+//     auto it = std::find(mSolidObjects->begin(), mSolidObjects->end(), object);
+//     if (it != mSolidObjects->end())
+//     {
+//         mSolidObjects->erase(it);
+//     }
+//     it = std::find(mObjects->begin(), mObjects->end(), object);
+//     if (it != mObjects->end())
+//     {
+//         mObjects->erase(it);
+//     }
+// }
+
+// void ObjectManager::RemoveTransparentObject(std::shared_ptr<GameObject> object)
+// {
+//     auto it = std::find(mTransparentObjects->begin(), mTransparentObjects->end(), object);
+//     if (it != mTransparentObjects->end())
+//     {
+//         mTransparentObjects->erase(it);
+//     }
+//     it = std::find(mObjects->begin(), mObjects->end(), object);
+//     if (it != mObjects->end())
+//     {
+//         mObjects->erase(it);
+//     }
+// }
+
+// void ObjectManager::RemoveObject(std::shared_ptr<GameObject> object)
+// {
+//     auto it = std::find(mSolidObjects->begin(), mSolidObjects->end(), object);
+//     if (it != mSolidObjects->end())
+//     {
+//         mSolidObjects->erase(it);
+//     }
+
+//     it = std::find(mTransparentObjects->begin(), mTransparentObjects->end(), object);
+//     if (it != mTransparentObjects->end())
+//     {
+//         mTransparentObjects->erase(it);
+//     }
+
+//     it = std::find(mObjects->begin(), mObjects->end(), object);
+//     if (it != mObjects->end())
+//     {
+//         mObjects->erase(it);
+//     }
+// }
+
+const std::set<std::shared_ptr<GameObject>, TransparentObjectComparator>& ObjectManager::GetTransparentObjects()
 {
-    auto it = std::find(mSolidObjects->begin(), mSolidObjects->end(), object);
-    if (it != mSolidObjects->end())
-    {
-        mSolidObjects->erase(it);
-    }
-
-    it = std::find(mTransparentObjects->begin(), mTransparentObjects->end(), object);
-    if (it != mTransparentObjects->end())
-    {
-        mTransparentObjects->erase(it);
-    }
-
-    it = std::find(mObjects->begin(), mObjects->end(), object);
-    if (it != mObjects->end())
-    {
-        mObjects->erase(it);
-    }
+    return mSortedTransparentObjects;
 }
 
-std::shared_ptr<std::vector<std::shared_ptr<GameObject>>> ObjectManager::GetSolidObjects()
-{
-    return mSolidObjects;
-}
-
-std::shared_ptr<std::vector<std::shared_ptr<GameObject>>> ObjectManager::GetTransparentObjects()
-{
-    return mTransparentObjects;
-}
-
-std::shared_ptr<std::vector<std::shared_ptr<GameObject>>> ObjectManager::GetObjects()
+const std::vector<std::shared_ptr<GameObject>>& ObjectManager::GetObjects()
 {
     return mObjects;
 }

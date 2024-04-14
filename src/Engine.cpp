@@ -5,6 +5,7 @@
 #include "Mesh.hpp"
 #include "CubeMesh.hpp"
 
+#define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/rotate_vector.hpp>
 #include <glm/gtx/transform.hpp>
 #include <cmath>
@@ -26,7 +27,7 @@ Engine::Engine(int width, int height) : mScreenWidth(width), mScreenHeight(heigh
     mCamera->SetDirection(glm::normalize(glm::vec3(0.f, 0.f, 0.f) - mCamera->GetPosition()));
     mCamera->SetProjectionMatrix(45.0f, (float)mScreenWidth / (float)mScreenHeight, 0.1f, 50.0f);
 
-    mObjectManager = std::make_shared<ObjectManager>(mCamera);
+    mObjectManager = std::make_shared<ObjectManager>(*mCamera);
     mGameObjects = std::make_shared<std::vector<std::shared_ptr<GameObject>>>();
 
     InitializeGraphicsProgram();
@@ -209,7 +210,7 @@ void Engine::AddObject()
 
         // make sure the placement position is not occupied
         bool isOccupied = false;
-        for (auto gameObject : *mObjectManager->GetObjects())
+        for (auto gameObject : mObjectManager->GetObjects())
         {
             if (gameObject != mSelected)
             {
@@ -265,7 +266,7 @@ void Engine::FindSelectedObject()
     float smallestTNear = -1.f;
     std::string clostestHitSide;
     std::shared_ptr<GameObject> hitObject;
-    for (std::shared_ptr<GameObject> gameObject : *mObjectManager->GetObjects())
+    for (std::shared_ptr<GameObject> gameObject : mObjectManager->GetObjects())
     {
         std::shared_ptr<Mesh> mesh;
         if (gameObject->GetComponent<MeshComponent>()->GetMeshType() == MeshType::CUBE)
@@ -329,7 +330,7 @@ void Engine::FindSelectedObject()
 
 void Engine::Update()
 {
-    for (auto gameObject : *mObjectManager->GetObjects())
+    for (auto gameObject : mObjectManager->GetObjects())
     {
         gameObject->Update();
     }
@@ -360,7 +361,7 @@ void Engine::ShadowPass()
     mShadowShader.SetUniform("lightProjection", mLightProjection);
 
     // render
-    for (auto gameObject : *mObjectManager->GetObjects())
+    for (auto gameObject : mObjectManager->GetObjects())
     {
         glm::mat4 model = gameObject->GetComponent<TransformComponent>()->GetModelMatrix();
         mShadowShader.SetUniform("model", model);
@@ -379,7 +380,7 @@ void Engine::LightPass()
     glActiveTexture(GL_TEXTURE0 + 1);
     glBindTexture(GL_TEXTURE_2D, mShadowMapTexture);
 
-    for (auto &gameObject : *mObjectManager->GetObjects())
+    for (auto &gameObject : mObjectManager->GetObjects())
     {
         Shader *activeShader = nullptr;
 
@@ -429,7 +430,7 @@ void Engine::LightPass()
 
 void Engine::HighlightPass()
 {
-    for (const auto &gameObject : *mObjectManager->GetObjects())
+    for (const auto &gameObject : mObjectManager->GetObjects())
     {
         if (mSelected != nullptr && gameObject == mSelected)
         {

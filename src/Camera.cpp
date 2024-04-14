@@ -1,6 +1,11 @@
-#include "Camera.hpp"
+#define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/rotate_vector.hpp>
 #include <glm/gtx/transform.hpp>
+
+#include "Camera.hpp"
+#include "TransformComponent.hpp"
+
+#include <iostream>
 
 Camera::Camera()
 {
@@ -113,6 +118,17 @@ glm::vec3 Camera::GetRayDirection(int screenWidth, int screenHeight, glm::vec2 r
     return rayWorld;
 }
 
-float Camera::DistanceTo(glm::vec3 position) {
+float Camera::DistanceTo(glm::vec3 position) const {
     return glm::distance(this->position, position);
+}
+
+float Camera::DistanceTo(const GameObject &gameObject) const {
+
+    if (!gameObject.HasComponent<TransformComponent>()) {
+        std::cerr << "Error: GameObject does not have TransformComponent" << std::endl;
+        return -1.0f;
+    }
+
+    return glm::distance(this->position, gameObject.GetComponent<TransformComponent>()->GetPosition());
+
 }

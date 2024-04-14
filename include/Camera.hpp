@@ -3,6 +3,11 @@
 
 #include <glm/glm.hpp>
 
+#include "GameObject.hpp"
+
+#include <memory>
+
+class GameObject;
 class ObjectManager;
 
 class Camera {
@@ -34,7 +39,8 @@ class Camera {
 
         glm::vec3 GetRayDirection(int screenWidth, int screenHeight, glm::vec2 rayStart);
 
-        float DistanceTo(glm::vec3 position);
+        float DistanceTo(glm::vec3 position) const ;
+        float DistanceTo(const GameObject& gameObject) const;
     private:
         // glm::vec3 lookAt;
         glm::vec3 upVector;
