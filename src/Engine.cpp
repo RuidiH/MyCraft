@@ -34,7 +34,7 @@ Engine::Engine(int width, int height) : mScreenWidth(width), mScreenHeight(heigh
 
     CreateGraphicsPipeline();
 
-    InitializeShadowMap();    
+    InitializeShadowMap();
 
     // hard-coded ortho light
     glm::mat4 orthoProjection = glm::ortho(-15.f, 15.f, -15.f, 15.f, 1.f, 35.f);
@@ -235,7 +235,7 @@ void Engine::AddObject()
             {
                 obj->AddComponent<TransformComponent>()->SetPosition(placementPos);
                 obj->AddComponent<MeshComponent>()->AddMesh(MeshType::WATER);
-                
+
                 mObjectManager->AddObject(obj);
                 // mGameObjects->push_back(obj);
 
@@ -380,52 +380,78 @@ void Engine::LightPass()
     glActiveTexture(GL_TEXTURE0 + 1);
     glBindTexture(GL_TEXTURE_2D, mShadowMapTexture);
 
+    // solid
     for (auto &gameObject : mObjectManager->GetObjects())
     {
-        Shader *activeShader = nullptr;
-
-        if (gameObject->GetComponent<MeshComponent>()->GetMeshType() == MeshType::CUBE)
-        {
-            activeShader = &mMainShader;
-        }
-        else if (gameObject->GetComponent<MeshComponent>()->GetMeshType() == MeshType::WATER)
-        {
-            activeShader = &mWaterShader;
-        }
-
-        activeShader->Use();
-
-        activeShader->SetUniform("shadowMap", 1);
-
-        activeShader->SetUniform("u_Projection", mCamera->GetProjectionMatrix());
-
-        // set view matrix
-        mCamera->UpdateViewMatrix();
-        activeShader->SetUniform("u_View", mCamera->GetViewMatrix());
-
-        // set lightings
-        activeShader->SetUniform("lightPos", glm::vec3(3.0f, 3.0f, 3.0f));
-        activeShader->SetUniform("lightColor", glm::vec3(1.0f, 1.0f, 1.0f));
-        activeShader->SetUniform("viewPos", mCamera->GetPosition());
-        activeShader->SetUniform("u_LightProjection", mLightProjection);
-
-        glm::mat4 model = gameObject->GetComponent<TransformComponent>()->GetModelMatrix();
-        activeShader->SetUniform("u_ModelMatrix", model);
-
-        if (gameObject == mSelected)
-        {
-            glEnable(GL_STENCIL_TEST);
-            glStencilMask(0xFF);                       // Enable writing to the stencil buffer.
-            glStencilFunc(GL_ALWAYS, 1, 0xFF);         // Always pass stencil test, write 1 to stencil buffer.
-            glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE); // Replace stencil buffer value on depth pass.
-        }
-        else
-        {
-            glStencilMask(0x00); // Disable writing to the stencil buffer.
-        }
-
-        gameObject->Render();
+        RenderObjects(gameObject, false);
     }
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glDepthMask(GL_FALSE); // Important for correct transparency rendering
+    glDisable(GL_CULL_FACE);
+
+    // transparent
+    for (auto &gameObject : mObjectManager->GetObjects())
+    {
+        RenderObjects(gameObject, true);
+    }
+
+    glEnable(GL_CULL_FACE);
+    glDepthMask(GL_TRUE);
+    glDisable(GL_BLEND);
+}
+
+void Engine::RenderObjects(const std::shared_ptr<GameObject> &gameObject, bool isTransparent)
+{
+
+    Shader *activeShader = nullptr;
+
+    if (!isTransparent && gameObject->GetComponent<MeshComponent>()->GetMeshType() == MeshType::CUBE)
+    {
+        activeShader = &mMainShader;
+    }
+    else if (isTransparent && gameObject->GetComponent<MeshComponent>()->GetMeshType() == MeshType::WATER)
+    {
+        activeShader = &mWaterShader;
+    }
+    else
+    {
+        return;
+    }
+
+    activeShader->Use();
+
+    activeShader->SetUniform("shadowMap", 1);
+
+    activeShader->SetUniform("u_Projection", mCamera->GetProjectionMatrix());
+
+    // set view matrix
+    mCamera->UpdateViewMatrix();
+    activeShader->SetUniform("u_View", mCamera->GetViewMatrix());
+
+    // set lightings
+    activeShader->SetUniform("lightPos", glm::vec3(3.0f, 3.0f, 3.0f));
+    activeShader->SetUniform("lightColor", glm::vec3(1.0f, 1.0f, 1.0f));
+    activeShader->SetUniform("viewPos", mCamera->GetPosition());
+    activeShader->SetUniform("u_LightProjection", mLightProjection);
+
+    glm::mat4 model = gameObject->GetComponent<TransformComponent>()->GetModelMatrix();
+    activeShader->SetUniform("u_ModelMatrix", model);
+
+    if (gameObject == mSelected)
+    {
+        glEnable(GL_STENCIL_TEST);
+        glStencilMask(0xFF);                       // Enable writing to the stencil buffer.
+        glStencilFunc(GL_ALWAYS, 1, 0xFF);         // Always pass stencil test, write 1 to stencil buffer.
+        glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE); // Replace stencil buffer value on depth pass.
+    }
+    else
+    {
+        glStencilMask(0x00); // Disable writing to the stencil buffer.
+    }
+
+    gameObject->Render();
 }
 
 void Engine::HighlightPass()
@@ -569,12 +595,12 @@ void Engine::InitializeShadowMap()
 
 void Engine::CreateGraphicsPipeline()
 {
-
     mMainShader.Init("./shaders/vert.glsl", "./shaders/frag.glsl");
     mShadowShader.Init("./shaders/shadow_v.glsl", "./shaders/shadow_f.glsl");
     mCrosshairShader.Init("./shaders/crosshair_v.glsl", "./shaders/crosshair_f.glsl");
     mHighlightShader.Init("./shaders/highlight_v.glsl", "./shaders/highlight_f.glsl");
     mWaterShader.Init("./shaders/vert_water.glsl", "./shaders/frag_water.glsl");
+    mWaterShadowShader.Init("./shaders/water_shadow_v.glsl", "./shaders/water_shadow_f.glsl");
     // mQuadShader.Init("./shaders/quad_v.glsl", "./shaders/quad_f.glsl");
 }
 

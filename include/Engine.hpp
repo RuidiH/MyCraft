@@ -87,16 +87,17 @@ private:
     Shader mCrosshairShader;
     Shader mHighlightShader;
     Shader mWaterShader;
+    Shader mWaterShadowShader;
 
     GLuint mShadowMapFBO;
     glm::mat4 mLightProjection; 
 
     // light pass and shadowPass
-    // void ShadowPass(std::shared_ptr<GameObject> object);
     void ShadowPass();
     void LightPass();
     void CrosshairPass();
     void HighlightPass();
+    void RenderObjects(const std::shared_ptr<GameObject>& object, bool isTransparent);
 
     // opengl settup
     void InitializeGraphicsProgram();

@@ -52,86 +52,6 @@
                 }
             },
             {
-                "id": "grass_block",
-                "transform": {
-                    "position": [
-                        -1.0,
-                        1.0,
-                        -1.0
-                    ]
-                }
-            },
-            {
-                "id": "grass_block",
-                "transform": {
-                    "position": [
-                        -1.0,
-                        1.0,
-                        0.0
-                    ]
-                }
-            },
-            {
-                "id": "grass_block",
-                "transform": {
-                    "position": [
-                        0.0,
-                        1.0,
-                        -1.0
-                    ]
-                }
-            },
-            {
-                "id": "grass_block",
-                "transform": {
-                    "position": [
-                        1.0,
-                        1.0,
-                        -1.0
-                    ]
-                }
-            },
-            {
-                "id": "water_block",
-                "transform": {
-                    "position": [
-                        0.0,
-                        0.0,
-                        0.0
-                    ]
-                }
-            },
-            {
-                "id": "water_block",
-                "transform": {
-                    "position": [
-                        1.0,
-                        0.0,
-                        0.0
-                    ]
-                }
-            },
-            {
-                "id": "water_block",
-                "transform": {
-                    "position": [
-                        0.0,
-                        0.0,
-                        1.0
-                    ]
-                }
-            },
-            {
-                "id": "water_block",
-                "transform": {
-                    "position": [
-                        1.0,
-                        0.0,
-                        1.0
-                    ]
-                }
-            },
-            {
                 "id": "dirt_block",
                 "transform": {
                     "position": [
@@ -165,9 +85,69 @@
                 "id": "dirt_block",
                 "transform": {
                     "position": [
-                        2.0,
+                        -1.0,
                         0.0,
                         2.0
+                    ]
+                }
+            },
+            {
+                "id": "dirt_block",
+                "transform": {
+                    "position": [
+                        1.0,
+                        0.0,
+                        0.0
+                    ]
+                }
+            },
+            {
+                "id": "dirt_block",
+                "transform": {
+                    "position": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                }
+            },
+            {
+                "id": "dirt_block",
+                "transform": {
+                    "position": [
+                        0.0,
+                        0.0,
+                        1.0
+                    ]
+                }
+            },
+            {
+                "id": "dirt_block",
+                "transform": {
+                    "position": [
+                        1.0,
+                        0.0,
+                        1.0
+                    ]
+                }
+            },
+            {
+                "id": "dirt_block",
+                "transform": {
+                    "position": [
+                        -2.0,
+                        0.0,
+                        0.0
+                    ]
+                }
+            },
+            {
+                "id": "dirt_block",
+                "transform": {
+                    "position": [
+                        -2.0,
+                        0.0,
+                        1.0
                     ]
                 }
             },
@@ -185,7 +165,7 @@
                 "id": "dirt_block",
                 "transform": {
                     "position": [
-                        -1.0,
+                        0.0,
                         0.0,
                         2.0
                     ]
@@ -197,6 +177,536 @@
                     "position": [
                         0.0,
                         0.0,
+                        3.0
+                    ]
+                }
+            },
+            {
+                "id": "dirt_block",
+                "transform": {
+                    "position": [
+                        3.0,
+                        0.0,
+                        -1.0
+                    ]
+                }
+            },
+            {
+                "id": "dirt_block",
+                "transform": {
+                    "position": [
+                        1.0,
+                        0.0,
+                        -2.0
+                    ]
+                }
+            },
+            {
+                "id": "dirt_block",
+                "transform": {
+                    "position": [
+                        2.0,
+                        0.0,
+                        -2.0
+                    ]
+                }
+            },
+            {
+                "id": "dirt_block",
+                "transform": {
+                    "position": [
+                        3.0,
+                        0.0,
+                        0.0
+                    ]
+                }
+            },
+            {
+                "id": "dirt_block",
+                "transform": {
+                    "position": [
+                        0.0,
+                        0.0,
+                        -2.0
+                    ]
+                }
+            },
+            {
+                "id": "water_block",
+                "transform": {
+                    "position": [
+                        2.0,
+                        1.0,
+                        0.0
+                    ]
+                }
+            },
+            {
+                "id": "water_block",
+                "transform": {
+                    "position": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            },
+            {
+                "id": "water_block",
+                "transform": {
+                    "position": [
+                        1.0,
+                        1.0,
+                        -1.0
+                    ]
+                }
+            },
+            {
+                "id": "water_block",
+                "transform": {
+                    "position": [
+                        1.0,
+                        1.0,
+                        0.0
+                    ]
+                }
+            },
+            {
+                "id": "water_block",
+                "transform": {
+                    "position": [
+                        -1.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            },
+            {
+                "id": "water_block",
+                "transform": {
+                    "position": [
+                        -1.0,
+                        1.0,
+                        0.0
+                    ]
+                }
+            },
+            {
+                "id": "dirt_block",
+                "transform": {
+                    "position": [
+                        -1.0,
+                        0.0,
+                        -2.0
+                    ]
+                }
+            },
+            {
+                "id": "dirt_block",
+                "transform": {
+                    "position": [
+                        -2.0,
+                        0.0,
+                        -1.0
+                    ]
+                }
+            },
+            {
+                "id": "dirt_block",
+                "transform": {
+                    "position": [
+                        0.0,
+                        1.0,
+                        -1.0
+                    ]
+                }
+            },
+            {
+                "id": "dirt_block",
+                "transform": {
+                    "position": [
+                        0.0,
+                        1.0,
+                        -2.0
+                    ]
+                }
+            },
+            {
+                "id": "dirt_block",
+                "transform": {
+                    "position": [
+                        -1.0,
+                        1.0,
+                        -2.0
+                    ]
+                }
+            },
+            {
+                "id": "dirt_block",
+                "transform": {
+                    "position": [
+                        -2.0,
+                        1.0,
+                        -1.0
+                    ]
+                }
+            },
+            {
+                "id": "dirt_block",
+                "transform": {
+                    "position": [
+                        -2.0,
+                        1.0,
+                        0.0
+                    ]
+                }
+            },
+            {
+                "id": "dirt_block",
+                "transform": {
+                    "position": [
+                        -1.0,
+                        1.0,
+                        2.0
+                    ]
+                }
+            },
+            {
+                "id": "dirt_block",
+                "transform": {
+                    "position": [
+                        0.0,
+                        1.0,
+                        2.0
+                    ]
+                }
+            },
+            {
+                "id": "dirt_block",
+                "transform": {
+                    "position": [
+                        1.0,
+                        1.0,
+                        2.0
+                    ]
+                }
+            },
+            {
+                "id": "dirt_block",
+                "transform": {
+                    "position": [
+                        2.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            },
+            {
+                "id": "dirt_block",
+                "transform": {
+                    "position": [
+                        3.0,
+                        1.0,
+                        0.0
+                    ]
+                }
+            },
+            {
+                "id": "dirt_block",
+                "transform": {
+                    "position": [
+                        3.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            },
+            {
+                "id": "dirt_block",
+                "transform": {
+                    "position": [
+                        3.0,
+                        0.0,
+                        1.0
+                    ]
+                }
+            },
+            {
+                "id": "dirt_block",
+                "transform": {
+                    "position": [
+                        2.0,
+                        0.0,
+                        2.0
+                    ]
+                }
+            },
+            {
+                "id": "dirt_block",
+                "transform": {
+                    "position": [
+                        1.0,
+                        1.0,
+                        -2.0
+                    ]
+                }
+            },
+            {
+                "id": "dirt_block",
+                "transform": {
+                    "position": [
+                        3.0,
+                        0.0,
+                        -2.0
+                    ]
+                }
+            },
+            {
+                "id": "dirt_block",
+                "transform": {
+                    "position": [
+                        2.0,
+                        0.0,
+                        -3.0
+                    ]
+                }
+            },
+            {
+                "id": "dirt_block",
+                "transform": {
+                    "position": [
+                        3.0,
+                        0.0,
+                        -3.0
+                    ]
+                }
+            },
+            {
+                "id": "dirt_block",
+                "transform": {
+                    "position": [
+                        4.0,
+                        0.0,
+                        -2.0
+                    ]
+                }
+            },
+            {
+                "id": "dirt_block",
+                "transform": {
+                    "position": [
+                        2.0,
+                        1.0,
+                        -2.0
+                    ]
+                }
+            },
+            {
+                "id": "dirt_block",
+                "transform": {
+                    "position": [
+                        3.0,
+                        1.0,
+                        -1.0
+                    ]
+                }
+            },
+            {
+                "id": "dirt_block",
+                "transform": {
+                    "position": [
+                        4.0,
+                        0.0,
+                        -1.0
+                    ]
+                }
+            },
+            {
+                "id": "dirt_block",
+                "transform": {
+                    "position": [
+                        4.0,
+                        0.0,
+                        0.0
+                    ]
+                }
+            },
+            {
+                "id": "dirt_block",
+                "transform": {
+                    "position": [
+                        4.0,
+                        0.0,
+                        1.0
+                    ]
+                }
+            },
+            {
+                "id": "water_block",
+                "transform": {
+                    "position": [
+                        0.0,
+                        1.0,
+                        0.0
+                    ]
+                }
+            },
+            {
+                "id": "water_block",
+                "transform": {
+                    "position": [
+                        0.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            },
+            {
+                "id": "water_block",
+                "transform": {
+                    "position": [
+                        0.0,
+                        2.0,
+                        0.0
+                    ]
+                }
+            },
+            {
+                "id": "water_block",
+                "transform": {
+                    "position": [
+                        1.0,
+                        2.0,
+                        1.0
+                    ]
+                }
+            },
+            {
+                "id": "water_block",
+                "transform": {
+                    "position": [
+                        0.0,
+                        2.0,
+                        1.0
+                    ]
+                }
+            },
+            {
+                "id": "water_block",
+                "transform": {
+                    "position": [
+                        -1.0,
+                        2.0,
+                        1.0
+                    ]
+                }
+            },
+            {
+                "id": "water_block",
+                "transform": {
+                    "position": [
+                        -1.0,
+                        2.0,
+                        0.0
+                    ]
+                }
+            },
+            {
+                "id": "water_block",
+                "transform": {
+                    "position": [
+                        1.0,
+                        2.0,
+                        0.0
+                    ]
+                }
+            },
+            {
+                "id": "water_block",
+                "transform": {
+                    "position": [
+                        2.0,
+                        2.0,
+                        0.0
+                    ]
+                }
+            },
+            {
+                "id": "water_block",
+                "transform": {
+                    "position": [
+                        1.0,
+                        2.0,
+                        -1.0
+                    ]
+                }
+            },
+            {
+                "id": "water_block",
+                "transform": {
+                    "position": [
+                        2.0,
+                        1.0,
+                        -1.0
+                    ]
+                }
+            },
+            {
+                "id": "water_block",
+                "transform": {
+                    "position": [
+                        2.0,
+                        2.0,
+                        -1.0
+                    ]
+                }
+            },
+            {
+                "id": "grass_block",
+                "transform": {
+                    "position": [
+                        0.0,
+                        2.0,
+                        -1.0
+                    ]
+                }
+            },
+            {
+                "id": "grass_block",
+                "transform": {
+                    "position": [
+                        0.0,
+                        2.0,
+                        2.0
+                    ]
+                }
+            },
+            {
+                "id": "grass_block",
+                "transform": {
+                    "position": [
+                        -1.0,
+                        2.0,
+                        2.0
+                    ]
+                }
+            },
+            {
+                "id": "grass_block",
+                "transform": {
+                    "position": [
+                        1.0,
+                        2.0,
+                        2.0
+                    ]
+                }
+            },
+            {
+                "id": "dirt_block",
+                "transform": {
+                    "position": [
+                        -2.0,
+                        1.0,
                         2.0
                     ]
                 }
@@ -206,6 +716,56 @@
                 "transform": {
                     "position": [
                         2.0,
+                        2.0,
+                        1.0
+                    ]
+                }
+            },
+            {
+                "id": "grass_block",
+                "transform": {
+                    "position": [
+                        3.0,
+                        2.0,
+                        1.0
+                    ]
+                }
+            },
+            {
+                "id": "grass_block",
+                "transform": {
+                    "position": [
+                        0.0,
+                        2.0,
+                        -2.0
+                    ]
+                }
+            },
+            {
+                "id": "grass_block",
+                "transform": {
+                    "position": [
+                        1.0,
+                        2.0,
+                        -2.0
+                    ]
+                }
+            },
+            {
+                "id": "dirt_block",
+                "transform": {
+                    "position": [
+                        3.0,
+                        1.0,
+                        -2.0
+                    ]
+                }
+            },
+            {
+                "id": "grass_block",
+                "transform": {
+                    "position": [
+                        4.0,
                         1.0,
                         -1.0
                     ]
@@ -217,7 +777,7 @@
                     "position": [
                         2.0,
                         1.0,
-                        0.0
+                        2.0
                     ]
                 }
             },
@@ -227,7 +787,7 @@
                     "position": [
                         0.0,
                         1.0,
-                        2.0
+                        3.0
                     ]
                 }
             },
@@ -236,28 +796,458 @@
                 "transform": {
                     "position": [
                         -1.0,
+                        1.0,
+                        3.0
+                    ]
+                }
+            },
+            {
+                "id": "water_block",
+                "transform": {
+                    "position": [
+                        2.0,
+                        2.0,
+                        -2.0
+                    ]
+                }
+            },
+            {
+                "id": "water_block",
+                "transform": {
+                    "position": [
+                        3.0,
+                        2.0,
+                        -2.0
+                    ]
+                }
+            },
+            {
+                "id": "water_block",
+                "transform": {
+                    "position": [
+                        3.0,
+                        2.0,
+                        -1.0
+                    ]
+                }
+            },
+            {
+                "id": "grass_block",
+                "transform": {
+                    "position": [
+                        4.0,
+                        2.0,
+                        -1.0
+                    ]
+                }
+            },
+            {
+                "id": "grass_block",
+                "transform": {
+                    "position": [
+                        3.0,
+                        1.0,
+                        -3.0
+                    ]
+                }
+            },
+            {
+                "id": "grass_block",
+                "transform": {
+                    "position": [
+                        3.0,
+                        2.0,
+                        -3.0
+                    ]
+                }
+            },
+            {
+                "id": "dirt_block",
+                "transform": {
+                    "position": [
+                        4.0,
+                        1.0,
+                        -2.0
+                    ]
+                }
+            },
+            {
+                "id": "dirt_block",
+                "transform": {
+                    "position": [
+                        2.0,
+                        1.0,
+                        -3.0
+                    ]
+                }
+            },
+            {
+                "id": "dirt_block",
+                "transform": {
+                    "position": [
+                        1.0,
+                        0.0,
+                        -3.0
+                    ]
+                }
+            },
+            {
+                "id": "dirt_block",
+                "transform": {
+                    "position": [
+                        0.0,
+                        0.0,
+                        -3.0
+                    ]
+                }
+            },
+            {
+                "id": "grass_block",
+                "transform": {
+                    "position": [
+                        2.0,
+                        2.0,
+                        -3.0
+                    ]
+                }
+            },
+            {
+                "id": "grass_block",
+                "transform": {
+                    "position": [
+                        -1.0,
+                        2.0,
+                        -2.0
+                    ]
+                }
+            },
+            {
+                "id": "water_block",
+                "transform": {
+                    "position": [
+                        -1.0,
+                        2.0,
+                        -1.0
+                    ]
+                }
+            },
+            {
+                "id": "water_block",
+                "transform": {
+                    "position": [
+                        -2.0,
+                        2.0,
+                        -1.0
+                    ]
+                }
+            },
+            {
+                "id": "water_block",
+                "transform": {
+                    "position": [
+                        -2.0,
+                        2.0,
+                        0.0
+                    ]
+                }
+            },
+            {
+                "id": "water_block",
+                "transform": {
+                    "position": [
+                        -3.0,
+                        1.0,
+                        0.0
+                    ]
+                }
+            },
+            {
+                "id": "water_block",
+                "transform": {
+                    "position": [
+                        -2.0,
                         1.0,
                         1.0
                     ]
                 }
             },
             {
-                "id": "grass_block",
+                "id": "water_block",
                 "transform": {
                     "position": [
-                        -1.0,
+                        -3.0,
+                        2.0,
+                        0.0
+                    ]
+                }
+            },
+            {
+                "id": "water_block",
+                "transform": {
+                    "position": [
+                        -2.0,
+                        2.0,
+                        1.0
+                    ]
+                }
+            },
+            {
+                "id": "water_block",
+                "transform": {
+                    "position": [
+                        -3.0,
+                        2.0,
+                        1.0
+                    ]
+                }
+            },
+            {
+                "id": "dirt_block",
+                "transform": {
+                    "position": [
+                        -3.0,
+                        0.0,
+                        1.0
+                    ]
+                }
+            },
+            {
+                "id": "dirt_block",
+                "transform": {
+                    "position": [
+                        -3.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            },
+            {
+                "id": "dirt_block",
+                "transform": {
+                    "position": [
+                        -3.0,
                         1.0,
                         2.0
                     ]
                 }
             },
             {
-                "id": "snow_block",
+                "id": "dirt_block",
                 "transform": {
                     "position": [
-                        -1.0,
+                        -2.0,
+                        2.0,
+                        2.0
+                    ]
+                }
+            },
+            {
+                "id": "dirt_block",
+                "transform": {
+                    "position": [
+                        -3.0,
+                        2.0,
+                        2.0
+                    ]
+                }
+            },
+            {
+                "id": "dirt_block",
+                "transform": {
+                    "position": [
+                        -3.0,
+                        1.0,
+                        -1.0
+                    ]
+                }
+            },
+            {
+                "id": "dirt_block",
+                "transform": {
+                    "position": [
+                        -2.0,
+                        1.0,
+                        -2.0
+                    ]
+                }
+            },
+            {
+                "id": "dirt_block",
+                "transform": {
+                    "position": [
+                        -3.0,
+                        1.0,
+                        -2.0
+                    ]
+                }
+            },
+            {
+                "id": "grass_block",
+                "transform": {
+                    "position": [
+                        -2.0,
+                        2.0,
+                        -2.0
+                    ]
+                }
+            },
+            {
+                "id": "grass_block",
+                "transform": {
+                    "position": [
+                        -3.0,
+                        2.0,
+                        -1.0
+                    ]
+                }
+            },
+            {
+                "id": "dirt_block",
+                "transform": {
+                    "position": [
+                        -3.0,
+                        0.0,
+                        0.0
+                    ]
+                }
+            },
+            {
+                "id": "dirt_block",
+                "transform": {
+                    "position": [
+                        -4.0,
+                        0.0,
+                        0.0
+                    ]
+                }
+            },
+            {
+                "id": "dirt_block",
+                "transform": {
+                    "position": [
+                        -4.0,
+                        1.0,
+                        0.0
+                    ]
+                }
+            },
+            {
+                "id": "grass_block",
+                "transform": {
+                    "position": [
+                        -4.0,
                         2.0,
                         0.0
+                    ]
+                }
+            },
+            {
+                "id": "grass_block",
+                "transform": {
+                    "position": [
+                        -4.0,
+                        2.0,
+                        1.0
+                    ]
+                }
+            },
+            {
+                "id": "dirt_block",
+                "transform": {
+                    "position": [
+                        4.0,
+                        2.0,
+                        -3.0
+                    ]
+                }
+            },
+            {
+                "id": "dirt_block",
+                "transform": {
+                    "position": [
+                        4.0,
+                        2.0,
+                        -2.0
+                    ]
+                }
+            },
+            {
+                "id": "dirt_block",
+                "transform": {
+                    "position": [
+                        3.0,
+                        2.0,
+                        0.0
+                    ]
+                }
+            },
+            {
+                "id": "dirt_block",
+                "transform": {
+                    "position": [
+                        4.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            },
+            {
+                "id": "dirt_block",
+                "transform": {
+                    "position": [
+                        4.0,
+                        1.0,
+                        0.0
+                    ]
+                }
+            },
+            {
+                "id": "dirt_block",
+                "transform": {
+                    "position": [
+                        3.0,
+                        0.0,
+                        2.0
+                    ]
+                }
+            },
+            {
+                "id": "dirt_block",
+                "transform": {
+                    "position": [
+                        4.0,
+                        0.0,
+                        2.0
+                    ]
+                }
+            },
+            {
+                "id": "dirt_block",
+                "transform": {
+                    "position": [
+                        1.0,
+                        0.0,
+                        3.0
+                    ]
+                }
+            },
+            {
+                "id": "dirt_block",
+                "transform": {
+                    "position": [
+                        2.0,
+                        0.0,
+                        3.0
+                    ]
+                }
+            },
+            {
+                "id": "dirt_block",
+                "transform": {
+                    "position": [
+                        3.0,
+                        0.0,
+                        3.0
                     ]
                 }
             }

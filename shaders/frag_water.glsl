@@ -54,5 +54,5 @@ void main()
     vec3 incomingColor = fColor.rgb;
 
     vec3 result = (ambient + (1.0 - shadow) * diffuse) * incomingColor;
-    color = vec4(result, 1.0); 
+    color = vec4(result, 0.3); 
 }
