@@ -99,6 +99,8 @@ private:
     void HighlightPass();
     void RenderObjects(const std::shared_ptr<GameObject>& object, bool isTransparent);
 
+    glm::vec3 mLightPos = glm::vec3(5.0f, 10.0f, 5.0f);
+
     // opengl settup
     void InitializeGraphicsProgram();
     void InitializeShadowMap();

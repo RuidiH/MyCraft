@@ -52,10 +52,7 @@ std::shared_ptr<Mesh> MeshComponent::AddMesh(MeshType type)
     return cube;
 }
 
-// void MeshComponent::setCube(Cube *cube)
-// {
-//     if (cube != nullptr)
-//     {
-//         this->cube = cube;
-//     }
-// }
+void MeshComponent::SetVisibility(std::string side, bool visible)
+{
+    mVisibilityMap[side] = visible;
+}

@@ -30,11 +30,13 @@ class MeshComponent : public Component {
         std::shared_ptr<Mesh> GetMesh() {return mMesh;};
 
         MeshType GetMeshType() {return mMeshType;};
+        void SetVisibility(std::string side, bool visible);
+        bool GetVisibility(std::string side) {return mVisibilityMap[side];};
+    
     private:
-        // Cube *cube;                
-        // std::vector<std::shared_ptr<Cube>> mCubes;
         std::shared_ptr<Mesh> mMesh;
         MeshType mMeshType; 
+        std::map<std::string, bool> mVisibilityMap;
 };
 
 

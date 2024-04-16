@@ -21,6 +21,11 @@ void CubeMesh::Render()
     std::map<std::string, GLuint *> textureIdMap = mParent->GetParent()->GetComponent<TextureComponent>()->GetTextureGroup();
     for (const auto &face : textureIdMap)
     {
+        if (!mParent->GetVisibility(face.first))
+        {
+            continue;
+        }
+
         GLuint vao;
 
         GLuint vbo;

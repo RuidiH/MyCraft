@@ -254,7 +254,9 @@ void WorldSerializer::SaveWorldData(const std::string& filename) {
     rapidjson::Value worldObj(rapidjson::kObjectType);
     rapidjson::Value blocksArray(rapidjson::kArrayType);
 
-    for (const auto& gameObject : mObjectManager->GetObjects()) {
+    for (const auto& pair : mObjectManager->GetObjects()) {
+        const auto& gameObject = pair.second;
+
         rapidjson::Value blockObj(rapidjson::kObjectType);
         // Assuming `GetID()` method exists
         blockObj.AddMember("id", rapidjson::Value(gameObject->GetID().c_str(), allocator), allocator);

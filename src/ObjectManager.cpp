@@ -1,5 +1,6 @@
 #include "ObjectManager.hpp"
 #include "MeshComponent.hpp"
+#include "TransformComponent.hpp"
 
 #include <algorithm>
 #include <iostream>
@@ -25,7 +26,35 @@ void ObjectManager::AddObject(const std::shared_ptr<GameObject> &object)
         return;
     }
 
-    mObjects.push_back(object);
+    TransformComponent *transformComponent = object->GetComponent<TransformComponent>();
+
+    // check if neighbor exists
+    for (auto neighbor : mNeighbors)
+    {
+        glm::vec3 neighborPosition = transformComponent->GetPosition() + neighbor.second;
+        std::string neighborPositionString = std::to_string(neighborPosition.x) + ", " + std::to_string(neighborPosition.y) + ", " + std::to_string(neighborPosition.z);
+        if (mObjects.find(neighborPositionString) != mObjects.end())
+        {
+            if (meshComponent->GetMeshType() != mObjects[neighborPositionString]->GetComponent<MeshComponent>()->GetMeshType())
+            {
+                meshComponent->SetVisibility(neighbor.first, true);
+                continue;
+            }
+
+            mObjects[neighborPositionString]->GetComponent<MeshComponent>()->SetVisibility(mOppositeSides.at(neighbor.first), false);
+            meshComponent->SetVisibility(neighbor.first, false);
+        }
+        else
+        {
+            meshComponent->SetVisibility(neighbor.first, true);
+        }
+
+    }
+
+    // insert object into map
+    std::string positionString = transformComponent->GetPositionString();
+    mObjects[positionString] = object;
+
     if (meshComponent->GetMeshType() == MeshType::WATER)
     {
         mSortedTransparentObjects.insert(object);
@@ -34,7 +63,30 @@ void ObjectManager::AddObject(const std::shared_ptr<GameObject> &object)
 
 void ObjectManager::RemoveObject(const std::shared_ptr<GameObject> &object)
 {
-    mObjects.erase(std::remove(mObjects.begin(), mObjects.end(), object), mObjects.end());
+    // mObjects.erase(std::remove(mObjects.begin(), mObjects.end(), object), mObjects.end());
+    for (auto it = mObjects.begin(); it != mObjects.end();)
+    {
+        if (it->second == object)
+        {
+            // adjust neighbor visibility
+            TransformComponent *transformComponent = object->GetComponent<TransformComponent>();
+            for (auto neighbor : mNeighbors)
+            {
+                glm::vec3 neighborPosition = transformComponent->GetPosition() + neighbor.second;
+                std::string neighborPositionString = std::to_string(neighborPosition.x) + ", " + std::to_string(neighborPosition.y) + ", " + std::to_string(neighborPosition.z);
+                if (mObjects.find(neighborPositionString) != mObjects.end())
+                {
+                    mObjects[neighborPositionString]->GetComponent<MeshComponent>()->SetVisibility(mOppositeSides.at(neighbor.first), true);
+                }
+            }
+
+            it = mObjects.erase(it);
+        }
+        else
+        {
+            ++it;
+        }
+    }
 
     MeshComponent *meshComponent = object->GetComponent<MeshComponent>();
 
@@ -47,12 +99,12 @@ void ObjectManager::RemoveObject(const std::shared_ptr<GameObject> &object)
 void ObjectManager::UpdateSortedTransparentObjects()
 {
     mSortedTransparentObjects.clear();
-    for (auto object : mObjects)
+    for (auto &pair : mObjects)
     {
-        MeshComponent *meshComponent = object->GetComponent<MeshComponent>();
+        MeshComponent *meshComponent = pair.second->GetComponent<MeshComponent>();
         if (meshComponent->GetMeshType() == MeshType::WATER)
         {
-            mSortedTransparentObjects.insert(object);
+            mSortedTransparentObjects.insert(pair.second);
         }
     }
 }
@@ -140,12 +192,12 @@ void ObjectManager::UpdateSortedTransparentObjects()
 //     }
 // }
 
-const std::set<std::shared_ptr<GameObject>, TransparentObjectComparator>& ObjectManager::GetTransparentObjects()
+const std::set<std::shared_ptr<GameObject>, TransparentObjectComparator> &ObjectManager::GetTransparentObjects()
 {
     return mSortedTransparentObjects;
 }
 
-const std::vector<std::shared_ptr<GameObject>>& ObjectManager::GetObjects()
+const std::unordered_map<std::string, std::shared_ptr<GameObject>> &ObjectManager::GetObjects()
 {
     return mObjects;
 }

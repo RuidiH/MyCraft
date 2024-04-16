@@ -4,6 +4,9 @@
 
 #include "MeshComponent.hpp"
 
+#include <map>
+#include <string>
+
 class MeshComponent;
 
 class Mesh {

@@ -22,7 +22,11 @@ void WaterMesh::Render()
 {
     for (const auto &pair : mVertexDataMap)
     {
-        // render only the top surface of the water
+        if (!mParent->GetVisibility(pair.first))
+        {
+            continue;
+        }
+
         GLuint vao;
         GLuint vbo;
         GLuint ibo;

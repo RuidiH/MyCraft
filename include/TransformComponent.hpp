@@ -2,7 +2,10 @@
 #define TRANSFORM_COMPONENT_HPP
 
 #include "Component.hpp"
+
 #include <glm/glm.hpp>
+
+#include <string>
 
 class TransformComponent : public Component
 {
@@ -11,7 +14,7 @@ class TransformComponent : public Component
         TransformComponent(glm::vec3 position);
         ~TransformComponent();
 
-        void SetPosition(glm::vec3 position) { mPosition = position; }
+        void SetPosition(glm::vec3 position);
         void SetRotation(glm::vec3 rotation) { mRotation = rotation; }
         void SetScale(glm::vec3 scale) { mScale = scale; }
 
@@ -24,10 +27,14 @@ class TransformComponent : public Component
         glm::vec3 GetRotation() const { return mRotation; } 
         glm::vec3 GetScale() const { return mScale; }
         glm::mat4 GetModelMatrix() const;
+
+        std::string GetPositionString() const { return mPositionString; }
+
     private:
         glm::vec3 mPosition;
         glm::vec3 mRotation;
         glm::vec3 mScale;
+        std::string mPositionString;
 };
 
 

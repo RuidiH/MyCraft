@@ -38,7 +38,7 @@ Engine::Engine(int width, int height) : mScreenWidth(width), mScreenHeight(heigh
 
     // hard-coded ortho light
     glm::mat4 orthoProjection = glm::ortho(-15.f, 15.f, -15.f, 15.f, 1.f, 35.f);
-    glm::mat4 lightView = glm::lookAt(glm::vec3(3.f, 3.f, 3.f), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
+    glm::mat4 lightView = glm::lookAt(mLightPos, glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
     mLightProjection = orthoProjection * lightView;
 
     // hard-coded crosshair
@@ -210,8 +210,9 @@ void Engine::AddObject()
 
         // make sure the placement position is not occupied
         bool isOccupied = false;
-        for (auto gameObject : mObjectManager->GetObjects())
+        for (auto& pair : mObjectManager->GetObjects())
         {
+            std::shared_ptr<GameObject> gameObject = pair.second;
             if (gameObject != mSelected)
             {
                 MeshComponent *mesh = gameObject->GetComponent<MeshComponent>();
@@ -266,8 +267,9 @@ void Engine::FindSelectedObject()
     float smallestTNear = -1.f;
     std::string clostestHitSide;
     std::shared_ptr<GameObject> hitObject;
-    for (std::shared_ptr<GameObject> gameObject : mObjectManager->GetObjects())
+    for (auto& pair : mObjectManager->GetObjects())
     {
+        std::shared_ptr<GameObject> gameObject = pair.second;
         std::shared_ptr<Mesh> mesh;
         if (gameObject->GetComponent<MeshComponent>()->GetMeshType() == MeshType::CUBE)
         {
@@ -330,9 +332,9 @@ void Engine::FindSelectedObject()
 
 void Engine::Update()
 {
-    for (auto gameObject : mObjectManager->GetObjects())
+    for (auto pair : mObjectManager->GetObjects())
     {
-        gameObject->Update();
+        pair.second->Update();
     }
 }
 
@@ -361,8 +363,9 @@ void Engine::ShadowPass()
     mShadowShader.SetUniform("lightProjection", mLightProjection);
 
     // render
-    for (auto gameObject : mObjectManager->GetObjects())
+    for (auto pair : mObjectManager->GetObjects())
     {
+        std::shared_ptr<GameObject> gameObject = pair.second;
         glm::mat4 model = gameObject->GetComponent<TransformComponent>()->GetModelMatrix();
         mShadowShader.SetUniform("model", model);
         gameObject->Render();
@@ -381,9 +384,9 @@ void Engine::LightPass()
     glBindTexture(GL_TEXTURE_2D, mShadowMapTexture);
 
     // solid
-    for (auto &gameObject : mObjectManager->GetObjects())
+    for (auto &pair : mObjectManager->GetObjects())
     {
-        RenderObjects(gameObject, false);
+        RenderObjects(pair.second, false);
     }
 
     glEnable(GL_BLEND);
@@ -392,9 +395,9 @@ void Engine::LightPass()
     glDisable(GL_CULL_FACE);
 
     // transparent
-    for (auto &gameObject : mObjectManager->GetObjects())
+    for (auto &pair : mObjectManager->GetObjects())
     {
-        RenderObjects(gameObject, true);
+        RenderObjects(pair.second, true);
     }
 
     glEnable(GL_CULL_FACE);
@@ -431,7 +434,7 @@ void Engine::RenderObjects(const std::shared_ptr<GameObject> &gameObject, bool i
     activeShader->SetUniform("u_View", mCamera->GetViewMatrix());
 
     // set lightings
-    activeShader->SetUniform("lightPos", glm::vec3(3.0f, 3.0f, 3.0f));
+    activeShader->SetUniform("lightPos", mLightPos);
     activeShader->SetUniform("lightColor", glm::vec3(1.0f, 1.0f, 1.0f));
     activeShader->SetUniform("viewPos", mCamera->GetPosition());
     activeShader->SetUniform("u_LightProjection", mLightProjection);
@@ -456,8 +459,9 @@ void Engine::RenderObjects(const std::shared_ptr<GameObject> &gameObject, bool i
 
 void Engine::HighlightPass()
 {
-    for (const auto &gameObject : mObjectManager->GetObjects())
+    for (const auto &pair : mObjectManager->GetObjects())
     {
+        std::shared_ptr<GameObject> gameObject = pair.second;
         if (mSelected != nullptr && gameObject == mSelected)
         {
             glStencilFunc(GL_NOTEQUAL, 1, 0xFF);

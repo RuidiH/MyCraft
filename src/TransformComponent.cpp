@@ -6,6 +6,7 @@
 #include <glm/gtx/transform.hpp>
 
 #include <iostream>
+#include <string>
 
 TransformComponent::TransformComponent()
 {
@@ -23,14 +24,16 @@ TransformComponent::TransformComponent(glm::vec3 position)
     mPosition = position;
     mRotation = glm::vec3(0.0f, 0.0f, 0.0f);
     mScale = glm::vec3(1.0f, 1.0f, 1.0f);
+
+    mPositionString = std::to_string(position.x) + ", " + std::to_string(position.y) + ", " + std::to_string(position.z);
 }
-
-
-
 
 void TransformComponent::Move(glm::vec3 direction)
 {
-    mPosition += direction;
+    // currently the object manager's map is not expecting the object to move
+    // update the object manager first if this object should be moved.
+
+    // mPosition += direction;
 }
 
 void TransformComponent::Rotate(glm::vec3 rotation)
@@ -46,4 +49,11 @@ void TransformComponent::Scale(glm::vec3 scale)
 glm::mat4 TransformComponent::GetModelMatrix() const
 {
     return glm::translate(mPosition) * glm::rotate(mRotation.x, glm::vec3(1.0f, 0.0f, 0.0f)) * glm::rotate(mRotation.y, glm::vec3(0.0f, 1.0f, 0.0f)) * glm::rotate(mRotation.z, glm::vec3(0.0f, 0.0f, 1.0f)) * glm::scale(mScale);
+}
+
+
+void TransformComponent::SetPosition(glm::vec3 position) {
+    mPosition = position;
+    mPositionString = std::to_string(position.x) + ", " + std::to_string(position.y) + ", " + std::to_string(position.z);
+    std::cout << "transform component position set to " << mPositionString << "\n";
 }
