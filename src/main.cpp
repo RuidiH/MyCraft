@@ -10,7 +10,8 @@ int main(int argc, char *argv[])
 {
     Engine engine(1000, 600);
 
-    engine.SetupObject();
+    // engine.LoadSavedWorld();
+    engine.GenerateWorld("./noise_map.csv");
 
     engine.MainLoop();
 

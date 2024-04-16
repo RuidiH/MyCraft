@@ -37,7 +37,7 @@ PYBIND11_MODULE(GameEditor, m)
     m.doc() = "Engine as a library";
     py::class_<Engine>(m, "Engine")
         .def(py::init<int, int>(), py::arg("w"), py::arg("h")) // our constructor
-        .def("SetupObject", &Engine::SetupObject) 
+        .def("LoadSavedWorld", &Engine::LoadSavedWorld) 
         .def("MainLoop", &Engine::MainLoop)
         .def("Shutdown", &Engine::Shutdown);
 }

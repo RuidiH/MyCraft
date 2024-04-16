@@ -49,6 +49,7 @@ Engine::Engine(int width, int height) : mScreenWidth(width), mScreenHeight(heigh
         0.0f, -0.03f * aspectRatio, 0.0f, // Bottom point
         0.0f, 0.03f * aspectRatio, 0.0f   // Top point}
     };
+
     glGenVertexArrays(1, &mCrosshairVAO);
     glBindVertexArray(mCrosshairVAO);
     glGenBuffers(1, &mCrosshairVBO);
@@ -60,6 +61,11 @@ Engine::Engine(int width, int height) : mScreenWidth(width), mScreenHeight(heigh
 
     glBindVertexArray(0);
 
+    mTextureManager = std::make_shared<TextureManager>();
+    mWorldSerializer = std::make_shared<WorldSerializer>(mTextureManager, mObjectManager);
+    mWorldSerializer->ReadBlockTypes("./config/blockTypes.json");
+    mWorldSerializer->LoadTextureConfig("./config/textureConfig.json");
+
     std::cout << "<<<<<<<<<<<<<<<<<<<<<<< Engine initialized >>>>>>>>>>>>>>>>>>>>>>>>>\n\n\n";
 }
 
@@ -68,15 +74,20 @@ Engine::~Engine()
     // TODO: clear all pointer reference
 }
 
-void Engine::SetupObject()
+void Engine::LoadSavedWorld()
 {
-    std::cout << "<<<<<<<<<<<<<<<<<<<<<<< Setting up objects >>>>>>>>>>>>>>>>>>>>>>>>>\n";
-    mTextureManager = std::make_shared<TextureManager>();
-    mWorldSerializer = std::make_shared<WorldSerializer>(mTextureManager, mObjectManager);
-    mWorldSerializer->ReadBlockTypes("./config/blockTypes.json");
-    mWorldSerializer->LoadTextureConfig("./config/textureConfig.json");
+    std::cout << "<<<<<<<<<<<<<<<<<<<<<<< Loading objects >>>>>>>>>>>>>>>>>>>>>>>>>\n";
     mWorldSerializer->CreateBlocks("./config/worldData.json");
-    std::cout << "<<<<<<<<<<<<<<<<<<<<<<< Objects setup complete >>>>>>>>>>>>>>>>>>>>>>>>>\n\n\n";
+    std::cout << "<<<<<<<<<<<<<<<<<<<<<<< Objects Loaded >>>>>>>>>>>>>>>>>>>>>>>>>\n\n\n";
+}
+
+void Engine::GenerateWorld(const std::string& filename)
+{
+    std::cout << "<<<<<<<<<<<<<<<<<<<<<<< Generating Objects >>>>>>>>>>>>>>>>>>>>>>>>>\n";
+    mNoiseReader = std::make_shared<NoiseMapReader>(filename);
+    mNoiseReader->readNoiseMap();
+    mNoiseReader->GenerateWorld(mObjectManager, mTextureManager);
+    std::cout << "<<<<<<<<<<<<<<<<<<<<<<< Objects Generated >>>>>>>>>>>>>>>>>>>>>>>>>\n\n\n"; 
 }
 
 void Engine::MainLoop()
@@ -210,7 +221,7 @@ void Engine::AddObject()
 
         // make sure the placement position is not occupied
         bool isOccupied = false;
-        for (auto& pair : mObjectManager->GetObjects())
+        for (auto &pair : mObjectManager->GetObjects())
         {
             std::shared_ptr<GameObject> gameObject = pair.second;
             if (gameObject != mSelected)
@@ -267,7 +278,7 @@ void Engine::FindSelectedObject()
     float smallestTNear = -1.f;
     std::string clostestHitSide;
     std::shared_ptr<GameObject> hitObject;
-    for (auto& pair : mObjectManager->GetObjects())
+    for (auto &pair : mObjectManager->GetObjects())
     {
         std::shared_ptr<GameObject> gameObject = pair.second;
         std::shared_ptr<Mesh> mesh;

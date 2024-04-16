@@ -31,6 +31,7 @@
 #include "Camera.hpp"
 #include "WorldSerializer.hpp"
 #include "ObjectManager.hpp"
+#include "NoiseMapReader.hpp"
 
 class Engine
 {
@@ -40,7 +41,9 @@ public:
     Engine(int width, int height);
     ~Engine();
 
-    void SetupObject();
+    void LoadSavedWorld();
+
+    void GenerateWorld(const std::string &filename);
 
     void MainLoop();
 
@@ -68,6 +71,7 @@ private:
 
     // World Serializer
     std::shared_ptr<WorldSerializer> mWorldSerializer;
+    std::shared_ptr<NoiseMapReader> mNoiseReader;
 
     // for framecap
     uint32_t prevTime = 0;
