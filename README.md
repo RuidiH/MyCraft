@@ -31,11 +31,11 @@ MyCraft is built using a combination of powerful tools and libraries, chosen for
 - [x] Object highlight with stencil buffer
 - [x] Object destruction 
 - [x] configuration-oriented and data-oriented design
-- [ ] Basic Water
+- [x] Basic Water
 - [ ] Advance Water
-- [ ] Terrain Generation
+- [x] Terrain Generation
 - [ ] World Skybox
-- [ ] Hash objects for quick lookup
+- [x] Hash objects for quick lookup
 - [ ] Add Resource Manager based on Texture Manager
 - [ ] Use Python UI for creating new objects
 
