@@ -50,8 +50,6 @@ void WaterMesh::Render()
         std::array<GLuint, 3> buffers = mBufferObjectsMap[face];
 
         glBindVertexArray(buffers.at(0));
-        glBindBuffer(GL_ARRAY_BUFFER, buffers.at(1));
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffers.at(2));
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
         glBindVertexArray(0);
     }
