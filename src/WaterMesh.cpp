@@ -28,11 +28,9 @@ void WaterMesh::Init(std::shared_ptr<std::unordered_map<std::string, std::vector
 
 WaterMesh::~WaterMesh()
 {
-    for (const auto &pair : mBufferObjectsMap)
+    for (const auto side : *mVisibleSides)
     {
-        glDeleteBuffers(1, &pair.second.at(0));
-        glDeleteBuffers(1, &pair.second.at(1));
-        glDeleteVertexArrays(1, &pair.second.at(2));
+        OffloadFace(side);
     }
 }
 
@@ -43,15 +41,18 @@ void WaterMesh::Update()
 void WaterMesh::Render()
 {
     for (const auto &face : *mVisibleSides)
-    {
+    { 
+        if (mBufferObjectsMap.find(face) == mBufferObjectsMap.end())
+        {
+            LoadFace(face);
+        }
+
         std::array<GLuint, 3> buffers = mBufferObjectsMap[face];
 
         glBindVertexArray(buffers.at(0));
         glBindBuffer(GL_ARRAY_BUFFER, buffers.at(1));
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffers.at(2));
-
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-
         glBindVertexArray(0);
     }
 }
@@ -92,6 +93,11 @@ glm::vec3 WaterMesh::GetSideNormal(std::string side)
 
 void WaterMesh::LoadFace(std::string face)
 {
+    if (mBufferObjectsMap.find(face) != mBufferObjectsMap.end())
+    {
+        return;
+    }
+
     std::array<GLuint, 3> buffers;
 
     glGenVertexArrays(1, &buffers.at(0));
@@ -146,10 +152,14 @@ void WaterMesh::LoadFace(std::string face)
 
 void WaterMesh::OffloadFace(std::string face)
 {
+    if (mBufferObjectsMap.find(face) == mBufferObjectsMap.end())
+    {
+        return;
+    }
     std::array<GLuint, 3> buffers = mBufferObjectsMap[face];
-    glDeleteBuffers(1, &buffers.at(0));
+    glDeleteVertexArrays(1, &buffers.at(0));
     glDeleteBuffers(1, &buffers.at(1));
-    glDeleteVertexArrays(1, &buffers.at(2));
+    glDeleteBuffers(1, &buffers.at(2));
     mVisibleSides->erase(face);
     mBufferObjectsMap.erase(face);
 }

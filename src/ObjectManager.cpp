@@ -184,19 +184,10 @@ void ObjectManager::AddObject(const std::shared_ptr<GameObject> &object)
                 meshComponent->RemoveVisibleSide(neighbor.first);
                 mObjects[neighborPositionString]->GetComponent<MeshComponent>()->RemoveVisibleSide(mOppositeSides.at(neighbor.first));
             }
-            // if (mIsRunning)
-            // {
-            //     UpdateObjectFaces(object);
-            //     UpdateObjectFaces(mObjects[neighborPositionString]);
-            // }
         }
         else
         {
             meshComponent->AddVisibleSide(neighbor.first);
-            // if (mIsRunning)
-            // {
-            //     UpdateObjectFaces(object);
-            // }
         }
     }
 
@@ -212,34 +203,25 @@ void ObjectManager::AddObject(const std::shared_ptr<GameObject> &object)
 
 void ObjectManager::RemoveObject(const std::shared_ptr<GameObject> &object)
 {
-    // mObjects.erase(std::remove(mObjects.begin(), mObjects.end(), object), mObjects.end());
-    for (auto it = mObjects.begin(); it != mObjects.end();)
+    if (mObjects.find(object->GetComponent<TransformComponent>()->GetPositionString()) == mObjects.end())
     {
-        if (it->second == object)
-        {
-            // adjust neighbor visibility
-            TransformComponent *transformComponent = object->GetComponent<TransformComponent>();
-            for (auto neighbor : mNeighbors)
-            {
-                glm::vec3 neighborPosition = transformComponent->GetPosition() + neighbor.second;
-                std::string neighborPositionString = std::to_string(neighborPosition.x) + ", " + std::to_string(neighborPosition.y) + ", " + std::to_string(neighborPosition.z);
-                if (mObjects.find(neighborPositionString) != mObjects.end())
-                {
-                    mObjects[neighborPositionString]->GetComponent<MeshComponent>()->AddVisibleSide(mOppositeSides.at(neighbor.first)); 
-                    // UpdateObjectFaces(mObjects[neighborPositionString]);
-                }
-            }
-
-            it = mObjects.erase(it);
-        }
-        else
-        {
-            ++it;
-        }
+        return;
     }
 
+    // adjust neighbor visibility
+    TransformComponent *transformComponent = object->GetComponent<TransformComponent>();
+    for (auto neighbor : mNeighbors)
+    {
+        glm::vec3 neighborPosition = transformComponent->GetPosition() + neighbor.second;
+        std::string neighborPositionString = std::to_string(neighborPosition.x) + ", " + std::to_string(neighborPosition.y) + ", " + std::to_string(neighborPosition.z);
+        if (mObjects.find(neighborPositionString) != mObjects.end())
+        {
+            mObjects[neighborPositionString]->GetComponent<MeshComponent>()->AddVisibleSide(mOppositeSides.at(neighbor.first)); 
+        }
+    }
+    
+    mObjects.erase(transformComponent->GetPositionString());  
     MeshComponent *meshComponent = object->GetComponent<MeshComponent>();
-
     if (meshComponent->GetMeshType() == MeshType::WATER)
     {
         mSortedTransparentObjects.erase(object);

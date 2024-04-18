@@ -263,21 +263,17 @@ void Engine::AddObject()
 
             if (mNewObjectID == "water_block")
             {
-                obj->AddComponent<TransformComponent>()->SetPosition(placementPos);
+                obj->AddComponent<TransformComponent>(placementPos);
                 obj->AddComponent<MeshComponent>(MeshType::WATER);
-
                 mObjectManager->AddObject(obj);
-                // mGameObjects->push_back(obj);
-
                 std::cout << "New water placed at " << placementPos.x << " " << placementPos.y << " " << placementPos.z << std::endl;
                 return;
             }
 
-            obj->AddComponent<TransformComponent>()->SetPosition(placementPos);
+            obj->AddComponent<TransformComponent>(placementPos);
             obj->AddComponent<MeshComponent>(MeshType::CUBE);
             obj->AddComponent<TextureComponent>()->SetTextureGroupName(mNewObjectTextureGroup);
             obj->GetComponent<TextureComponent>()->SetTextureGroup(mTextureManager->GetTextureGroup(mNewObjectTextureGroup));
-            // mGameObjects->push_back(obj);
             mObjectManager->AddObject(obj);
             std::cout << "New cube placed at " << placementPos.x << " " << placementPos.y << " " << placementPos.z << std::endl;
             return;
@@ -528,8 +524,11 @@ void Engine::CrosshairPass()
 
 void Engine::Shutdown()
 {
-    SDL_StopTextInput();
+    std::cout << "Shutting down..." << std::endl;
+    // clean up
+    SDL_GL_DeleteContext(gOpenGLContext);
     SDL_DestroyWindow(gGraphicsApplicationWindow);
+    SDL_StopTextInput();
     SDL_Quit();
 }
 
