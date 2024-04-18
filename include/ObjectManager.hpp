@@ -28,12 +28,15 @@ public:
 class ObjectManager
 {
 public:
-    ObjectManager(const Camera &camera);
+    ObjectManager(const Camera &camera, const bool &isRunning);
     ~ObjectManager();
 
     void AddObject(const std::shared_ptr<GameObject> &object);
     void RemoveObject(const std::shared_ptr<GameObject> &object);
     void UpdateSortedTransparentObjects();
+
+    void LoadObjectFaces();
+    void UpdateObjectFaces(std::shared_ptr<GameObject> object); 
 
     const std::set<std::shared_ptr<GameObject>, TransparentObjectComparator> &GetTransparentObjects();
     const std::unordered_map<std::string, std::shared_ptr<GameObject>> &GetObjects();
@@ -43,6 +46,7 @@ public:
 
 private:
     const Camera &mCamera;
+    const bool &mIsRunning; 
     std::set<std::shared_ptr<GameObject>, TransparentObjectComparator> mSortedTransparentObjects;
     std::unordered_map<std::string, std::shared_ptr<GameObject>> mObjects;
 

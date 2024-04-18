@@ -21,10 +21,6 @@
 #include <unordered_map>
 #include <array>
 
-// #ifndef M_PI
-//     #define M_PI 3.14159265358979323846
-// #endif
-
 #include "GameObject.hpp"
 #include "TextureManager.hpp"
 #include "Shader.hpp"
@@ -62,6 +58,7 @@ private:
 
     // game state
     bool mQuit = false;
+    bool mRunning = false;
 
     // wireframe
     bool mWireframeMode = false;

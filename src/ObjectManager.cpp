@@ -5,7 +5,7 @@
 #include <algorithm>
 #include <iostream>
 
-ObjectManager::ObjectManager(const Camera &camera) : mCamera(camera), mSortedTransparentObjects(TransparentObjectComparator(camera))
+ObjectManager::ObjectManager(const Camera &camera, const bool &isRunning) : mCamera(camera), mSortedTransparentObjects(TransparentObjectComparator(camera)), mIsRunning(isRunning)
 {
     mSolidObjectVertices = std::make_shared<std::unordered_map<std::string, std::vector<float>>>();
     mTransparentObjectVertices = std::make_shared<std::unordered_map<std::string, std::vector<float>>>();
@@ -66,12 +66,12 @@ ObjectManager::ObjectManager(const Camera &camera) : mCamera(camera), mSortedTra
         radius, -radius, -radius, 0.0f, 1.0f, 0.f, 0.f, -1.f   // + - -
     };
 
-    mSolidObjectVertices->insert({"top",sTop});
-    mSolidObjectVertices->insert({"bottom",sBottom});
-    mSolidObjectVertices->insert({"left",sLeft});
-    mSolidObjectVertices->insert({"right",sRight});
-    mSolidObjectVertices->insert({"front",sFront});
-    mSolidObjectVertices->insert({"back",sBack});
+    mSolidObjectVertices->insert({"top", sTop});
+    mSolidObjectVertices->insert({"bottom", sBottom});
+    mSolidObjectVertices->insert({"left", sLeft});
+    mSolidObjectVertices->insert({"right", sRight});
+    mSolidObjectVertices->insert({"front", sFront});
+    mSolidObjectVertices->insert({"back", sBack});
 
     // water data
     // x, y, z, r, g, b, nx, ny, nz
@@ -151,7 +151,9 @@ void ObjectManager::AddObject(const std::shared_ptr<GameObject> &object)
     if (meshComponent->GetMeshType() == MeshType::CUBE)
     {
         meshComponent->Init(mSolidObjectVertices);
-    } else {
+    }
+    else
+    {
         meshComponent->Init(mTransparentObjectVertices);
     }
 
@@ -168,8 +170,6 @@ void ObjectManager::AddObject(const std::shared_ptr<GameObject> &object)
             {
                 if (meshComponent->GetMeshType() == MeshType::WATER)
                 {
-                    // meshComponent->SetVisibility(neighbor.first, false);
-                    // mObjects[neighborPositionString]->GetComponent<MeshComponent>()->SetVisibility(mOppositeSides.at(neighbor.first), true);
                     meshComponent->RemoveVisibleSide(neighbor.first);
                     mObjects[neighborPositionString]->GetComponent<MeshComponent>()->AddVisibleSide(mOppositeSides.at(neighbor.first));
                 }
@@ -177,22 +177,26 @@ void ObjectManager::AddObject(const std::shared_ptr<GameObject> &object)
                 {
                     meshComponent->AddVisibleSide(neighbor.first);
                     mObjects[neighborPositionString]->GetComponent<MeshComponent>()->RemoveVisibleSide(mOppositeSides.at(neighbor.first));
-                    // meshComponent->SetVisibility(neighbor.first, true);
-                    // mObjects[neighborPositionString]->GetComponent<MeshComponent>()->SetVisibility(mOppositeSides.at(neighbor.first), false);
                 }
             }
             else
             {
                 meshComponent->RemoveVisibleSide(neighbor.first);
                 mObjects[neighborPositionString]->GetComponent<MeshComponent>()->RemoveVisibleSide(mOppositeSides.at(neighbor.first));
-                // mObjects[neighborPositionString]->GetComponent<MeshComponent>()->SetVisibility(mOppositeSides.at(neighbor.first), false);
-                // meshComponent->SetVisibility(neighbor.first, false);
             }
+            // if (mIsRunning)
+            // {
+            //     UpdateObjectFaces(object);
+            //     UpdateObjectFaces(mObjects[neighborPositionString]);
+            // }
         }
         else
         {
-            // meshComponent->SetVisibility(neighbor.first, true);
             meshComponent->AddVisibleSide(neighbor.first);
+            // if (mIsRunning)
+            // {
+            //     UpdateObjectFaces(object);
+            // }
         }
     }
 
@@ -221,7 +225,8 @@ void ObjectManager::RemoveObject(const std::shared_ptr<GameObject> &object)
                 std::string neighborPositionString = std::to_string(neighborPosition.x) + ", " + std::to_string(neighborPosition.y) + ", " + std::to_string(neighborPosition.z);
                 if (mObjects.find(neighborPositionString) != mObjects.end())
                 {
-                    mObjects[neighborPositionString]->GetComponent<MeshComponent>()->SetVisibility(mOppositeSides.at(neighbor.first), true);
+                    mObjects[neighborPositionString]->GetComponent<MeshComponent>()->AddVisibleSide(mOppositeSides.at(neighbor.first)); 
+                    // UpdateObjectFaces(mObjects[neighborPositionString]);
                 }
             }
 
@@ -262,4 +267,29 @@ const std::set<std::shared_ptr<GameObject>, TransparentObjectComparator> &Object
 const std::unordered_map<std::string, std::shared_ptr<GameObject>> &ObjectManager::GetObjects()
 {
     return mObjects;
+}
+
+void ObjectManager::LoadObjectFaces()
+{
+    for (auto &pair : mObjects)
+    {
+        for (const auto &face : *pair.second->GetComponent<MeshComponent>()->GetVisibleSides())
+        {
+            pair.second->GetComponent<MeshComponent>()->GetMesh()->LoadFace(face);
+        }
+    }
+}
+
+void ObjectManager::UpdateObjectFaces(std::shared_ptr<GameObject> object)
+{
+    for (auto &pair : mObjects)
+    {
+        if (pair.second == object)
+        {
+            for (const auto &face : *pair.second->GetComponent<MeshComponent>()->GetVisibleSides())
+            {
+                pair.second->GetComponent<MeshComponent>()->GetMesh()->LoadFace(face);
+            }
+        }
+    }
 }

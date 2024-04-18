@@ -27,7 +27,7 @@ Engine::Engine(int width, int height) : mScreenWidth(width), mScreenHeight(heigh
     mCamera->SetDirection(glm::normalize(glm::vec3(0.f, 0.f, 0.f) - mCamera->GetPosition()));
     mCamera->SetProjectionMatrix(45.0f, (float)mScreenWidth / (float)mScreenHeight, 0.1f, 50.0f);
 
-    mObjectManager = std::make_shared<ObjectManager>(*mCamera);
+    mObjectManager = std::make_shared<ObjectManager>(*mCamera, mRunning);
     mGameObjects = std::make_shared<std::vector<std::shared_ptr<GameObject>>>();
 
     InitializeGraphicsProgram();
@@ -92,6 +92,9 @@ void Engine::GenerateWorld(const std::string &filename)
 
 void Engine::MainLoop()
 {
+    mRunning = true;
+    mObjectManager->LoadObjectFaces();
+
     while (!mQuit)
     {
         FrameCapping();

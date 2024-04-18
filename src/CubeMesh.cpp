@@ -8,9 +8,10 @@
 CubeMesh::CubeMesh()
 {
     mSize = 1.0f;
+    mVertexDataMap = std::make_shared<std::unordered_map<std::string, std::vector<float>>>();
 }
 
-void CubeMesh::Init(std::shared_ptr<std::unordered_map<std::string, std::vector<float>>>& vertices)
+void CubeMesh::Init(std::shared_ptr<std::unordered_map<std::string, std::vector<float>>> &vertices)
 {
     mVisibleSides = mParent->GetVisibleSides();
     mTextureIdMap = std::make_shared<std::unordered_map<std::string, GLuint *>>();
@@ -27,62 +28,6 @@ void CubeMesh::Init(std::shared_ptr<std::unordered_map<std::string, std::vector<
     mMinCorner = position - glm::vec3(mSize / 2.0);
     mMaxCorner = position + glm::vec3(mSize / 2.0);
     mVertexDataMap = vertices;
-
-    for (const auto &side : *mVertexDataMap)
-    {
-
-        // gen and bind vao, vbo, ibo
-        std::array<GLuint, 3> buffers;
-
-        glGenVertexArrays(1, &buffers.at(0));
-        glBindVertexArray(buffers.at(0));
-
-        glGenBuffers(1, &buffers.at(1));
-        glBindBuffer(GL_ARRAY_BUFFER, buffers.at(1));
-
-        glGenBuffers(1, &buffers.at(2));
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffers.at(2));
-
-        // set vertex data
-        glBufferData(GL_ARRAY_BUFFER,
-                     side.second.size() * sizeof(GL_FLOAT),
-                     side.second.data(),
-                     GL_STATIC_DRAW);
-
-        // set index buffer data
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER,
-                     mIndexBuffer.size() * sizeof(GLuint),
-                     mIndexBuffer.data(),
-                     GL_STATIC_DRAW);
-
-        glEnableVertexAttribArray(0);
-        glVertexAttribPointer(0,
-                              3, // x, y, z
-                              GL_FLOAT,
-                              GL_FALSE,
-                              sizeof(GL_FLOAT) * 8,
-                              (void *)0);
-
-        glEnableVertexAttribArray(1);
-        glVertexAttribPointer(1,
-                              2, // u, v
-                              GL_FLOAT,
-                              GL_FALSE,
-                              sizeof(GL_FLOAT) * 8,
-                              (GLvoid *)(sizeof(GL_FLOAT) * 3));
-
-        glEnableVertexAttribArray(2);
-        glVertexAttribPointer(2,
-                              3, // nx, ny, nz
-                              GL_FLOAT,
-                              GL_FALSE,
-                              sizeof(GL_FLOAT) * 8,
-                              (GLvoid *)(sizeof(GL_FLOAT) * 5));
-
-        // unbind
-        glBindVertexArray(0);
-        mBufferObjectsMap.insert({side.first, buffers});
-    }
 }
 
 CubeMesh::~CubeMesh()
@@ -103,13 +48,18 @@ void CubeMesh::Render()
 {
     if (mTextureIdMap->empty())
     {
-        for (const auto &texId : mParent->GetParent()->GetComponent<TextureComponent>()->GetTextureGroup()) {
+        for (const auto &texId : mParent->GetParent()->GetComponent<TextureComponent>()->GetTextureGroup())
+        {
             mTextureIdMap->insert(texId);
         }
     }
 
     for (const auto &face : *mVisibleSides)
     {
+        if (mBufferObjectsMap.find(face) == mBufferObjectsMap.end())
+        {
+            // LoadFace(face);
+        }
         std::array<GLuint, 3> buffers = mBufferObjectsMap.at(face);
         GLuint *currentTexID = mTextureIdMap.get()->at(face);
 
@@ -158,4 +108,69 @@ glm::vec3 CubeMesh::GetSideNormal(std::string side)
     }
     std::cout << "Invalid side\n";
     return glm::vec3(0.f, 0.f, 0.f);
+}
+
+void CubeMesh::LoadFace(std::string face)
+{
+    std::array<GLuint, 3> buffers;
+
+    glGenVertexArrays(1, &buffers.at(0));
+    glBindVertexArray(buffers.at(0));
+
+    glGenBuffers(1, &buffers.at(1));
+    glBindBuffer(GL_ARRAY_BUFFER, buffers.at(1));
+
+    glGenBuffers(1, &buffers.at(2));
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffers.at(2));
+
+    // set vertex data
+    glBufferData(GL_ARRAY_BUFFER,
+                 mVertexDataMap->at(face).size() * sizeof(GL_FLOAT),
+                 mVertexDataMap->at(face).data(),
+                 GL_STATIC_DRAW);
+
+    // set index buffer data
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER,
+                 mIndexBuffer.size() * sizeof(GLuint),
+                 mIndexBuffer.data(),
+                 GL_STATIC_DRAW);
+
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0,
+                          3, // x, y, z
+                          GL_FLOAT,
+                          GL_FALSE,
+                          sizeof(GL_FLOAT) * 8,
+                          (void *)0);
+
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1,
+                          2, // u, v
+                          GL_FLOAT,
+                          GL_FALSE,
+                          sizeof(GL_FLOAT) * 8,
+                          (GLvoid *)(sizeof(GL_FLOAT) * 3));
+
+    glEnableVertexAttribArray(2);
+    glVertexAttribPointer(2,
+                          3, // nx, ny, nz
+                          GL_FLOAT,
+                          GL_FALSE,
+                          sizeof(GL_FLOAT) * 8,
+                          (GLvoid *)(sizeof(GL_FLOAT) * 5));
+
+    // unbind
+    glBindVertexArray(0);
+    mVisibleSides->insert(face);
+    mBufferObjectsMap.insert({face, buffers});
+}
+
+void CubeMesh::OffloadFace(std::string face)
+{
+    std::array<GLuint, 3> buffers = mBufferObjectsMap.at(face);
+    glDeleteBuffers(1, &buffers.at(0));
+    glDeleteBuffers(1, &buffers.at(1));
+    glDeleteVertexArrays(1, &buffers.at(2));
+    mVisibleSides->erase(face);
+    mBufferObjectsMap.erase(face);
 }

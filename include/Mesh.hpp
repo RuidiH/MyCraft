@@ -22,7 +22,9 @@ public:
     virtual void Init(std::shared_ptr<std::unordered_map<std::string, std::vector<float>>>& vertices) = 0;
     virtual glm::vec3 GetSideNormal(std::string side) = 0;
     virtual std::array<glm::vec3, 2> GetCorners() = 0;
-    
+    virtual void LoadFace(std::string face) = 0;
+    virtual void OffloadFace(std::string face) = 0; 
+
     void SetParentComponent(MeshComponent *parent) { mParent = parent; }
 
 protected:

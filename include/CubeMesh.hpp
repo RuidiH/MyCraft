@@ -29,10 +29,13 @@ public:
     void Render() override;
 
     void Init(std::shared_ptr<std::unordered_map<std::string, std::vector<float>>>& vertices) override;
-    glm::vec3 GetMinCorner() { return this->mMinCorner; };
-    glm::vec3 GetMaxCorner() { return this->mMaxCorner; };
     std::array<glm::vec3, 2> GetCorners() override { return {mMinCorner, mMaxCorner}; };
     glm::vec3 GetSideNormal(std::string side) override;
+    void LoadFace(std::string face) override;
+    void OffloadFace(std::string face) override;
+
+    glm::vec3 GetMinCorner() { return this->mMinCorner; };
+    glm::vec3 GetMaxCorner() { return this->mMaxCorner; };
     void SetFaceInWater(std::string face, bool inWater) { isFaceInWater[face] = inWater; };
 
 private:
