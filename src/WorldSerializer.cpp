@@ -69,10 +69,10 @@ void WorldSerializer::CreateBlocks(const std::string &filename)
             if (comp.first == "mesh")
             {
                 if (comp.second.at("type") == "cube")
-                {
-                    block->AddComponent<MeshComponent>(MeshType::CUBE)->Init();
+                { 
+                    block->AddComponent<MeshComponent>(MeshType::CUBE);
                 } else if (comp.second.at("type") == "water") {
-                    block->AddComponent<MeshComponent>(MeshType::WATER)->Init();
+                    block->AddComponent<MeshComponent>(MeshType::WATER);
                 }
             }
             else if (comp.first == "texture")

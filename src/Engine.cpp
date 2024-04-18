@@ -261,7 +261,7 @@ void Engine::AddObject()
             if (mNewObjectID == "water_block")
             {
                 obj->AddComponent<TransformComponent>()->SetPosition(placementPos);
-                obj->AddComponent<MeshComponent>(MeshType::WATER)->Init();
+                obj->AddComponent<MeshComponent>(MeshType::WATER);
 
                 mObjectManager->AddObject(obj);
                 // mGameObjects->push_back(obj);
@@ -271,7 +271,7 @@ void Engine::AddObject()
             }
 
             obj->AddComponent<TransformComponent>()->SetPosition(placementPos);
-            obj->AddComponent<MeshComponent>(MeshType::CUBE)->Init();
+            obj->AddComponent<MeshComponent>(MeshType::CUBE);
             obj->AddComponent<TextureComponent>()->SetTextureGroupName(mNewObjectTextureGroup);
             obj->GetComponent<TextureComponent>()->SetTextureGroup(mTextureManager->GetTextureGroup(mNewObjectTextureGroup));
             // mGameObjects->push_back(obj);

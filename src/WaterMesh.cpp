@@ -8,7 +8,7 @@ WaterMesh::WaterMesh()
     mSize = 1.0f;
 }
 
-void WaterMesh::Init()
+void WaterMesh::Init(std::shared_ptr<std::unordered_map<std::string, std::vector<float>>>& vertices)
 {
     mVisibleSides = mParent->GetVisibleSides();
 
@@ -19,9 +19,12 @@ void WaterMesh::Init()
         exit(1);
     }
 
-    SetVertexData();
+    glm::vec3 position = mParent->GetParent()->GetComponent<TransformComponent>()->GetPosition();
+    mMinCorner = position - glm::vec3(mSize / 2.0);
+    mMaxCorner = position + glm::vec3(mSize / 2.0);
+    mVertexDataMap = vertices;
 
-    for (const auto &side : mVertexDataMap)
+    for (const auto &side : *mVertexDataMap)
     {
 
         // gen and bind vao, vbo, ibo
@@ -110,73 +113,6 @@ void WaterMesh::Render()
 
 void WaterMesh::SetVertexData()
 {
-    float halfSize = mSize / 2.0f;
-
-    // vertex data structure:
-    // x, y, z, r, g, b, nx, ny, nz
-
-    float r = 0.0f, g = 0.5f, b = 1.0f;
-
-    // initialize vertex data map
-    std::vector<float> vTop{
-        // Top
-        -halfSize, halfSize, -halfSize, r, g, b, 0.f, 1.f, 0.f, // - + -
-        -halfSize, halfSize, halfSize, r, g, b, 0.f, 1.f, 0.f,  // - + +
-        halfSize, halfSize, halfSize, r, g, b, 0.f, 1.f, 0.f,   // + + +
-        halfSize, halfSize, -halfSize, r, g, b, 0.f, 1.f, 0.f   // + + -
-    };
-
-    std::vector<float> vBottom{
-        // Bottom
-        -halfSize, -halfSize, halfSize, r, g, b, 0.f, -1.f, 0.f,  // - - +
-        -halfSize, -halfSize, -halfSize, r, g, b, 0.f, -1.f, 0.f, // - - -
-        halfSize, -halfSize, -halfSize, r, g, b, 0.f, -1.f, 0.f,  // + - -
-        halfSize, -halfSize, halfSize, r, g, b, 0.f, -1.f, 0.f    // + - +
-    };
-
-    std::vector<float> vLeft{
-        // Left
-        -halfSize, halfSize, -halfSize, r, g, b, -1.f, 0.f, 0.f,  // - + -
-        -halfSize, -halfSize, -halfSize, r, g, b, -1.f, 0.f, 0.f, // - - -
-        -halfSize, -halfSize, halfSize, r, g, b, -1.f, 0.f, 0.f,  // - - +
-        -halfSize, halfSize, halfSize, r, g, b, -1.f, 0.f, 0.f    // - + +
-    };
-
-    std::vector<float> vRight{
-        // Right
-        halfSize, halfSize, halfSize, r, g, b, 1.f, 0.f, 0.f,   // + + +
-        halfSize, -halfSize, halfSize, r, g, b, 1.f, 0.f, 0.f,  // + - +
-        halfSize, -halfSize, -halfSize, r, g, b, 1.f, 0.f, 0.f, // + - -
-        halfSize, halfSize, -halfSize, r, g, b, 1.f, 0.f, 0.f   // + + -
-    };
-
-    std::vector<float> vFront{
-        // Front
-        -halfSize, halfSize, halfSize, r, g, b, 0.f, 0.f, 1.f,  // - + +
-        -halfSize, -halfSize, halfSize, r, g, b, 0.f, 0.f, 1.f, // - - +
-        halfSize, -halfSize, halfSize, r, g, b, 0.f, 0.f, 1.f,  // + - +
-        halfSize, halfSize, halfSize, r, g, b, 0.f, 0.f, 1.f    // + + +
-    };
-
-    std::vector<float> vBack{
-        // Back
-        -halfSize, -halfSize, -halfSize, r, g, b, 0.f, 0.f, -1.f, // - - -
-        -halfSize, halfSize, -halfSize, r, g, b, 0.f, 0.f, -1.f,  // - + -
-        halfSize, halfSize, -halfSize, r, g, b, 0.f, 0.f, -1.f,   // + + -
-        halfSize, -halfSize, -halfSize, r, g, b, 0.f, 0.f, -1.f   // + - -
-    };
-
-    mVertexDataMap["top"] = vTop;
-    mVertexDataMap["bottom"] = vBottom;
-    mVertexDataMap["left"] = vLeft;
-    mVertexDataMap["right"] = vRight;
-    mVertexDataMap["front"] = vFront;
-    mVertexDataMap["back"] = vBack;
-
-    // water cannot be moved!
-    glm::vec3 position = mParent->GetParent()->GetComponent<TransformComponent>()->GetPosition();
-    mMinCorner = position - glm::vec3(mSize / 2.0);
-    mMaxCorner = position + glm::vec3(mSize / 2.0);
 }
 
 glm::vec3 WaterMesh::GetSideNormal(std::string side)

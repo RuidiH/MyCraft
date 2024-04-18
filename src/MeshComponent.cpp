@@ -44,12 +44,12 @@ void MeshComponent::Render()
     }
 }
 
-void MeshComponent::Init()
+void MeshComponent::Init(std::shared_ptr<std::unordered_map<std::string, std::vector<float>>> vertices)
 {
     std::shared_ptr<Mesh> mesh = mMesh;
     if (mesh != nullptr)
     {
-        mesh->Init();
+        mesh->Init(vertices);
     }
 }
 

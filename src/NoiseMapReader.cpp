@@ -57,7 +57,7 @@ void NoiseMapReader::GenerateWorld(std::shared_ptr<ObjectManager> objectManager,
             for (int k = -2; k < yPosition - 2; k++) {
                 auto cube = std::make_shared<GameObject>("dirt_block");
                 cube->AddComponent<TransformComponent>(glm::vec3(xPosition, k, zPosition));
-                cube->AddComponent<MeshComponent>(MeshType::CUBE)->Init();
+                cube->AddComponent<MeshComponent>(MeshType::CUBE);
                 cube->AddComponent<TextureComponent>()->SetTextureGroupName("dirt");
                 cube->GetComponent<TextureComponent>()->SetTextureGroup(textureManager->GetTextureGroup("dirt"));
                 objectManager->AddObject(cube);
@@ -66,7 +66,7 @@ void NoiseMapReader::GenerateWorld(std::shared_ptr<ObjectManager> objectManager,
                 if (k == yPosition - 3 && k > -1) {
                     auto cube = std::make_shared<GameObject>("grass_block");
                     cube->AddComponent<TransformComponent>(glm::vec3(xPosition, k, zPosition));
-                    cube->AddComponent<MeshComponent>(MeshType::CUBE)->Init();
+                    cube->AddComponent<MeshComponent>(MeshType::CUBE);
                     cube->AddComponent<TextureComponent>()->SetTextureGroupName("grass");
                     cube->GetComponent<TextureComponent>()->SetTextureGroup(textureManager->GetTextureGroup("grass"));
                     objectManager->AddObject(cube);
@@ -77,7 +77,7 @@ void NoiseMapReader::GenerateWorld(std::shared_ptr<ObjectManager> objectManager,
             for (int k = yPosition - 2; k < 0; k++) {
                 auto cube = std::make_shared<GameObject>("water_block");
                 cube->AddComponent<TransformComponent>(glm::vec3(xPosition, k, zPosition));
-                cube->AddComponent<MeshComponent>(MeshType::WATER)->Init();
+                cube->AddComponent<MeshComponent>(MeshType::WATER);
                 objectManager->AddObject(cube);
             }
         }

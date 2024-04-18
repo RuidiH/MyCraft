@@ -7,9 +7,131 @@
 
 ObjectManager::ObjectManager(const Camera &camera) : mCamera(camera), mSortedTransparentObjects(TransparentObjectComparator(camera))
 {
-    // mSolidObjects = std::make_shared<std::vector<std::shared_ptr<GameObject>>>();
-    // mTransparentObjects = std::make_shared<std::vector<std::shared_ptr<GameObject>>>();
-    // mObjects = std::make_shared<std::vector<std::shared_ptr<GameObject>>>();
+    mSolidObjectVertices = std::make_shared<std::unordered_map<std::string, std::vector<float>>>();
+    mTransparentObjectVertices = std::make_shared<std::unordered_map<std::string, std::vector<float>>>();
+
+    float radius = 1.0 / 2.0;
+
+    // solid object data
+    // vertex data structure:
+    // x, y, z, u, v, nx, ny, nz
+
+    // initialize vertex data map
+    std::vector<float> sTop{
+
+        // Top
+        -radius, radius, -radius, 0.0f, 0.0f, 0.f, 1.f, 0.f, // - + -
+        -radius, radius, radius, 0.0f, 1.0f, 0.f, 1.f, 0.f,  // - + +
+        radius, radius, radius, 1.0f, 1.0f, 0.f, 1.f, 0.f,   // + + +
+        radius, radius, -radius, 1.0f, 0.0f, 0.f, 1.f, 0.f   // + + -
+    };
+
+    std::vector<float> sBottom{
+        // Bottom
+        -radius, -radius, radius, 0.0f, 1.0f, 0.f, -1.f, 0.f,  // - - +
+        -radius, -radius, -radius, 0.0f, 0.0f, 0.f, -1.f, 0.f, // - - -
+        radius, -radius, -radius, 1.0f, 0.0f, 0.f, -1.f, 0.f,  // + - -
+        radius, -radius, radius, 1.0f, 1.0f, 0.f, -1.f, 0.f    // + - +
+    };
+
+    std::vector<float> sLeft{
+        // Left
+        -radius, radius, -radius, 0.0f, 0.0f, -1.f, 0.f, 0.f,  // - + -
+        -radius, -radius, -radius, 0.0f, 1.0f, -1.f, 0.f, 0.f, // - - -
+        -radius, -radius, radius, 1.0f, 1.0f, -1.f, 0.f, 0.f,  // - - +
+        -radius, radius, radius, 1.0f, 0.0f, -1.f, 0.f, 0.f    // - + +
+    };
+
+    std::vector<float> sRight{
+        // Right
+        radius, radius, radius, 0.0f, 0.0f, 1.f, 0.f, 0.f,   // + + +
+        radius, -radius, radius, 0.0f, 1.0f, 1.f, 0.f, 0.f,  // + - +
+        radius, -radius, -radius, 1.0f, 1.0f, 1.f, 0.f, 0.f, // + - -
+        radius, radius, -radius, 1.0f, 0.0f, 1.f, 0.f, 0.f   // + + -
+    };
+
+    std::vector<float> sFront{
+        // Front
+        -radius, radius, radius, 0.0f, 0.0f, 0.f, 0.f, 1.f,  // - + +
+        -radius, -radius, radius, 0.0f, 1.0f, 0.f, 0.f, 1.f, // - - +
+        radius, -radius, radius, 1.0f, 1.0f, 0.f, 0.f, 1.f,  // + - +
+        radius, radius, radius, 1.0f, 0.0f, 0.f, 0.f, 1.f    // + + +
+    };
+
+    std::vector<float> sBack{
+        // Back
+        -radius, -radius, -radius, 1.0f, 1.0f, 0.f, 0.f, -1.f, // - - -
+        -radius, radius, -radius, 1.0f, 0.0f, 0.f, 0.f, -1.f,  // - + -
+        radius, radius, -radius, 0.0f, 0.0f, 0.f, 0.f, -1.f,   // + + -
+        radius, -radius, -radius, 0.0f, 1.0f, 0.f, 0.f, -1.f   // + - -
+    };
+
+    mSolidObjectVertices->insert({"top",sTop});
+    mSolidObjectVertices->insert({"bottom",sBottom});
+    mSolidObjectVertices->insert({"left",sLeft});
+    mSolidObjectVertices->insert({"right",sRight});
+    mSolidObjectVertices->insert({"front",sFront});
+    mSolidObjectVertices->insert({"back",sBack});
+
+    // water data
+    // x, y, z, r, g, b, nx, ny, nz
+    float r = 0.0f, g = 0.5f, b = 1.0f;
+
+    // initialize vertex data map
+    std::vector<float> tTop{
+        // Top
+        -radius, radius, -radius, r, g, b, 0.f, 1.f, 0.f, // - + -
+        -radius, radius, radius, r, g, b, 0.f, 1.f, 0.f,  // - + +
+        radius, radius, radius, r, g, b, 0.f, 1.f, 0.f,   // + + +
+        radius, radius, -radius, r, g, b, 0.f, 1.f, 0.f   // + + -
+    };
+
+    std::vector<float> tBottom{
+        // Bottom
+        -radius, -radius, radius, r, g, b, 0.f, -1.f, 0.f,  // - - +
+        -radius, -radius, -radius, r, g, b, 0.f, -1.f, 0.f, // - - -
+        radius, -radius, -radius, r, g, b, 0.f, -1.f, 0.f,  // + - -
+        radius, -radius, radius, r, g, b, 0.f, -1.f, 0.f    // + - +
+    };
+
+    std::vector<float> tLeft{
+        // Left
+        -radius, radius, -radius, r, g, b, -1.f, 0.f, 0.f,  // - + -
+        -radius, -radius, -radius, r, g, b, -1.f, 0.f, 0.f, // - - -
+        -radius, -radius, radius, r, g, b, -1.f, 0.f, 0.f,  // - - +
+        -radius, radius, radius, r, g, b, -1.f, 0.f, 0.f    // - + +
+    };
+
+    std::vector<float> tRight{
+        // Right
+        radius, radius, radius, r, g, b, 1.f, 0.f, 0.f,   // + + +
+        radius, -radius, radius, r, g, b, 1.f, 0.f, 0.f,  // + - +
+        radius, -radius, -radius, r, g, b, 1.f, 0.f, 0.f, // + - -
+        radius, radius, -radius, r, g, b, 1.f, 0.f, 0.f   // + + -
+    };
+
+    std::vector<float> tFront{
+        // Front
+        -radius, radius, radius, r, g, b, 0.f, 0.f, 1.f,  // - + +
+        -radius, -radius, radius, r, g, b, 0.f, 0.f, 1.f, // - - +
+        radius, -radius, radius, r, g, b, 0.f, 0.f, 1.f,  // + - +
+        radius, radius, radius, r, g, b, 0.f, 0.f, 1.f    // + + +
+    };
+
+    std::vector<float> tBack{
+        // Back
+        -radius, -radius, -radius, r, g, b, 0.f, 0.f, -1.f, // - - -
+        -radius, radius, -radius, r, g, b, 0.f, 0.f, -1.f,  // - + -
+        radius, radius, -radius, r, g, b, 0.f, 0.f, -1.f,   // + + -
+        radius, -radius, -radius, r, g, b, 0.f, 0.f, -1.f   // + - -
+    };
+
+    mTransparentObjectVertices->insert({"top", tTop});
+    mTransparentObjectVertices->insert({"bottom", tBottom});
+    mTransparentObjectVertices->insert({"left", tLeft});
+    mTransparentObjectVertices->insert({"right", tRight});
+    mTransparentObjectVertices->insert({"front", tFront});
+    mTransparentObjectVertices->insert({"back", tBack});
 }
 
 ObjectManager::~ObjectManager()
@@ -24,6 +146,13 @@ void ObjectManager::AddObject(const std::shared_ptr<GameObject> &object)
     {
         std::cout << "Object does not have a mesh component\n";
         return;
+    }
+
+    if (meshComponent->GetMeshType() == MeshType::CUBE)
+    {
+        meshComponent->Init(mSolidObjectVertices);
+    } else {
+        meshComponent->Init(mTransparentObjectVertices);
     }
 
     TransformComponent *transformComponent = object->GetComponent<TransformComponent>();
@@ -124,7 +253,6 @@ void ObjectManager::UpdateSortedTransparentObjects()
         }
     }
 }
-
 
 const std::set<std::shared_ptr<GameObject>, TransparentObjectComparator> &ObjectManager::GetTransparentObjects()
 {

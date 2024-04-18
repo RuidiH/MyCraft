@@ -21,7 +21,7 @@ public:
     void Update() override;
     void Render() override;
 
-    void Init() override;
+    void Init(std::shared_ptr<std::unordered_map<std::string, std::vector<float>>>& vertices) override;
     std::array<glm::vec3, 2> GetCorners() override { return {mMinCorner, mMaxCorner}; };
     glm::vec3 GetSideNormal(std::string side) override;
     

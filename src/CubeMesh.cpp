@@ -10,7 +10,7 @@ CubeMesh::CubeMesh()
     mSize = 1.0f;
 }
 
-void CubeMesh::Init()
+void CubeMesh::Init(std::shared_ptr<std::unordered_map<std::string, std::vector<float>>>& vertices)
 {
     mVisibleSides = mParent->GetVisibleSides();
     mTextureIdMap = std::make_shared<std::unordered_map<std::string, GLuint *>>();
@@ -22,9 +22,13 @@ void CubeMesh::Init()
         exit(1);
     }
 
-    SetVertexData();
+    // SetVertexData();
+    glm::vec3 position = mParent->GetParent()->GetComponent<TransformComponent>()->GetPosition();
+    mMinCorner = position - glm::vec3(mSize / 2.0);
+    mMaxCorner = position + glm::vec3(mSize / 2.0);
+    mVertexDataMap = vertices;
 
-    for (const auto &side : mVertexDataMap)
+    for (const auto &side : *mVertexDataMap)
     {
 
         // gen and bind vao, vbo, ibo
@@ -124,71 +128,6 @@ void CubeMesh::Render()
 
 void CubeMesh::SetVertexData()
 {
-    float radius = mSize / 2.0;
-
-    // vertex data structure:
-    // x, y, z, u, v, nx, ny, nz
-
-    // initialize vertex data map
-    std::vector<float> vTop{
-
-        // Top
-        -radius, radius, -radius, 0.0f, 0.0f, 0.f, 1.f, 0.f, // - + -
-        -radius, radius, radius, 0.0f, 1.0f, 0.f, 1.f, 0.f,  // - + +
-        radius, radius, radius, 1.0f, 1.0f, 0.f, 1.f, 0.f,   // + + +
-        radius, radius, -radius, 1.0f, 0.0f, 0.f, 1.f, 0.f   // + + -
-    };
-
-    std::vector<float> vBottom{
-        // Bottom
-        -radius, -radius, radius, 0.0f, 1.0f, 0.f, -1.f, 0.f,  // - - +
-        -radius, -radius, -radius, 0.0f, 0.0f, 0.f, -1.f, 0.f, // - - -
-        radius, -radius, -radius, 1.0f, 0.0f, 0.f, -1.f, 0.f,  // + - -
-        radius, -radius, radius, 1.0f, 1.0f, 0.f, -1.f, 0.f    // + - +
-    };
-
-    std::vector<float> vLeft{
-        // Left
-        -radius, radius, -radius, 0.0f, 0.0f, -1.f, 0.f, 0.f,  // - + -
-        -radius, -radius, -radius, 0.0f, 1.0f, -1.f, 0.f, 0.f, // - - -
-        -radius, -radius, radius, 1.0f, 1.0f, -1.f, 0.f, 0.f,  // - - +
-        -radius, radius, radius, 1.0f, 0.0f, -1.f, 0.f, 0.f    // - + +
-    };
-
-    std::vector<float> vRight{
-        // Right
-        radius, radius, radius, 0.0f, 0.0f, 1.f, 0.f, 0.f,   // + + +
-        radius, -radius, radius, 0.0f, 1.0f, 1.f, 0.f, 0.f,  // + - +
-        radius, -radius, -radius, 1.0f, 1.0f, 1.f, 0.f, 0.f, // + - -
-        radius, radius, -radius, 1.0f, 0.0f, 1.f, 0.f, 0.f   // + + -
-    };
-
-    std::vector<float> vFront{
-        // Front
-        -radius, radius, radius, 0.0f, 0.0f, 0.f, 0.f, 1.f,  // - + +
-        -radius, -radius, radius, 0.0f, 1.0f, 0.f, 0.f, 1.f, // - - +
-        radius, -radius, radius, 1.0f, 1.0f, 0.f, 0.f, 1.f,  // + - +
-        radius, radius, radius, 1.0f, 0.0f, 0.f, 0.f, 1.f    // + + +
-    };
-
-    std::vector<float> vBack{
-        // Back
-        -radius, -radius, -radius, 1.0f, 1.0f, 0.f, 0.f, -1.f, // - - -
-        -radius, radius, -radius, 1.0f, 0.0f, 0.f, 0.f, -1.f,  // - + -
-        radius, radius, -radius, 0.0f, 0.0f, 0.f, 0.f, -1.f,   // + + -
-        radius, -radius, -radius, 0.0f, 1.0f, 0.f, 0.f, -1.f   // + - -
-    };
-
-    mVertexDataMap["top"] = vTop;
-    mVertexDataMap["bottom"] = vBottom;
-    mVertexDataMap["left"] = vLeft;
-    mVertexDataMap["right"] = vRight;
-    mVertexDataMap["front"] = vFront;
-    mVertexDataMap["back"] = vBack;
-
-    glm::vec3 position = mParent->GetParent()->GetComponent<TransformComponent>()->GetPosition();
-    mMinCorner = position - glm::vec3(mSize / 2.0);
-    mMaxCorner = position + glm::vec3(mSize / 2.0);
 }
 
 glm::vec3 CubeMesh::GetSideNormal(std::string side)

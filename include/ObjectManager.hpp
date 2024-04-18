@@ -38,6 +38,9 @@ public:
     const std::set<std::shared_ptr<GameObject>, TransparentObjectComparator> &GetTransparentObjects();
     const std::unordered_map<std::string, std::shared_ptr<GameObject>> &GetObjects();
 
+    std::shared_ptr<std::unordered_map<std::string, std::vector<float>>>& GetSolidVertices() { return mSolidObjectVertices; }
+    std::shared_ptr<std::unordered_map<std::string, std::vector<float>>>& GetTransparentVertices() { return mTransparentObjectVertices; }
+
 private:
     const Camera &mCamera;
     std::set<std::shared_ptr<GameObject>, TransparentObjectComparator> mSortedTransparentObjects;
@@ -58,6 +61,9 @@ private:
         {"right", "left"},
         {"top", "bottom"},
         {"bottom", "top"}};
+
+    std::shared_ptr<std::unordered_map<std::string, std::vector<float>>> mSolidObjectVertices;  
+    std::shared_ptr<std::unordered_map<std::string, std::vector<float>>> mTransparentObjectVertices;  
 };
 
 #endif

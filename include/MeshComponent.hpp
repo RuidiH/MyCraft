@@ -9,6 +9,7 @@
 #include <unordered_set>
 #include <unordered_map>
 #include <map>
+#include <string>
 
 #include "Mesh.hpp"
 #include "Component.hpp"
@@ -32,7 +33,7 @@ class MeshComponent : public Component {
         virtual void Render() override;
 
         // std::shared_ptr<Mesh> AddMesh(MeshType type);
-        void Init();
+        void Init(std::shared_ptr<std::unordered_map<std::string, std::vector<float>>>);
         std::shared_ptr<Mesh> GetMesh() {return mMesh;};
 
         MeshType GetMeshType() {return mMeshType;};
