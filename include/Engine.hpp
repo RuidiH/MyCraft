@@ -63,6 +63,9 @@ private:
     // game state
     bool mQuit = false;
 
+    // wireframe
+    bool mWireframeMode = false;
+
     SDL_Window *gGraphicsApplicationWindow = nullptr;
     SDL_GLContext gOpenGLContext = nullptr;
     GLuint mGraphicsPipelineShaderProgram;

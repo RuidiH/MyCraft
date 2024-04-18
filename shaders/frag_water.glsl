@@ -18,41 +18,41 @@ uniform sampler2D shadowMap;
 void main()
 {   
     // ambient
-    float ambientStrength = 0.1f;
-    vec3 ambient = ambientStrength * lightColor;
+    // float ambientStrength = 0.1f;
+    // vec3 ambient = ambientStrength * lightColor;
 
-    // diffuse
-    vec3 norm = normalize(fNormal);
-    vec3 lightDir = normalize(lightPos - fPos);
-    float diff = max(dot(norm, lightDir), 0.0);
-    vec3 diffuse = diff * lightColor;
+    // // diffuse
+    // vec3 norm = normalize(fNormal);
+    // vec3 lightDir = normalize(lightPos - fPos);
+    // float diff = max(dot(norm, lightDir), 0.0);
+    // vec3 diffuse = diff * lightColor;
 
-    // specular
-    float specularStrength = 0.5f;
-    vec3 viewDir = normalize(viewPos - fPos);
-    vec3 reflectDir = reflect(-lightDir, norm);  
-    float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
-    vec3 specular = specularStrength * spec * lightColor;  
+    // // specular
+    // float specularStrength = 0.5f;
+    // vec3 viewDir = normalize(viewPos - fPos);
+    // vec3 reflectDir = reflect(-lightDir, norm);  
+    // float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
+    // vec3 specular = specularStrength * spec * lightColor;  
     
-    // texture
-    // vec3 textureColor = texture(texture1, fTexCoord).rgb;
+    // // texture
+    // // vec3 textureColor = texture(texture1, fTexCoord).rgb;
 
-    // calculate shadow
-    float shadow = 0.0f;
-    float bias = 0.0005f;
-    vec3 lightCoords = fPosLight.xyz / fPosLight.w;
-    if (lightCoords.z <= 1.0f) {
-        lightCoords = (lightCoords + 1.0f) / 2.0f;
-        float closestDepth = texture(shadowMap, lightCoords.xy).r;
-        float currentDepth = lightCoords.z;
+    // // calculate shadow
+    // float shadow = 0.0f;
+    // float bias = 0.0005f;
+    // vec3 lightCoords = fPosLight.xyz / fPosLight.w;
+    // if (lightCoords.z <= 1.0f) {
+    //     lightCoords = (lightCoords + 1.0f) / 2.0f;
+    //     float closestDepth = texture(shadowMap, lightCoords.xy).r;
+    //     float currentDepth = lightCoords.z;
 
-        if(currentDepth - bias > closestDepth) {
-            shadow = 1.0f;
-        }
-    }
+    //     if(currentDepth - bias > closestDepth) {
+    //         shadow = 1.0f;
+    //     }
+    // }
 
     vec3 incomingColor = fColor.rgb;
 
-    vec3 result = (ambient + (1.0 - shadow) * diffuse) * incomingColor;
-    color = vec4(result, 0.3); 
+    // vec3 result = (ambient + (1.0 - shadow) * diffuse) * incomingColor;
+    color = vec4(incomingColor, 0.3); 
 }

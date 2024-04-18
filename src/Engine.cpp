@@ -81,13 +81,13 @@ void Engine::LoadSavedWorld()
     std::cout << "<<<<<<<<<<<<<<<<<<<<<<< Objects Loaded >>>>>>>>>>>>>>>>>>>>>>>>>\n\n\n";
 }
 
-void Engine::GenerateWorld(const std::string& filename)
+void Engine::GenerateWorld(const std::string &filename)
 {
     std::cout << "<<<<<<<<<<<<<<<<<<<<<<< Generating Objects >>>>>>>>>>>>>>>>>>>>>>>>>\n";
     mNoiseReader = std::make_shared<NoiseMapReader>(filename);
     mNoiseReader->readNoiseMap();
     mNoiseReader->GenerateWorld(mObjectManager, mTextureManager);
-    std::cout << "<<<<<<<<<<<<<<<<<<<<<<< Objects Generated >>>>>>>>>>>>>>>>>>>>>>>>>\n\n\n"; 
+    std::cout << "<<<<<<<<<<<<<<<<<<<<<<< Objects Generated >>>>>>>>>>>>>>>>>>>>>>>>>\n\n\n";
 }
 
 void Engine::MainLoop()
@@ -196,6 +196,21 @@ void Engine::Input()
         mNewObjectTextureGroup = "none";
         mNewObjectID = "water_block";
     }
+
+        // wireframe mode
+    if (state[SDL_SCANCODE_TAB])
+    {
+        if (mWireframeMode)
+        {
+            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+            mWireframeMode = false; 
+        }
+        else
+        {
+            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+            mWireframeMode = true;
+        }
+    }
 }
 
 void Engine::RemoveObject()
@@ -246,7 +261,7 @@ void Engine::AddObject()
             if (mNewObjectID == "water_block")
             {
                 obj->AddComponent<TransformComponent>()->SetPosition(placementPos);
-                obj->AddComponent<MeshComponent>()->AddMesh(MeshType::WATER);
+                obj->AddComponent<MeshComponent>(MeshType::WATER)->Init();
 
                 mObjectManager->AddObject(obj);
                 // mGameObjects->push_back(obj);
@@ -256,7 +271,7 @@ void Engine::AddObject()
             }
 
             obj->AddComponent<TransformComponent>()->SetPosition(placementPos);
-            obj->AddComponent<MeshComponent>()->AddMesh(MeshType::CUBE);
+            obj->AddComponent<MeshComponent>(MeshType::CUBE)->Init();
             obj->AddComponent<TextureComponent>()->SetTextureGroupName(mNewObjectTextureGroup);
             obj->GetComponent<TextureComponent>()->SetTextureGroup(mTextureManager->GetTextureGroup(mNewObjectTextureGroup));
             // mGameObjects->push_back(obj);

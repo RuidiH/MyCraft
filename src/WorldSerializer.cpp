@@ -54,6 +54,14 @@ void WorldSerializer::CreateBlocks(const std::string &filename)
         // Create and configure the block based on its type
         auto block = std::make_shared<GameObject>(blockId);
 
+        // add transform
+        auto &transformData = blockData["transform"];
+        glm::vec3 position(
+            transformData["position"][0].GetFloat(),
+            transformData["position"][1].GetFloat(),
+            transformData["position"][2].GetFloat());
+        block->AddComponent<TransformComponent>()->SetPosition(position);
+
         // Assuming you have a method to set up components based on type
         for (const auto &comp : blockType.components)
         {
@@ -62,9 +70,9 @@ void WorldSerializer::CreateBlocks(const std::string &filename)
             {
                 if (comp.second.at("type") == "cube")
                 {
-                    block->AddComponent<MeshComponent>()->AddMesh(MeshType::CUBE);
+                    block->AddComponent<MeshComponent>(MeshType::CUBE)->Init();
                 } else if (comp.second.at("type") == "water") {
-                    block->AddComponent<MeshComponent>()->AddMesh(MeshType::WATER);
+                    block->AddComponent<MeshComponent>(MeshType::WATER)->Init();
                 }
             }
             else if (comp.first == "texture")
@@ -80,16 +88,6 @@ void WorldSerializer::CreateBlocks(const std::string &filename)
                 }
             }
         }
-        // Set the transform from the world data
-        auto &transformData = blockData["transform"];
-
-
-        glm::vec3 position(
-            transformData["position"][0].GetFloat(),
-            transformData["position"][1].GetFloat(),
-            transformData["position"][2].GetFloat());
-
-        block->AddComponent<TransformComponent>()->SetPosition(position);
 
         mObjectManager->AddObject(block);
         // mGameObjects->push_back(block);

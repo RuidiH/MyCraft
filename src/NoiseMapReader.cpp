@@ -57,7 +57,7 @@ void NoiseMapReader::GenerateWorld(std::shared_ptr<ObjectManager> objectManager,
             for (int k = -2; k < yPosition - 2; k++) {
                 auto cube = std::make_shared<GameObject>("dirt_block");
                 cube->AddComponent<TransformComponent>(glm::vec3(xPosition, k, zPosition));
-                cube->AddComponent<MeshComponent>()->AddMesh(MeshType::CUBE);
+                cube->AddComponent<MeshComponent>(MeshType::CUBE)->Init();
                 cube->AddComponent<TextureComponent>()->SetTextureGroupName("dirt");
                 cube->GetComponent<TextureComponent>()->SetTextureGroup(textureManager->GetTextureGroup("dirt"));
                 objectManager->AddObject(cube);
@@ -66,7 +66,7 @@ void NoiseMapReader::GenerateWorld(std::shared_ptr<ObjectManager> objectManager,
                 if (k == yPosition - 3 && k > -1) {
                     auto cube = std::make_shared<GameObject>("grass_block");
                     cube->AddComponent<TransformComponent>(glm::vec3(xPosition, k, zPosition));
-                    cube->AddComponent<MeshComponent>()->AddMesh(MeshType::CUBE);
+                    cube->AddComponent<MeshComponent>(MeshType::CUBE)->Init();
                     cube->AddComponent<TextureComponent>()->SetTextureGroupName("grass");
                     cube->GetComponent<TextureComponent>()->SetTextureGroup(textureManager->GetTextureGroup("grass"));
                     objectManager->AddObject(cube);
@@ -77,9 +77,19 @@ void NoiseMapReader::GenerateWorld(std::shared_ptr<ObjectManager> objectManager,
             for (int k = yPosition - 2; k < 0; k++) {
                 auto cube = std::make_shared<GameObject>("water_block");
                 cube->AddComponent<TransformComponent>(glm::vec3(xPosition, k, zPosition));
-                cube->AddComponent<MeshComponent>()->AddMesh(MeshType::WATER);
+                cube->AddComponent<MeshComponent>(MeshType::WATER)->Init();
                 objectManager->AddObject(cube);
             }
         }
     }
+
+    // count number of object we are rendering
+    std::cout << "Number of objects: " << objectManager->GetObjects().size() << std::endl;
+
+    // count number of face we are rendering
+    int faceCount = 0;
+    for (auto object : objectManager->GetObjects()) {
+        faceCount += object.second->GetComponent<MeshComponent>()->GetVisibleSides()->size();
+    }
+    std::cout << "Number of faces: " << faceCount << std::endl;
 }

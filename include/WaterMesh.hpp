@@ -16,21 +16,25 @@ class WaterMesh : public Mesh
 {
 public:
     WaterMesh();
-    ~WaterMesh(){};
+    ~WaterMesh();
 
     void Update() override;
     void Render() override;
 
-    glm::vec3 GetMinCorner() { return this->mMinCorner; };
-    glm::vec3 GetMaxCorner() { return this->mMaxCorner; };
+    void Init() override;
     std::array<glm::vec3, 2> GetCorners() override { return {mMinCorner, mMaxCorner}; };
     glm::vec3 GetSideNormal(std::string side) override;
+    
+    glm::vec3 GetMinCorner() { return this->mMinCorner; };
+    glm::vec3 GetMaxCorner() { return this->mMaxCorner; };
 
 private:
     void SetVertexData();
 
-    std::map<std::string, std::vector<float>> mVertexDataMap;
-
+    const std::vector<GLuint> mIndexBuffer{
+        0, 1, 2,
+        0, 2, 3};
+        
     glm::vec3 mMinCorner;
     glm::vec3 mMaxCorner;
 };

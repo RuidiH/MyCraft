@@ -37,18 +37,34 @@ void ObjectManager::AddObject(const std::shared_ptr<GameObject> &object)
         {
             if (meshComponent->GetMeshType() != mObjects[neighborPositionString]->GetComponent<MeshComponent>()->GetMeshType())
             {
-                meshComponent->SetVisibility(neighbor.first, true);
-                continue;
+                if (meshComponent->GetMeshType() == MeshType::WATER)
+                {
+                    // meshComponent->SetVisibility(neighbor.first, false);
+                    // mObjects[neighborPositionString]->GetComponent<MeshComponent>()->SetVisibility(mOppositeSides.at(neighbor.first), true);
+                    meshComponent->RemoveVisibleSide(neighbor.first);
+                    mObjects[neighborPositionString]->GetComponent<MeshComponent>()->AddVisibleSide(mOppositeSides.at(neighbor.first));
+                }
+                else if (meshComponent->GetMeshType() == MeshType::CUBE)
+                {
+                    meshComponent->AddVisibleSide(neighbor.first);
+                    mObjects[neighborPositionString]->GetComponent<MeshComponent>()->RemoveVisibleSide(mOppositeSides.at(neighbor.first));
+                    // meshComponent->SetVisibility(neighbor.first, true);
+                    // mObjects[neighborPositionString]->GetComponent<MeshComponent>()->SetVisibility(mOppositeSides.at(neighbor.first), false);
+                }
             }
-
-            mObjects[neighborPositionString]->GetComponent<MeshComponent>()->SetVisibility(mOppositeSides.at(neighbor.first), false);
-            meshComponent->SetVisibility(neighbor.first, false);
+            else
+            {
+                meshComponent->RemoveVisibleSide(neighbor.first);
+                mObjects[neighborPositionString]->GetComponent<MeshComponent>()->RemoveVisibleSide(mOppositeSides.at(neighbor.first));
+                // mObjects[neighborPositionString]->GetComponent<MeshComponent>()->SetVisibility(mOppositeSides.at(neighbor.first), false);
+                // meshComponent->SetVisibility(neighbor.first, false);
+            }
         }
         else
         {
-            meshComponent->SetVisibility(neighbor.first, true);
+            // meshComponent->SetVisibility(neighbor.first, true);
+            meshComponent->AddVisibleSide(neighbor.first);
         }
-
     }
 
     // insert object into map
@@ -109,88 +125,6 @@ void ObjectManager::UpdateSortedTransparentObjects()
     }
 }
 
-// void ObjectManager::AddSolidObject(std::shared_ptr<GameObject> object)
-// {
-//     mSolidObjects->push_back(object);
-//     mObjects->push_back(object);
-// }
-
-// void ObjectManager::AddTransparentObject(std::shared_ptr<GameObject> object)
-// {
-//     mTransparentObjects->push_back(object);
-//     mObjects->push_back(object);
-// }
-
-// void ObjectManager::AddObject(std::shared_ptr<GameObject> object)
-// {
-//     MeshComponent *meshComponent = object->GetComponent<MeshComponent>();
-
-//     if (meshComponent == nullptr) {
-//         std::cout << "Object does not have a mesh component\n";
-//         return;
-//     }
-
-//     if (meshComponent->GetMeshType() == MeshType::CUBE)
-//     {
-//         mSolidObjects->push_back(object);
-//     }
-//     else if (meshComponent->GetMeshType() == MeshType::WATER)
-//     {
-//         mTransparentObjects->push_back(object);
-//     } else {
-//         std::cout << "Mesh type not supported\n";
-//     }
-//     mObjects->push_back(object);
-// }
-
-// void ObjectManager::RemoveSolidObject(std::shared_ptr<GameObject> object)
-// {
-//     auto it = std::find(mSolidObjects->begin(), mSolidObjects->end(), object);
-//     if (it != mSolidObjects->end())
-//     {
-//         mSolidObjects->erase(it);
-//     }
-//     it = std::find(mObjects->begin(), mObjects->end(), object);
-//     if (it != mObjects->end())
-//     {
-//         mObjects->erase(it);
-//     }
-// }
-
-// void ObjectManager::RemoveTransparentObject(std::shared_ptr<GameObject> object)
-// {
-//     auto it = std::find(mTransparentObjects->begin(), mTransparentObjects->end(), object);
-//     if (it != mTransparentObjects->end())
-//     {
-//         mTransparentObjects->erase(it);
-//     }
-//     it = std::find(mObjects->begin(), mObjects->end(), object);
-//     if (it != mObjects->end())
-//     {
-//         mObjects->erase(it);
-//     }
-// }
-
-// void ObjectManager::RemoveObject(std::shared_ptr<GameObject> object)
-// {
-//     auto it = std::find(mSolidObjects->begin(), mSolidObjects->end(), object);
-//     if (it != mSolidObjects->end())
-//     {
-//         mSolidObjects->erase(it);
-//     }
-
-//     it = std::find(mTransparentObjects->begin(), mTransparentObjects->end(), object);
-//     if (it != mTransparentObjects->end())
-//     {
-//         mTransparentObjects->erase(it);
-//     }
-
-//     it = std::find(mObjects->begin(), mObjects->end(), object);
-//     if (it != mObjects->end())
-//     {
-//         mObjects->erase(it);
-//     }
-// }
 
 const std::set<std::shared_ptr<GameObject>, TransparentObjectComparator> &ObjectManager::GetTransparentObjects()
 {

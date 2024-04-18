@@ -3,60 +3,52 @@
 #include "TransformComponent.hpp"
 #include "TextureComponent.hpp"
 
+#include <unordered_set>
+
 CubeMesh::CubeMesh()
 {
     mSize = 1.0f;
-    SetVertexData();
 }
 
-void CubeMesh::Update()
+void CubeMesh::Init()
 {
-    glm::vec3 position = mParent->GetParent()->GetComponent<TransformComponent>()->GetPosition();
-    mMinCorner = position - glm::vec3(mSize / 2.0);
-    mMaxCorner = position + glm::vec3(mSize / 2.0);
-}
+    mVisibleSides = mParent->GetVisibleSides();
+    mTextureIdMap = std::make_shared<std::unordered_map<std::string, GLuint *>>();
 
-void CubeMesh::Render()
-{
-    std::map<std::string, GLuint *> textureIdMap = mParent->GetParent()->GetComponent<TextureComponent>()->GetTextureGroup();
-    for (const auto &face : textureIdMap)
+    // exit if parent does not have a transform component
+    if (!mParent || !mParent->GetParent()->HasComponent<TransformComponent>())
     {
-        if (!mParent->GetVisibility(face.first))
-        {
-            continue;
-        }
+        std::cout << "Cube Mesh component's parent does not have a transform component\n";
+        exit(1);
+    }
 
-        GLuint vao;
+    SetVertexData();
 
-        GLuint vbo;
+    for (const auto &side : mVertexDataMap)
+    {
 
-        GLuint ibo;
+        // gen and bind vao, vbo, ibo
+        std::array<GLuint, 3> buffers;
 
-        GLuint *currentTexID = face.second;
+        glGenVertexArrays(1, &buffers.at(0));
+        glBindVertexArray(buffers.at(0));
 
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, *currentTexID);
+        glGenBuffers(1, &buffers.at(1));
+        glBindBuffer(GL_ARRAY_BUFFER, buffers.at(1));
 
-        glGenVertexArrays(1, &vao);
-        glBindVertexArray(vao);
+        glGenBuffers(1, &buffers.at(2));
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffers.at(2));
 
-        glGenBuffers(1, &vbo);
-        glBindBuffer(GL_ARRAY_BUFFER, vbo);
+        // set vertex data
         glBufferData(GL_ARRAY_BUFFER,
-                     mVertexDataMap[face.first].size() * sizeof(GL_FLOAT),
-                     mVertexDataMap[face.first].data(),
+                     side.second.size() * sizeof(GL_FLOAT),
+                     side.second.data(),
                      GL_STATIC_DRAW);
 
-        // Set up Index Buffer Object
-        std::vector<GLuint> indexBuffer{
-            0, 1, 2,
-            0, 2, 3};
-
-        glGenBuffers(1, &ibo);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+        // set index buffer data
         glBufferData(GL_ELEMENT_ARRAY_BUFFER,
-                     indexBuffer.size() * sizeof(GLuint),
-                     indexBuffer.data(),
+                     mIndexBuffer.size() * sizeof(GLuint),
+                     mIndexBuffer.data(),
                      GL_STATIC_DRAW);
 
         glEnableVertexAttribArray(0);
@@ -77,22 +69,56 @@ void CubeMesh::Render()
 
         glEnableVertexAttribArray(2);
         glVertexAttribPointer(2,
-                              3, // normal
+                              3, // nx, ny, nz
                               GL_FLOAT,
                               GL_FALSE,
                               sizeof(GL_FLOAT) * 8,
                               (GLvoid *)(sizeof(GL_FLOAT) * 5));
 
+        // unbind
+        glBindVertexArray(0);
+        mBufferObjectsMap.insert({side.first, buffers});
+    }
+}
+
+CubeMesh::~CubeMesh()
+{
+    for (const auto &pair : mBufferObjectsMap)
+    {
+        glDeleteBuffers(1, &pair.second.at(0));
+        glDeleteBuffers(1, &pair.second.at(1));
+        glDeleteVertexArrays(1, &pair.second.at(2));
+    }
+}
+
+void CubeMesh::Update()
+{
+}
+
+void CubeMesh::Render()
+{
+    if (mTextureIdMap->empty())
+    {
+        for (const auto &texId : mParent->GetParent()->GetComponent<TextureComponent>()->GetTextureGroup()) {
+            mTextureIdMap->insert(texId);
+        }
+    }
+
+    for (const auto &face : *mVisibleSides)
+    {
+        std::array<GLuint, 3> buffers = mBufferObjectsMap.at(face);
+        GLuint *currentTexID = mTextureIdMap.get()->at(face);
+
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, *currentTexID);
+
+        glBindVertexArray(buffers.at(0));
+        glBindBuffer(GL_ARRAY_BUFFER, buffers.at(1));
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffers.at(2));
+
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
         glBindVertexArray(0);
-        glDisableVertexAttribArray(0);
-        glDisableVertexAttribArray(1);
-        glDisableVertexAttribArray(2);
-
-        glDeleteBuffers(1, &vbo);
-        glDeleteBuffers(1, &ibo);
-        glDeleteVertexArrays(1, &vao);
     }
 }
 
@@ -108,49 +134,49 @@ void CubeMesh::SetVertexData()
 
         // Top
         -radius, radius, -radius, 0.0f, 0.0f, 0.f, 1.f, 0.f, // - + -
-        -radius, radius,  radius, 0.0f, 1.0f, 0.f, 1.f, 0.f,  // - + +
-         radius, radius,  radius, 1.0f, 1.0f, 0.f, 1.f, 0.f,   // + + +
-         radius, radius, -radius, 1.0f, 0.0f, 0.f, 1.f, 0.f   // + + -
+        -radius, radius, radius, 0.0f, 1.0f, 0.f, 1.f, 0.f,  // - + +
+        radius, radius, radius, 1.0f, 1.0f, 0.f, 1.f, 0.f,   // + + +
+        radius, radius, -radius, 1.0f, 0.0f, 0.f, 1.f, 0.f   // + + -
     };
 
     std::vector<float> vBottom{
         // Bottom
-        -radius, -radius,  radius, 0.0f, 1.0f, 0.f, -1.f, 0.f,  // - - +
+        -radius, -radius, radius, 0.0f, 1.0f, 0.f, -1.f, 0.f,  // - - +
         -radius, -radius, -radius, 0.0f, 0.0f, 0.f, -1.f, 0.f, // - - -
-         radius, -radius, -radius, 1.0f, 0.0f, 0.f, -1.f, 0.f,  // + - -
-         radius, -radius,  radius, 1.0f, 1.0f, 0.f, -1.f, 0.f    // + - +
+        radius, -radius, -radius, 1.0f, 0.0f, 0.f, -1.f, 0.f,  // + - -
+        radius, -radius, radius, 1.0f, 1.0f, 0.f, -1.f, 0.f    // + - +
     };
 
     std::vector<float> vLeft{
         // Left
-        -radius,  radius, -radius, 0.0f, 0.0f, -1.f, 0.f, 0.f,  // - + -
+        -radius, radius, -radius, 0.0f, 0.0f, -1.f, 0.f, 0.f,  // - + -
         -radius, -radius, -radius, 0.0f, 1.0f, -1.f, 0.f, 0.f, // - - -
-        -radius, -radius,  radius, 1.0f, 1.0f, -1.f, 0.f, 0.f,  // - - +
-        -radius,  radius,  radius, 1.0f, 0.0f, -1.f, 0.f, 0.f    // - + +
+        -radius, -radius, radius, 1.0f, 1.0f, -1.f, 0.f, 0.f,  // - - +
+        -radius, radius, radius, 1.0f, 0.0f, -1.f, 0.f, 0.f    // - + +
     };
 
     std::vector<float> vRight{
         // Right
-        radius,  radius,  radius, 0.0f, 0.0f, 1.f, 0.f, 0.f,   // + + +
-        radius, -radius,  radius, 0.0f, 1.0f, 1.f, 0.f, 0.f,  // + - +
+        radius, radius, radius, 0.0f, 0.0f, 1.f, 0.f, 0.f,   // + + +
+        radius, -radius, radius, 0.0f, 1.0f, 1.f, 0.f, 0.f,  // + - +
         radius, -radius, -radius, 1.0f, 1.0f, 1.f, 0.f, 0.f, // + - -
-        radius,  radius, -radius, 1.0f, 0.0f, 1.f, 0.f, 0.f   // + + -
+        radius, radius, -radius, 1.0f, 0.0f, 1.f, 0.f, 0.f   // + + -
     };
 
     std::vector<float> vFront{
         // Front
-        -radius,  radius, radius, 0.0f, 0.0f, 0.f, 0.f, 1.f,  // - + +
+        -radius, radius, radius, 0.0f, 0.0f, 0.f, 0.f, 1.f,  // - + +
         -radius, -radius, radius, 0.0f, 1.0f, 0.f, 0.f, 1.f, // - - +
-         radius, -radius, radius, 1.0f, 1.0f, 0.f, 0.f, 1.f,  // + - +
-         radius,  radius, radius, 1.0f, 0.0f, 0.f, 0.f, 1.f    // + + +
+        radius, -radius, radius, 1.0f, 1.0f, 0.f, 0.f, 1.f,  // + - +
+        radius, radius, radius, 1.0f, 0.0f, 0.f, 0.f, 1.f    // + + +
     };
 
     std::vector<float> vBack{
         // Back
         -radius, -radius, -radius, 1.0f, 1.0f, 0.f, 0.f, -1.f, // - - -
-        -radius,  radius, -radius, 1.0f, 0.0f, 0.f, 0.f, -1.f,  // - + -
-         radius,  radius, -radius, 0.0f, 0.0f, 0.f, 0.f, -1.f,   // + + -
-         radius, -radius, -radius, 0.0f, 1.0f, 0.f, 0.f, -1.f   // + - -
+        -radius, radius, -radius, 1.0f, 0.0f, 0.f, 0.f, -1.f,  // - + -
+        radius, radius, -radius, 0.0f, 0.0f, 0.f, 0.f, -1.f,   // + + -
+        radius, -radius, -radius, 0.0f, 1.0f, 0.f, 0.f, -1.f   // + - -
     };
 
     mVertexDataMap["top"] = vTop;
@@ -159,6 +185,10 @@ void CubeMesh::SetVertexData()
     mVertexDataMap["right"] = vRight;
     mVertexDataMap["front"] = vFront;
     mVertexDataMap["back"] = vBack;
+
+    glm::vec3 position = mParent->GetParent()->GetComponent<TransformComponent>()->GetPosition();
+    mMinCorner = position - glm::vec3(mSize / 2.0);
+    mMaxCorner = position + glm::vec3(mSize / 2.0);
 }
 
 glm::vec3 CubeMesh::GetSideNormal(std::string side)
