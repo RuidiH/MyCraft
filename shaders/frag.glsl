@@ -38,7 +38,7 @@ void main()
 
     // calculate shadow
     float shadow = 0.0f;
-    float bias = 0.0005f;
+    float bias = 0.0007f;
     vec3 lightCoords = fPosLight.xyz / fPosLight.w;
     if (lightCoords.z <= 1.0f) {
         lightCoords = (lightCoords + 1.0f) / 2.0f;

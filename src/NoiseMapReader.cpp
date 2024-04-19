@@ -67,12 +67,12 @@ void NoiseMapReader::GenerateWorld(std::shared_ptr<ObjectManager> objectManager,
                 // grass
                 if (k == yPosition - 3 && k > -1)
                 {
-                    // auto grassBlock = std::make_shared<GameObject>("grass_block");
-                    // grassBlock->AddComponent<TransformComponent>(glm::vec3(xPosition, k, zPosition));
-                    // grassBlock->AddComponent<MeshComponent>(MeshType::CUBE);
-                    // grassBlock->AddComponent<TextureComponent>()->SetTextureGroupName("grass");
-                    // grassBlock->GetComponent<TextureComponent>()->SetTextureGroup(textureManager->GetTextureGroup("grass"));
-                    // objectManager->AddObject(grassBlock);
+                    auto grassBlock = std::make_shared<GameObject>("grass_block");
+                    grassBlock->AddComponent<TransformComponent>(glm::vec3(xPosition, k, zPosition));
+                    grassBlock->AddComponent<MeshComponent>(MeshType::CUBE);
+                    grassBlock->AddComponent<TextureComponent>()->SetTextureGroupName("grass");
+                    grassBlock->GetComponent<TextureComponent>()->SetTextureGroup(textureManager->GetTextureGroup("grass"));
+                    objectManager->AddObject(grassBlock);
                 }
                 else
                 {
@@ -86,13 +86,17 @@ void NoiseMapReader::GenerateWorld(std::shared_ptr<ObjectManager> objectManager,
             }
 
             // water
-            // for (int k = yPosition - 2; k < 0; k++)
-            // {
-            //     auto cube = std::make_shared<GameObject>("water_block");
-            //     cube->AddComponent<TransformComponent>(glm::vec3(xPosition, k, zPosition));
-            //     cube->AddComponent<MeshComponent>(MeshType::WATER);
-            //     objectManager->AddObject(cube);
-            // }
+            for (int k = yPosition - 2; k < 0; k++)
+            {
+                std::string positionString = std::to_string(xPosition) + ", " + std::to_string(k) + ", " + std::to_string(zPosition);
+                if (objectManager->GetObjects().find(positionString) == objectManager->GetObjects().end())
+                {
+                    auto cube = std::make_shared<GameObject>("water_block");
+                    cube->AddComponent<TransformComponent>(glm::vec3(xPosition, k, zPosition));
+                    cube->AddComponent<MeshComponent>(MeshType::WATER);
+                    objectManager->AddObject(cube);
+                }
+            }
         }
     }
 

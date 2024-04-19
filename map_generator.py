@@ -4,8 +4,8 @@ import matplotlib.pyplot as plt
 import csv  # Import the csv module
 
 # Settings for the noise map
-width = 50
-height = 50
+width = 30
+height = 30
 scale = 0.1  # Scale of the noise
 octaves = 6  # Number of octaves
 persistence = 0.5

@@ -55,5 +55,4 @@ glm::mat4 TransformComponent::GetModelMatrix() const
 void TransformComponent::SetPosition(glm::vec3 position) {
     mPosition = position;
     mPositionString = std::to_string(position.x) + ", " + std::to_string(position.y) + ", " + std::to_string(position.z);
-    std::cout << "transform component position set to " << mPositionString << "\n";
 }

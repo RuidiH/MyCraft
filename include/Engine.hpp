@@ -52,7 +52,7 @@ private:
     std::shared_ptr<std::vector<std::shared_ptr<GameObject>>> mGameObjects;
 
     std::shared_ptr<Camera> mCamera;
-    glm::vec2 mShadowResolution = glm::vec2(4096, 4096);
+    glm::vec2 mShadowResolution = glm::vec2(2048, 2048);
 
     std::shared_ptr<ObjectManager> mObjectManager;
 
