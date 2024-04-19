@@ -33,21 +33,18 @@ class MeshComponent : public Component {
         virtual void Render() override;
 
         // std::shared_ptr<Mesh> AddMesh(MeshType type);
-        void Init(std::shared_ptr<std::unordered_map<std::string, std::vector<float>>>);
+        void Init();
         std::shared_ptr<Mesh> GetMesh() {return mMesh;};
 
         MeshType GetMeshType() {return mMeshType;};
-        void SetVisibility(std::string side, bool visible);
-        bool GetVisibility(std::string side) {return mVisibilityMap[side];};
 
-        std::shared_ptr<std::unordered_set<std::string>> GetVisibleSides() {return mVisibleSides;}; 
+        const std::unordered_set<std::string>& GetVisibleSides() {return *mVisibleSides;}; 
         void AddVisibleSide(std::string side) {mVisibleSides->insert(side);};
         void RemoveVisibleSide(std::string side) {mVisibleSides->erase(side);};
 
     private:
         std::shared_ptr<Mesh> mMesh;
         MeshType mMeshType; 
-        std::map<std::string, bool> mVisibilityMap;
         std::shared_ptr<std::unordered_set<std::string>> mVisibleSides;
 };
 

@@ -21,23 +21,28 @@ public:
     void Update() override;
     void Render() override;
 
-    void Init(std::shared_ptr<std::unordered_map<std::string, std::vector<float>>>& vertices) override;
+    void Init() override;
     std::array<glm::vec3, 2> GetCorners() override { return {mMinCorner, mMaxCorner}; };
     glm::vec3 GetSideNormal(std::string side) override;
-    void LoadFace(std::string face) override; 
-    void OffloadFace(std::string face) override;
 
     glm::vec3 GetMinCorner() { return this->mMinCorner; };
     glm::vec3 GetMaxCorner() { return this->mMaxCorner; };
 
 private:
     void SetVertexData();
-
-    const std::vector<GLuint> mIndexBuffer{
-        0, 1, 2,
-        0, 2, 3};
-        
+    
+    void LoadFace(std::string face) override; 
+    void OffloadFace(std::string face) override;
+ 
     glm::vec3 mMinCorner;
     glm::vec3 mMaxCorner;
+
+    // static values
+    static std::unordered_map<std::string, std::vector<float>> mVertices;
+    static std::unordered_map<std::string, GLuint> mVAOs;
+    static std::unordered_map<std::string, GLuint> mVBOs;
+    static GLuint mIBO;
+    static const std::vector<GLuint> mIndexBuffer;
+    static bool mInitialized;
 };
 #endif

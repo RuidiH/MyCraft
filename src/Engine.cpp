@@ -93,7 +93,7 @@ void Engine::GenerateWorld(const std::string &filename)
 void Engine::MainLoop()
 {
     mRunning = true;
-    mObjectManager->LoadObjectFaces();
+    // mObjectManager->LoadObjectFaces();
 
     while (!mQuit)
     {
@@ -143,7 +143,6 @@ void Engine::Input()
         {
             if (e.button.button == SDL_BUTTON_RIGHT)
             {
-                // Right mouse button was clicked
                 AddObject();
             }
             else if (e.button.button == SDL_BUTTON_LEFT)
@@ -608,6 +607,7 @@ void Engine::InitializeShadowMap()
     glGenTextures(1, &mShadowMapTexture);
     glBindTexture(GL_TEXTURE_2D, mShadowMapTexture);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, mShadowResolution.x, mShadowResolution.y, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+    glGenerateMipmap(GL_TEXTURE_2D);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_REF_TO_TEXTURE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
