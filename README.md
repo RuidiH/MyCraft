@@ -64,18 +64,35 @@ To Compile the program, simply run the python scripty 'build.py' and run the bin
 ```python
 python3 build.py
 
-./lab
+./prog
+```
+By default it reads the noise map. Or you can use the following:
+
+```python
+./prog -g # read noise map
+./prog -l # load from saved
 ```
 
 ## Usage
-Camera Control:
+*Camera Control:*
   - [W] -> Forward
   - [S] -> Backward
   - [A] -> Move Left
   - [D] -> Move Right
 
-World:
+*World:*
   - [Ctrl] + [S] -> Save world. 
+  - [Tab] + Wireframe mode
+
+*Mouse:*
+  - [LMB] -> Remove highlighted block
+  - [RMB] -> Add block with select type
+
+*Select Type to Add:*
+  - [1] -> Dirt
+  - [2] -> Grass 
+  - [3] -> Snow 
+  - [4] -> Water  
 
 ## Future Plans
 As I continue my educational journey through the "Computer Graphics Course," I plan to enrich MyCraft with advanced graphics utilities, exploring more complex lighting, shading, and rendering techniques to bring the game closer to its inspiration while carving out its unique identity.
