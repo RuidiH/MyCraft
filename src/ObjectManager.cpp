@@ -121,12 +121,12 @@ void ObjectManager::UpdateSortedTransparentObjects()
     }
 }
 
-const std::set<std::shared_ptr<GameObject>, TransparentObjectComparator> &ObjectManager::GetTransparentObjects()
+const std::set<std::shared_ptr<GameObject>, TransparentObjectComparator> &ObjectManager::GetTransparentObjects() const
 {
     return mSortedTransparentObjects;
 }
 
-const std::unordered_map<std::string, std::shared_ptr<GameObject>> &ObjectManager::GetObjects()
+const std::unordered_map<std::string, std::shared_ptr<GameObject>> &ObjectManager::GetObjects() const
 {
     return mObjects;
 }

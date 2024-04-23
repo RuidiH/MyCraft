@@ -35,8 +35,8 @@ public:
     void RemoveObject(const std::shared_ptr<GameObject> &object);
     void UpdateSortedTransparentObjects();
 
-    const std::set<std::shared_ptr<GameObject>, TransparentObjectComparator> &GetTransparentObjects();
-    const std::unordered_map<std::string, std::shared_ptr<GameObject>> &GetObjects();
+    const std::set<std::shared_ptr<GameObject>, TransparentObjectComparator> &GetTransparentObjects() const;
+    const std::unordered_map<std::string, std::shared_ptr<GameObject>> &GetObjects() const;
     
 private:
     const Camera &mCamera;
