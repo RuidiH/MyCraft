@@ -199,13 +199,13 @@ void Engine::Input()
         mNewObjectID = "water_block";
     }
 
-        // wireframe mode
+    // wireframe mode
     if (state[SDL_SCANCODE_TAB])
     {
         if (mWireframeMode)
         {
             glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-            mWireframeMode = false; 
+            mWireframeMode = false;
         }
         else
         {
@@ -419,10 +419,9 @@ void Engine::LightPass()
     glDisable(GL_CULL_FACE);
 
     // transparent
-    for (auto &pair : mObjectManager->GetObjects())
-    {
-        RenderObjects(pair.second, true);
-    }
+    // for (auto &pair : mObjectManager->GetObjects()) {
+    //     RenderObjects(pair.second, true);
+    // }
 
     glEnable(GL_CULL_FACE);
     glDepthMask(GL_TRUE);

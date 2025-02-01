@@ -5,7 +5,7 @@ import platform
 COMPILER="clang++ -g -std=c++17"   # The compiler we want to use 
                                 #(You may try g++ if you have trouble)
 SOURCE="./src/*.cpp ./include/glad/glad.c"    # Where the source code lives
-EXECUTABLE="lab"        # Name of the final executable
+EXECUTABLE="prog"        # Name of the final executable
 # ======================= COMMON CONFIGURATION OPTIONS ======================= #
 
 # (2)=================== Platform specific configuration ===================== #
@@ -26,7 +26,7 @@ elif platform.system()=="Windows":
     COMPILER="g++ -std=c++17" # Note we use g++ here as it is more likely what you have
     ARGUMENTS="-D MINGW -std=c++17 -static-libgcc -static-libstdc++" 
     INCLUDE_DIR="-I./include/"
-    EXECUTABLE="lab.exe"
+    EXECUTABLE="prog.exe"
     LIBRARIES="-lmingw32 -lSDL2main -lSDL2 -lSDL2_image"
 # (2)=================== Platform specific configuration ===================== #
 
